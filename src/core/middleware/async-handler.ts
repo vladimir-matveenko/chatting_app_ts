@@ -15,7 +15,8 @@ export function asyncHandler(
     handler: AsyncRequestHandler,
 ): RequestHandler {
     return (req, res, next) => {
-        Promise.resolve(handler(req, res, next))
-            .catch(next);
+        Promise.resolve(
+            handler(req, res, next),
+        ).catch(next);
     };
 }

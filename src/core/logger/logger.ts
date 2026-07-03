@@ -1,14 +1,14 @@
 export class Logger {
-    error(message: string, error?: unknown): void {
-        console.error(message, error);
+    info(message: string, ...args: unknown[]): void {
+        console.info(message, ...args);
     }
 
-    warn(message: string): void {
-        console.warn(message);
+    warn(message: string, ...args: unknown[]): void {
+        console.warn(message, ...args);
     }
 
-    info(message: string): void {
-        console.info(message);
+    error(message: string, ...args: unknown[]): void {
+        console.error(message, ...args);
     }
 }
 

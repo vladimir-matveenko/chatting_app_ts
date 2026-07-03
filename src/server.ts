@@ -1,15 +1,22 @@
-import dotenv from "dotenv";
-import app from "./app.js";
+import { createApp } from "./app.js";
 
-dotenv.config();
+import { Database } from "./core/database/database.js";
+import { env } from "./core/config/env.js";
+import { db } from "./core/config/database.js";
 
-// test code
-app.get('/', (_, res) => {
-    res.send('Hello TypeScript!');
-});
+const database =
+    new Database(db);
 
-const port = process.env.PORT ?? 3000;
+const app =
+    createApp(database);
 
-app.listen(port, () => {
-    console.log(`Server started on ${port}`);
-});
+app.listen(
+    env.port,
+    () => {
+
+        console.log(
+            `Server started on port ${env.port}`,
+        );
+
+    },
+);

@@ -3,63 +3,52 @@ import type {
     QueryResultRow,
 } from "pg";
 
-import type { Database } from "../config/database.js";
-
+import { Database } from "../database/database.js";
 import type { Mapper } from "../mappers/mapper.js";
-import { AppError } from "../errors/index.js";
 
 export abstract class BaseRepository<
     TEntity extends QueryResultRow,
     TModel,
 > {
-
     constructor(
         protected readonly db: Database,
-        protected readonly mapper: Mapper<TEntity, TModel>,
+        protected readonly mapper: Mapper<
+            TEntity,
+            TModel
+        >,
     ) { }
 
-    protected map(entity: TEntity): TModel {
-        return this.mapper.toModel(entity);
+    protected map(
+        entity: TEntity,
+    ): TModel {
+        return this.mapper.map(entity);
     }
 
     protected mapNullable(
         entity: TEntity | null,
     ): TModel | null {
-
         return entity
-            ? this.mapper.toModel(entity)
+            ? this.mapper.map(entity)
             : null;
-
     }
 
     protected mapMany(
         entities: TEntity[],
     ): TModel[] {
-
         return entities.map(
-            (entity) => this.mapper.toModel(entity),
+            (entity) => this.mapper.map(entity),
         );
-
     }
 
-    protected requireOne(
-        entity: TEntity | null,
-        error: AppError,
-    ): TEntity {
-
-        if (!entity) {
-            throw error;
-        }
-
-        return entity;
+    protected getOne(
+        result: QueryResult<TEntity>,
+    ): TEntity | null {
+        return result.rows[0] ?? null;
     }
 
     protected getOneOrNull(
         result: QueryResult<TEntity>,
     ): TEntity | null {
-
         return result.rows[0] ?? null;
-
     }
-
 }

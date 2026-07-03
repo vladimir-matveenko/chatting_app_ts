@@ -5,7 +5,7 @@ import type { User } from "../models/user.model.js";
 
 export class UserMapper implements Mapper<UserEntity, User> {
 
-    toModel(entity: UserEntity): User {
+    map(entity: UserEntity): User {
 
         return {
             id: entity.id,

@@ -1,3 +1,3 @@
-export interface Mapper<TEntity, TModel> {
-    toModel(entity: TEntity): TModel;
+export interface Mapper<TSource, TDestination> {
+    map(source: TSource): TDestination;
 }

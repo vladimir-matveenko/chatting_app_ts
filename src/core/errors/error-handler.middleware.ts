@@ -1,45 +1,58 @@
 import type {
     ErrorRequestHandler,
-    Request,
-    Response,
-    NextFunction,
 } from "express";
 
-import { AppError } from "./app.error.js";
 import { logger } from "../logger/logger.js";
 
+import { AppError } from "./app.error.js";
+
 export const errorHandler: ErrorRequestHandler = (
-    error: Error,
-    _req: Request,
-    res: Response,
-    _next: NextFunction,
+    error,
+    _req,
+    res,
+    _next,
 ): void => {
 
     if (error instanceof AppError) {
 
         logger.warn(
-            `${error.statusCode} ${error.code}: ${error.message}`,
+            `${error.code}: ${error.message}`,
         );
 
         res.status(error.statusCode).json({
+
             success: false,
+
             error: {
+
                 code: error.code,
+
                 message: error.message,
+
             },
+
         });
 
         return;
     }
 
-    logger.error("Unhandled error", error);
+    logger.error(
+        "Unhandled error",
+        error,
+    );
 
     res.status(500).json({
+
         success: false,
+
         error: {
+
             code: "INTERNAL_SERVER_ERROR",
+
             message: "Internal server error.",
+
         },
+
     });
 
 };

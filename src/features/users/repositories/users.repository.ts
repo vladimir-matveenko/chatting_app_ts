@@ -1,17 +1,18 @@
-import type { Database } from "../../core/config/database.js";
-import { BaseRepository } from "../../core/database/base.repository.js";
-import { InternalServerError } from "../../core/errors/index.js";
 
-import type { CreateUserDto } from "./dto/create-user.dto.js";
-import type { UserEntity } from "./entities/user.entity.js";
-import { UserMapper } from "./mappers/user.mapper.js";
-import type { User } from "./models/user.model.js";
-import { UsersQueries } from "./users.queries.js";
+import { BaseRepository } from "../../../core/database/base.repository.js";
+import { Database } from "../../../core/database/database.js";
+import { InternalServerError } from "../../../core/errors/index.js";
+import { CreateUserDto } from "../dto/create-user.dto.js";
+import { UserEntity } from "../entities/user.entity.js";
+import { IUsersRepository } from "../interfaces/users.repository.interface.js";
+import { UserMapper } from "../mappers/user.mapper.js";
+import { User } from "../models/user.model.js";
+import { UsersQueries } from "../users.queries.js";
 
 export class UsersRepository extends BaseRepository<
     UserEntity,
     User
-> {
+> implements IUsersRepository {
 
     constructor(
         db: Database,
@@ -33,18 +34,16 @@ export class UsersRepository extends BaseRepository<
             ],
         );
 
-        const entity = this.requireOne(
-            result.rows[0] ?? null,
-            new InternalServerError(
+        const entity = this.getOne(result);
+
+        if (!entity) {
+            throw new InternalServerError(
                 "User was not created.",
                 "USER_CREATE_FAILED",
-            ),
-        );
+            );
+        }
 
         return this.map(entity);
-
-
-
     }
 
     async findById(

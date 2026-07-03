@@ -8,6 +8,9 @@ export abstract class AppError extends Error {
 
         this.name = new.target.name;
 
-        Object.setPrototypeOf(this, new.target.prototype);
+        Object.setPrototypeOf(
+            this,
+            new.target.prototype,
+        );
     }
 }
