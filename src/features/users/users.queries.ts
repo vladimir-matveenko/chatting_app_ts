@@ -25,7 +25,7 @@ export const UsersQueries = {
     FIND_BY_USERNAME: `
         SELECT *
         FROM users
-        WHERE username = $1
+        WHERE name = $1
     `,
 
 };
