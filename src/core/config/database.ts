@@ -4,3 +4,5 @@ import { env } from "./env.js";
 export const db = new Pool({
     connectionString: env.databaseUrl,
 });
+
+export type Database = typeof db;
