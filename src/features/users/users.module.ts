@@ -15,6 +15,7 @@ import { UsersService } from "./services/users.service.js";
 import {
     BcryptPasswordHasher,
 } from "../../core/security/index.js";
+import { UserCredentialsMapper } from "./mappers/user-credentials.mapper.js";
 
 
 
@@ -33,10 +34,14 @@ export function createUsersModule(
             responseMapper,
         );
 
+    const credentialsMapper =
+        new UserCredentialsMapper();
+
     const repository =
         new UsersRepository(
             database,
             userMapper,
+            credentialsMapper,
         );
 
     const passwordHasher =

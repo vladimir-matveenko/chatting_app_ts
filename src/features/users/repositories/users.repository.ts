@@ -5,7 +5,9 @@ import { InternalServerError } from "../../../core/errors/index.js";
 import { CreateUserDto } from "../dto/create-user.dto.js";
 import { UserEntity } from "../entities/user.entity.js";
 import { IUsersRepository } from "../interfaces/users.repository.interface.js";
+import { UserCredentialsMapper } from "../mappers/user-credentials.mapper.js";
 import { UserMapper } from "../mappers/user.mapper.js";
+import { UserCredentials } from "../models/user-credentials.model.js";
 import { User } from "../models/user.model.js";
 import { UsersQueries } from "../users.queries.js";
 
@@ -17,6 +19,7 @@ export class UsersRepository extends BaseRepository<
     constructor(
         db: Database,
         mapper: UserMapper,
+        private readonly credentialsMapper: UserCredentialsMapper,
     ) {
         super(db, mapper);
     }
@@ -59,6 +62,28 @@ export class UsersRepository extends BaseRepository<
             this.getOneOrNull(result),
         );
 
+    }
+
+    async findCredentialsByEmail(
+        email: string,
+    ): Promise<UserCredentials | null> {
+
+        const result =
+            await this.db.query<UserEntity>(
+                UsersQueries.FIND_BY_EMAIL,
+                [email],
+            );
+
+        const entity =
+            this.getOneOrNull(result);
+
+        if (!entity) {
+            return null;
+        }
+
+        return this.credentialsMapper.map(
+            entity,
+        );
     }
 
     async findByEmail(

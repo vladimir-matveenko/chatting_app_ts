@@ -1,8 +1,13 @@
 import type { CreateUserDto } from "../dto/create-user.dto.js";
+import { UserCredentials } from "../models/user-credentials.model.js";
 import type { User } from "../models/user.model.js";
 
 export interface IUsersRepository {
     create(dto: CreateUserDto): Promise<User>;
+
+    findCredentialsByEmail(
+        email: string,
+    ): Promise<UserCredentials | null>;
 
     findById(id: string): Promise<User | null>;
 
