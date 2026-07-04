@@ -3,9 +3,9 @@ import type {
     Response,
 } from "express";
 import { UserResponseDto } from "../dto/response/user-response.dto.js";
-import { UsersResponseMappers } from "../mappers/users-response.mappers.js";
 import { UsersService } from "../services/users.service.js";
 import { UsersRequestValidators } from "../validators/users-request.validators.js";
+import { UsersMappers } from "../mappers/users.mappers.js";
 
 
 export class UsersController {
@@ -13,7 +13,7 @@ export class UsersController {
     constructor(
         private readonly usersService: UsersService,
         private readonly validators: UsersRequestValidators,
-        private readonly responseMappers: UsersResponseMappers,
+        private readonly mappers: UsersMappers,
     ) { }
 
     async create(
@@ -28,7 +28,7 @@ export class UsersController {
             await this.usersService.create(dto);
 
         res.status(201).json(
-            this.responseMappers.user.map(user),
+            this.mappers.response.map(user),
         );
 
     }
@@ -45,7 +45,7 @@ export class UsersController {
             await this.usersService.requireById(dto.id);
 
         res.json(
-            this.responseMappers.user.map(user),
+            this.mappers.response.map(user),
         );
 
     }
@@ -62,7 +62,7 @@ export class UsersController {
             await this.usersService.getByEmail(dto.email);
 
         res.json(
-            this.responseMappers.user.map(user),
+            this.mappers.response.map(user),
         );
 
     }
@@ -81,7 +81,7 @@ export class UsersController {
             );
 
         res.json(
-            this.responseMappers.user.map(user),
+            this.mappers.response.map(user),
         );
 
     }

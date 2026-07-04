@@ -1,4 +1,3 @@
-
 import { BaseRepository } from "../../../core/database/base.repository.js";
 import { Database } from "../../../core/database/database.js";
 import { InternalServerError } from "../../../core/errors/index.js";
@@ -6,7 +5,7 @@ import { CreateUserDto } from "../dto/create-user.dto.js";
 import { UserEntity } from "../entities/user.entity.js";
 import { IUsersRepository } from "../interfaces/users.repository.interface.js";
 import { UserCredentialsMapper } from "../mappers/user-credentials.mapper.js";
-import { UserMapper } from "../mappers/user.mapper.js";
+import { UsersMappers } from "../mappers/users.mappers.js";
 import { UserCredentials } from "../models/user-credentials.model.js";
 import { User } from "../models/user.model.js";
 import { UsersQueries } from "../users.queries.js";
@@ -18,11 +17,18 @@ export class UsersRepository extends BaseRepository<
 
     constructor(
         db: Database,
-        mapper: UserMapper,
-        private readonly credentialsMapper: UserCredentialsMapper,
+        mappers: UsersMappers,
     ) {
-        super(db, mapper);
+        super(
+            db,
+            mappers.user,
+        );
+
+        this.credentialsMapper =
+            mappers.credentials;
     }
+
+    private readonly credentialsMapper: UserCredentialsMapper;
 
     async create(
         dto: CreateUserDto,
