@@ -1,26 +1,28 @@
 import express from "express";
 import cors from "cors";
-import { Database } from "./core/database/database.js";
-import { createUsersModule } from "./features/users/users.module.js";
+
+import { ApplicationContainer } from "./core/container/application-container.js";
+
 import { errorHandler } from "./core/errors/error-handler.middleware.js";
 
 export function createApp(
-    database: Database,
+    container: ApplicationContainer,
 ) {
-    const app = express();
+    const app =
+        express();
 
     app.use(cors());
-    app.use(express.json());
 
-    const usersModule =
-        createUsersModule(database);
+    app.use(express.json());
 
     app.use(
         "/users",
-        usersModule.router,
+        container.users.router,
     );
 
-    app.use(errorHandler);
+    app.use(
+        errorHandler,
+    );
 
     return app;
 }
