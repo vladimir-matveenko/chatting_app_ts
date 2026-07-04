@@ -1,62 +1,66 @@
-import { CreateUserDto } from "../dto/create-user.dto.js";
-import { IUsersRepository } from "../interfaces/users.repository.interface.js";
-import { User } from "../models/user.model.js";
 import {
     ConflictError,
     NotFoundError,
 } from "../../../core/errors/index.js";
-import { CreateUserRequestDto } from "../dto/request/create-user.request.dto.js";
-import type { PasswordHasher } from "../../../core/security/index.js";
+
+import type {
+    PasswordHasher,
+} from "../../../core/security/index.js";
+
+import type {
+    CreateUserRequestDto,
+} from "../dto/request/create-user.request.dto.js";
+
+import type {
+    CreateUserDto,
+} from "../dto/create-user.dto.js";
+
+import type {
+    IUsersRepository,
+} from "../interfaces/users.repository.interface.js";
+
+import type { User }
+    from "../models/user.model.js";
 
 export class UsersService {
+
     constructor(
+
         private readonly usersRepository: IUsersRepository,
+
         private readonly passwordHasher: PasswordHasher,
+
     ) { }
 
-    async create(
-        request: CreateUserRequestDto,
+    async createUser(
+        dto: CreateUserRequestDto,
     ): Promise<User> {
 
-        const emailExists =
-            await this.usersRepository.findByEmail(
-                request.email,
+        await this.ensureEmailIsUnique(
+            dto.email,
+        );
+
+        await this.ensureUsernameIsUnique(
+            dto.username,
+        );
+
+        const passwordHash =
+            await this.passwordHasher.hash(
+                dto.password,
             );
 
-        if (emailExists) {
-            throw new ConflictError(
-                "Email already exists.",
-                "EMAIL_ALREADY_EXISTS",
-            );
-        }
+        const createDto: CreateUserDto = {
 
-        const usernameExists =
-            await this.usersRepository.findByUsername(
-                request.username,
-            );
+            username: dto.username,
 
-        if (usernameExists) {
-            throw new ConflictError(
-                "Username already exists.",
-                "USERNAME_ALREADY_EXISTS",
-            );
-        }
+            email: dto.email,
 
-        const dto: CreateUserDto = {
-
-            username: request.username,
-
-            email: request.email,
-
-            passwordHash:
-                await this.passwordHasher.hash(
-                    request.password,
-                ),
+            passwordHash,
 
         };
 
         return this.usersRepository.create(
-            dto,
+            createDto,
         );
 
     }
@@ -66,16 +70,21 @@ export class UsersService {
     ): Promise<User> {
 
         const user =
-            await this.usersRepository.findById(id);
+            await this.usersRepository.findById(
+                id,
+            );
 
         if (!user) {
+
             throw new NotFoundError(
                 "User not found.",
                 "USER_NOT_FOUND",
             );
+
         }
 
         return user;
+
     }
 
     async getByEmail(
@@ -83,16 +92,21 @@ export class UsersService {
     ): Promise<User> {
 
         const user =
-            await this.usersRepository.findByEmail(email);
+            await this.usersRepository.findByEmail(
+                email,
+            );
 
         if (!user) {
+
             throw new NotFoundError(
                 "User not found.",
                 "USER_NOT_FOUND",
             );
+
         }
 
         return user;
+
     }
 
     async getByUsername(
@@ -105,12 +119,56 @@ export class UsersService {
             );
 
         if (!user) {
+
             throw new NotFoundError(
                 "User not found.",
                 "USER_NOT_FOUND",
             );
+
         }
 
         return user;
+
     }
+
+    private async ensureEmailIsUnique(
+        email: string,
+    ): Promise<void> {
+
+        const exists =
+            await this.usersRepository.findByEmail(
+                email,
+            );
+
+        if (exists) {
+
+            throw new ConflictError(
+                "Email already exists.",
+                "EMAIL_ALREADY_EXISTS",
+            );
+
+        }
+
+    }
+
+    private async ensureUsernameIsUnique(
+        username: string,
+    ): Promise<void> {
+
+        const exists =
+            await this.usersRepository.findByUsername(
+                username,
+            );
+
+        if (exists) {
+
+            throw new ConflictError(
+                "Username already exists.",
+                "USERNAME_ALREADY_EXISTS",
+            );
+
+        }
+
+    }
+
 }

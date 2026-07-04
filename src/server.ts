@@ -22,7 +22,7 @@ app.listen(
     () => {
 
         console.log(
-            'Server started on port ${env.port}',
+            `Server started on port ${env.port}`,
         );
 
     },

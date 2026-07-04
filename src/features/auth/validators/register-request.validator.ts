@@ -10,15 +10,15 @@ import {
 } from "../../../core/http/validators/index.js";
 
 import type {
-    CreateUserRequestDto,
-} from "../dto/request/create-user.request.dto.js";
+    RegisterRequestDto,
+} from "../dto/request/register.request.dto.js";
 
-export class CreateUserRequestValidator
-    implements RequestValidator<CreateUserRequestDto> {
+export class RegisterRequestValidator
+    implements RequestValidator<RegisterRequestDto> {
 
     validate(
         request: Request,
-    ): CreateUserRequestDto {
+    ): RegisterRequestDto {
 
         return {
 

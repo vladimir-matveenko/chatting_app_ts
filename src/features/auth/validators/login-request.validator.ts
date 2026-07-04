@@ -6,25 +6,20 @@ import type { RequestValidator }
 import {
     requireEmail,
     requirePassword,
-    requireUsername,
 } from "../../../core/http/validators/index.js";
 
 import type {
-    CreateUserRequestDto,
-} from "../dto/request/create-user.request.dto.js";
+    LoginRequestDto,
+} from "../dto/request/login.request.dto.js";
 
-export class CreateUserRequestValidator
-    implements RequestValidator<CreateUserRequestDto> {
+export class LoginRequestValidator
+    implements RequestValidator<LoginRequestDto> {
 
     validate(
         request: Request,
-    ): CreateUserRequestDto {
+    ): LoginRequestDto {
 
         return {
-
-            username: requireUsername(
-                request.body.username,
-            ),
 
             email: requireEmail(
                 request.body.email,

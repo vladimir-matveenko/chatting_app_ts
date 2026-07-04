@@ -5,8 +5,7 @@ import { env } from "../config/env.js";
 import type { JwtPayload } from "./jwt-payload.js";
 import type { JwtService } from "./jwt-service.js";
 
-export class JwtServiceImpl
-    implements JwtService {
+export class JwtServiceImpl implements JwtService {
 
     signAccessToken(
         payload: JwtPayload,

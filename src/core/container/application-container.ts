@@ -1,21 +1,53 @@
-import { createUsersModule } from "../../features/users/index.js";
+import { Database }
+    from "../database/database.js";
 
-import { Database } from "../database/database.js";
+import {
+    BcryptPasswordHasher,
+    JwtServiceImpl,
+} from "../security/index.js";
 
-import type { FeatureModule } from "../modules/index.js";
+import {
+    createUsersModule,
+    type UsersFeature,
+} from "../../features/users/index.js";
+
+import {
+    createAuthModule,
+    type AuthModule,
+} from "../../features/auth/index.js";
 
 export class ApplicationContainer {
 
-    readonly users: FeatureModule;
+    readonly users: UsersFeature;
+
+    readonly auth: AuthModule;
 
     constructor(
         database: Database,
     ) {
+
+        const passwordHasher =
+            new BcryptPasswordHasher();
+
+        const jwtService =
+            new JwtServiceImpl();
 
         this.users =
             createUsersModule(
                 database,
             );
 
+        this.auth =
+            createAuthModule(
+
+                this.users,
+
+                passwordHasher,
+
+                jwtService,
+
+            );
+
     }
+
 }

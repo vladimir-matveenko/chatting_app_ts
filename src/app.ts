@@ -21,6 +21,11 @@ export function createApp(
     );
 
     app.use(
+        "/auth",
+        container.auth.router,
+    );
+
+    app.use(
         errorHandler,
     );
 

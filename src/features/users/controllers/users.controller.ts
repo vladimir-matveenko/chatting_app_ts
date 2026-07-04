@@ -30,7 +30,7 @@ export class UsersController extends BaseController {
             this.validators.create.validate(req);
 
         const user =
-            await this.usersService.create(dto);
+            await this.usersService.createUser(dto);
 
         this.created(
             res,
