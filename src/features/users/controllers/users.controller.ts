@@ -2,19 +2,24 @@ import type {
     Request,
     Response,
 } from "express";
-import { UserResponseDto } from "../dto/response/user-response.dto.js";
+
+import { BaseController } from "../../../core/http/base.controller.js";
+
+import type { UserResponseDto } from "../dto/response/user-response.dto.js";
+
+import { UsersMappers } from "../mappers/users.mappers.js";
 import { UsersService } from "../services/users.service.js";
 import { UsersRequestValidators } from "../validators/users-request.validators.js";
-import { UsersMappers } from "../mappers/users.mappers.js";
 
-
-export class UsersController {
+export class UsersController extends BaseController {
 
     constructor(
         private readonly usersService: UsersService,
         private readonly validators: UsersRequestValidators,
         private readonly mappers: UsersMappers,
-    ) { }
+    ) {
+        super();
+    }
 
     async create(
         req: Request,
@@ -27,7 +32,8 @@ export class UsersController {
         const user =
             await this.usersService.create(dto);
 
-        res.status(201).json(
+        this.created(
+            res,
             this.mappers.response.map(user),
         );
 
@@ -42,9 +48,12 @@ export class UsersController {
             this.validators.getById.validate(req);
 
         const user =
-            await this.usersService.requireById(dto.id);
+            await this.usersService.requireById(
+                dto.id,
+            );
 
-        res.json(
+        this.ok(
+            res,
             this.mappers.response.map(user),
         );
 
@@ -59,9 +68,12 @@ export class UsersController {
             this.validators.getByEmail.validate(req);
 
         const user =
-            await this.usersService.getByEmail(dto.email);
+            await this.usersService.getByEmail(
+                dto.email,
+            );
 
-        res.json(
+        this.ok(
+            res,
             this.mappers.response.map(user),
         );
 
@@ -80,10 +92,10 @@ export class UsersController {
                 dto.username,
             );
 
-        res.json(
+        this.ok(
+            res,
             this.mappers.response.map(user),
         );
 
     }
-
 }
