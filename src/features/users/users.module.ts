@@ -1,47 +1,31 @@
-import { UserMapper } from "./mappers/user.mapper.js";
-import { UserResponseMapper } from "./mappers/user-response.mapper.js";
-import { UsersResponseMappers } from "./mappers/users-response.mappers.js";
+import { Database } from "../../core/database/database.js";
+import { BcryptPasswordHasher } from "../../core/security/index.js";
+
+import { UsersController } from "./controllers/users.controller.js";
+import { UsersMappers } from "./mappers/users.mappers.js";
+import { UsersRepository } from "./repositories/users.repository.js";
+import { createUsersRouter } from "./routes/users.routes.js";
+import { UsersService } from "./services/users.service.js";
 
 import { CreateUserRequestValidator } from "./validators/create-user-request.validator.js";
 import { GetUserByEmailRequestValidator } from "./validators/get-user-by-email-request.validator.js";
 import { GetUserByIdRequestValidator } from "./validators/get-user-by-id-request.validator.js";
 import { GetUserByUsernameRequestValidator } from "./validators/get-user-by-username-request.validator.js";
 import { UsersRequestValidators } from "./validators/users-request.validators.js";
-import { createUsersRouter } from "./routes/users.routes.js";
-import { Database } from "../../core/database/database.js";
-import { UsersController } from "./controllers/users.controller.js";
-import { UsersRepository } from "./repositories/users.repository.js";
-import { UsersService } from "./services/users.service.js";
-import {
-    BcryptPasswordHasher,
-} from "../../core/security/index.js";
-import { UserCredentialsMapper } from "./mappers/user-credentials.mapper.js";
 
-
+import type { UsersFeature } from "./users.module.interface.js";
 
 export function createUsersModule(
     database: Database,
-) {
+): UsersFeature {
 
-    const userMapper =
-        new UserMapper();
-
-    const responseMapper =
-        new UserResponseMapper();
-
-    const responseMappers =
-        new UsersResponseMappers(
-            responseMapper,
-        );
-
-    const credentialsMapper =
-        new UserCredentialsMapper();
+    const mappers =
+        new UsersMappers();
 
     const repository =
         new UsersRepository(
             database,
-            userMapper,
-            credentialsMapper,
+            mappers,
         );
 
     const passwordHasher =
@@ -65,7 +49,7 @@ export function createUsersModule(
         new UsersController(
             service,
             validators,
-            responseMappers,
+            mappers,
         );
 
     const router =
@@ -75,13 +59,15 @@ export function createUsersModule(
 
     return {
 
-        repository,
-
-        service,
+        router,
 
         controller,
 
-        router,
+        service,
+
+        repository,
+
+        mappers,
 
     };
 

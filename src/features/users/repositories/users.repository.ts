@@ -1,43 +1,46 @@
-
 import { BaseRepository } from "../../../core/database/base.repository.js";
 import { Database } from "../../../core/database/database.js";
 import { InternalServerError } from "../../../core/errors/index.js";
-import { CreateUserDto } from "../dto/create-user.dto.js";
-import { UserEntity } from "../entities/user.entity.js";
-import { IUsersRepository } from "../interfaces/users.repository.interface.js";
+import type { CreateUserDto } from "../dto/create-user.dto.js";
+import type { UserEntity } from "../entities/user.entity.js";
+import type { IUsersRepository } from "../interfaces/users.repository.interface.js";
 import { UserCredentialsMapper } from "../mappers/user-credentials.mapper.js";
-import { UserMapper } from "../mappers/user.mapper.js";
-import { UserCredentials } from "../models/user-credentials.model.js";
-import { User } from "../models/user.model.js";
+import { UsersMappers } from "../mappers/users.mappers.js";
+import type { UserCredentials } from "../models/user-credentials.model.js";
+import type { User } from "../models/user.model.js";
 import { UsersQueries } from "../users.queries.js";
 
-export class UsersRepository extends BaseRepository<
-    UserEntity,
-    User
-> implements IUsersRepository {
+export class UsersRepository
+    extends BaseRepository<UserEntity, User>
+    implements IUsersRepository {
+    private readonly credentialsMapper: UserCredentialsMapper;
 
     constructor(
         db: Database,
-        mapper: UserMapper,
-        private readonly credentialsMapper: UserCredentialsMapper,
+        mappers: UsersMappers,
     ) {
-        super(db, mapper);
+        super(
+            db,
+            mappers.user,
+        );
+
+        this.credentialsMapper =
+            mappers.credentials;
     }
 
     async create(
         dto: CreateUserDto,
     ): Promise<User> {
 
-        const result = await this.db.query<UserEntity>(
-            UsersQueries.CREATE,
-            [
-                dto.username,
-                dto.email,
-                dto.passwordHash,
-            ],
-        );
-
-        const entity = this.getOne(result);
+        const entity =
+            await this.queryOne(
+                UsersQueries.CREATE,
+                [
+                    dto.username,
+                    dto.email,
+                    dto.passwordHash,
+                ],
+            );
 
         if (!entity) {
             throw new InternalServerError(
@@ -47,56 +50,27 @@ export class UsersRepository extends BaseRepository<
         }
 
         return this.map(entity);
+
     }
 
     async findById(
         id: string,
     ): Promise<User | null> {
 
-        const result = await this.db.query<UserEntity>(
+        return this.findOne(
             UsersQueries.FIND_BY_ID,
             [id],
         );
 
-        return this.mapNullable(
-            this.getOneOrNull(result),
-        );
-
-    }
-
-    async findCredentialsByEmail(
-        email: string,
-    ): Promise<UserCredentials | null> {
-
-        const result =
-            await this.db.query<UserEntity>(
-                UsersQueries.FIND_BY_EMAIL,
-                [email],
-            );
-
-        const entity =
-            this.getOneOrNull(result);
-
-        if (!entity) {
-            return null;
-        }
-
-        return this.credentialsMapper.map(
-            entity,
-        );
     }
 
     async findByEmail(
         email: string,
     ): Promise<User | null> {
 
-        const result = await this.db.query<UserEntity>(
+        return this.findOne(
             UsersQueries.FIND_BY_EMAIL,
             [email],
-        );
-
-        return this.mapNullable(
-            this.getOneOrNull(result),
         );
 
     }
@@ -105,14 +79,26 @@ export class UsersRepository extends BaseRepository<
         username: string,
     ): Promise<User | null> {
 
-        const result = await this.db.query<UserEntity>(
+        return this.findOne(
             UsersQueries.FIND_BY_USERNAME,
             [username],
         );
 
-        return this.mapNullable(
-            this.getOneOrNull(result),
-        );
+    }
+
+    async findCredentialsByEmail(
+        email: string,
+    ): Promise<UserCredentials | null> {
+
+        const entity =
+            await this.queryOne(
+                UsersQueries.FIND_BY_EMAIL,
+                [email],
+            );
+
+        return entity
+            ? this.credentialsMapper.map(entity)
+            : null;
 
     }
 

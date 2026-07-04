@@ -2,7 +2,7 @@ export const UsersQueries = {
 
     CREATE: `
         INSERT INTO users (
-            username,
+            name,
             email,
             password_hash
         )
