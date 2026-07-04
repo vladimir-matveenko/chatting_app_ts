@@ -12,27 +12,18 @@ import { Database } from "../../core/database/database.js";
 import { UsersController } from "./controllers/users.controller.js";
 import { UsersRepository } from "./repositories/users.repository.js";
 import { UsersService } from "./services/users.service.js";
+import type { FeatureModule } from "../../core/modules/index.js";
 import {
     BcryptPasswordHasher,
 } from "../../core/security/index.js";
 import { UserCredentialsMapper } from "./mappers/user-credentials.mapper.js";
 
-
-
 export function createUsersModule(
     database: Database,
-) {
+): FeatureModule {
 
     const userMapper =
         new UserMapper();
-
-    const responseMapper =
-        new UserResponseMapper();
-
-    const responseMappers =
-        new UsersResponseMappers(
-            responseMapper,
-        );
 
     const credentialsMapper =
         new UserCredentialsMapper();
@@ -61,6 +52,14 @@ export function createUsersModule(
             new GetUserByUsernameRequestValidator(),
         );
 
+    const responseMapper =
+        new UserResponseMapper();
+
+    const responseMappers =
+        new UsersResponseMappers(
+            responseMapper,
+        );
+
     const controller =
         new UsersController(
             service,
@@ -73,16 +72,11 @@ export function createUsersModule(
             controller,
         );
 
-    return {
-
-        repository,
-
-        service,
-
-        controller,
+    const featureModule: FeatureModule = {
 
         router,
 
     };
 
+    return featureModule;
 }
