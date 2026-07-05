@@ -1,7 +1,5 @@
 export interface RefreshTokenEntity {
 
-    id: string;
-
     user_id: string;
 
     token_hash: string;

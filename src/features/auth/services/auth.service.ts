@@ -204,12 +204,6 @@ export class AuthService {
         refreshToken: string,
     ): Promise<AuthResult> {
 
-        // TODO: remove it!!!
-        console.log();
-        console.log("===== INCOMING TOKEN =====");
-        console.log(refreshToken);
-        console.log("==========================");
-
         const payload =
             this.jwtService.verifyRefreshToken(
                 refreshToken,
@@ -231,21 +225,6 @@ export class AuthService {
             );
 
         }
-
-        // TODO: remove it!!!
-        console.log();
-        console.log("===== STORED TOKEN =====");
-        console.log(storedToken);
-        console.log("========================");
-
-        // TODO: remove it!!!
-        console.log(
-            "MATCHES =",
-            await this.passwordHasher.compare(
-                refreshToken,
-                storedToken.tokenHash,
-            ),
-        );
 
         this.ensureRefreshTokenNotExpired(
             storedToken.expiresAt,
