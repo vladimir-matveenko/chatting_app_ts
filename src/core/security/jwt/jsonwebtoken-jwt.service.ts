@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-import { env } from "../config/env.js";
+import { env } from "../../config/env.js";
 
 import type { JwtPayload }
     from "./jwt-payload.js";
@@ -10,7 +10,7 @@ import type { JwtService }
 
 import {
     UnauthorizedError,
-} from "../errors/index.js";
+} from "../../errors/index.js";
 
 export class JwtServiceImpl
     implements JwtService {

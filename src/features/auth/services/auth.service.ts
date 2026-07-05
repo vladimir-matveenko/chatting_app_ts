@@ -5,8 +5,7 @@ import {
 import type {
     JwtPayload,
     JwtService,
-    PasswordHasher,
-} from "../../../core/security/index.js";
+} from "../../../core/security/jwt/index.js";
 
 import type { LoginRequestDto }
     from "../dto/request/login.request.dto.js";
@@ -23,6 +22,8 @@ import type {
 import { UsersService } from "../../users/services/users.service.js";
 import { User } from "../../users/models/user.model.js";
 import { IRefreshTokensRepository } from "../interfaces/refresh-tokens.repository.interface.js";
+import { PasswordHasher } from "../../../core/security/password/index.js";
+import { TokenHasher } from "../../../core/security/index.js";
 
 export class AuthService {
 
@@ -35,6 +36,8 @@ export class AuthService {
         private readonly usersService: UsersService,
 
         private readonly passwordHasher: PasswordHasher,
+
+        private readonly tokenHasher: TokenHasher,
 
         private readonly jwtService: JwtService,
 
@@ -91,7 +94,7 @@ export class AuthService {
     ): Promise<void> {
 
         const tokenHash =
-            await this.passwordHasher.hash(
+            this.tokenHasher.hash(
                 refreshToken,
             );
 
@@ -230,16 +233,15 @@ export class AuthService {
             storedToken.expiresAt,
         );
 
-        const matches =
-            await this.passwordHasher.compare(
-
+        const incomingHash =
+            this.tokenHasher.hash(
                 refreshToken,
-
-                storedToken.tokenHash,
-
             );
 
-        if (!matches) {
+        if (
+            incomingHash !==
+            storedToken.tokenHash
+        ) {
 
             throw new UnauthorizedError(
 

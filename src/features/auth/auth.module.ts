@@ -2,9 +2,8 @@ import { Database }
     from "../../core/database/database.js";
 
 import type {
-    PasswordHasher,
     JwtService,
-} from "../../core/security/index.js";
+} from "../../core/security/jwt/index.js";
 
 import type {
     UsersFeature,
@@ -43,6 +42,8 @@ import { RegisterRequestValidator }
 
 import { RefreshTokenRequestValidator }
     from "./validators/refresh-token-request.validator.js";
+import { PasswordHasher } from "../../core/security/password/index.js";
+import { TokenHasher } from "../../core/security/index.js";
 
 export function createAuthModule(
 
@@ -51,6 +52,8 @@ export function createAuthModule(
     users: UsersFeature,
 
     passwordHasher: PasswordHasher,
+
+    tokenHasher: TokenHasher,
 
     jwtService: JwtService,
 
@@ -80,6 +83,8 @@ export function createAuthModule(
             users.service,
 
             passwordHasher,
+
+            tokenHasher,
 
             jwtService,
 

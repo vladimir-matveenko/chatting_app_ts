@@ -3,14 +3,6 @@ import { Database }
 
 import {
 
-    BcryptPasswordHasher,
-
-    JwtServiceImpl,
-
-} from "../security/index.js";
-
-import {
-
     createUsersModule,
 
     type UsersFeature,
@@ -24,6 +16,9 @@ import {
     type AuthModule,
 
 } from "../../features/auth/index.js";
+import { BcryptPasswordHasher } from "../security/password/index.js";
+import { JwtServiceImpl } from "../security/jwt/index.js";
+import { Sha256TokenHasher } from "../security/index.js";
 
 export class ApplicationContainer {
 
@@ -40,6 +35,9 @@ export class ApplicationContainer {
 
         const jwtService =
             new JwtServiceImpl();
+
+        const tokenHasher =
+            new Sha256TokenHasher();
 
         this.users =
             createUsersModule(
@@ -58,6 +56,8 @@ export class ApplicationContainer {
                 this.users,
 
                 passwordHasher,
+
+                tokenHasher,
 
                 jwtService,
 

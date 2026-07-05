@@ -5,7 +5,7 @@ import type {
 } from "express";
 
 import type { JwtService }
-    from "../security/jwt-service.js";
+    from "../security/jwt/jwt-service.js";
 
 import {
     UnauthorizedError,

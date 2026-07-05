@@ -1,5 +1,5 @@
 import type { JwtPayload }
-    from "../core/security/jwt-payload.js";
+    from "../core/security/jwt/jwt-payload.ts";
 
 declare global {
 

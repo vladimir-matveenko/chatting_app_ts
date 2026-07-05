@@ -1,5 +1,5 @@
 import { Database } from "../../core/database/database.js";
-import { BcryptPasswordHasher, JwtService } from "../../core/security/index.js";
+import { JwtService } from "../../core/security/jwt/index.js";
 
 import { UsersController } from "./controllers/users.controller.js";
 import { UsersMappers } from "./mappers/users.mappers.js";
@@ -15,6 +15,7 @@ import { UsersRequestValidators } from "./validators/users-request.validators.js
 
 import type { UsersFeature } from "./users.module.interface.js";
 import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
+import { BcryptPasswordHasher } from "../../core/security/password/index.js";
 
 export function createUsersModule(
     database: Database,
