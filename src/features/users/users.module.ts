@@ -1,5 +1,5 @@
 import { Database } from "../../core/database/database.js";
-import { BcryptPasswordHasher } from "../../core/security/index.js";
+import { BcryptPasswordHasher, JwtService } from "../../core/security/index.js";
 
 import { UsersController } from "./controllers/users.controller.js";
 import { UsersMappers } from "./mappers/users.mappers.js";
@@ -14,9 +14,11 @@ import { GetUserByUsernameRequestValidator } from "./validators/get-user-by-user
 import { UsersRequestValidators } from "./validators/users-request.validators.js";
 
 import type { UsersFeature } from "./users.module.interface.js";
+import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
 
 export function createUsersModule(
     database: Database,
+    jwtService: JwtService,
 ): UsersFeature {
 
     const mappers =
@@ -52,9 +54,14 @@ export function createUsersModule(
             mappers,
         );
 
+    const jwtAuth =
+        new JwtAuthMiddleware(
+            jwtService,
+        );
+
     const router =
         createUsersRouter(
-            controller,
+            controller, jwtAuth,
         );
 
     return {

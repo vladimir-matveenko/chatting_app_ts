@@ -65,6 +65,14 @@ export class UsersService {
 
     }
 
+    async findById(
+        id: string,
+    ): Promise<User> {
+
+        return this.requireById(id);
+
+    }
+
     async requireById(
         id: string,
     ): Promise<User> {

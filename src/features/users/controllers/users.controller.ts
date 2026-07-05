@@ -10,6 +10,7 @@ import type { UserResponseDto } from "../dto/response/user-response.dto.js";
 import { UsersMappers } from "../mappers/users.mappers.js";
 import { UsersService } from "../services/users.service.js";
 import { UsersRequestValidators } from "../validators/users-request.validators.js";
+import { UnauthorizedError } from "../../../core/errors/index.js";
 
 export class UsersController extends BaseController {
 
@@ -35,6 +36,33 @@ export class UsersController extends BaseController {
         this.created(
             res,
             this.mappers.response.map(user),
+        );
+
+    }
+
+    async me(
+        req: Request,
+        res: Response<UserResponseDto>,
+    ): Promise<void> {
+
+        if (!req.user) {
+
+            throw new UnauthorizedError(
+                "Unauthorized.",
+                "UNAUTHORIZED",
+            );
+
+        }
+
+        const user =
+            await this.usersService.findById(
+                req.user.userId,
+            );
+
+        res.json(
+            this.mappers.response.map(
+                user,
+            ),
         );
 
     }

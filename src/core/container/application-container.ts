@@ -35,17 +35,14 @@ export class ApplicationContainer {
         this.users =
             createUsersModule(
                 database,
+                jwtService,
             );
 
         this.auth =
             createAuthModule(
-
                 this.users,
-
                 passwordHasher,
-
                 jwtService,
-
             );
 
     }
