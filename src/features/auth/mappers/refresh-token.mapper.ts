@@ -19,8 +19,6 @@ export class RefreshTokenMapper
 
         return {
 
-            id: entity.id,
-
             userId: entity.user_id,
 
             tokenHash:
