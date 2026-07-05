@@ -32,8 +32,7 @@ export class RefreshTokenMapper
             createdAt:
                 entity.created_at,
 
-            revokedAt:
-                entity.revoked_at,
+            updatedAt: entity.updated_at,
 
         };
 

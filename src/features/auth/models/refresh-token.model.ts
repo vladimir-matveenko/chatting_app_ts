@@ -10,6 +10,6 @@ export interface RefreshToken {
 
     createdAt: Date;
 
-    revokedAt: Date | null;
+    updatedAt: Date;
 
 }

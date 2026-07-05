@@ -10,6 +10,6 @@ export interface RefreshTokenEntity {
 
     created_at: Date;
 
-    revoked_at: Date | null;
+    updated_at: Date;
 
 }
