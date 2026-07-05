@@ -4,10 +4,6 @@ import {
 } from "../../../core/errors/index.js";
 
 import type {
-    PasswordHasher,
-} from "../../../core/security/index.js";
-
-import type {
     CreateUserRequestDto,
 } from "../dto/request/create-user.request.dto.js";
 
@@ -21,6 +17,7 @@ import type {
 
 import type { User }
     from "../models/user.model.js";
+import { PasswordHasher } from "../../../core/security/password/index.js";
 
 export class UsersService {
 
@@ -62,6 +59,14 @@ export class UsersService {
         return this.usersRepository.create(
             createDto,
         );
+
+    }
+
+    async findById(
+        id: string,
+    ): Promise<User> {
+
+        return this.requireById(id);
 
     }
 

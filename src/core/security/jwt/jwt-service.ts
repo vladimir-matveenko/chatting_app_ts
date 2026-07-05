@@ -10,7 +10,11 @@ export interface JwtService {
         payload: JwtPayload,
     ): string;
 
-    verify(
+    verifyAccessToken(
+        token: string,
+    ): JwtPayload;
+
+    verifyRefreshToken(
         token: string,
     ): JwtPayload;
 

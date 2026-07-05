@@ -8,8 +8,7 @@ import { errorHandler } from "./core/errors/error-handler.middleware.js";
 export function createApp(
     container: ApplicationContainer,
 ) {
-    const app =
-        express();
+    const app = express();
 
     app.use(cors());
 
