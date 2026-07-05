@@ -8,6 +8,10 @@ import type { JwtPayload }
 import type { JwtService }
     from "./jwt-service.js";
 
+import {
+    UnauthorizedError,
+} from "../errors/index.js";
+
 export class JwtServiceImpl
     implements JwtService {
 
@@ -51,17 +55,64 @@ export class JwtServiceImpl
 
     }
 
+    private mapJwtError(
+        error: unknown,
+    ): never {
+
+        if (error instanceof Error) {
+
+            switch (error.name) {
+
+                case "TokenExpiredError":
+
+                    throw new UnauthorizedError(
+                        "Token has expired.",
+                        "TOKEN_EXPIRED",
+                    );
+
+                case "JsonWebTokenError":
+
+                    throw new UnauthorizedError(
+                        "Invalid token.",
+                        "INVALID_TOKEN",
+                    );
+
+            }
+
+        }
+
+        throw error;
+
+    }
+
+    private verifyToken(
+        token: string,
+    ): JwtPayload {
+
+        try {
+
+            return jwt.verify(
+                token,
+                env.jwtSecret,
+            ) as JwtPayload;
+
+        } catch (error) {
+
+            this.mapJwtError(
+                error,
+            );
+
+        }
+
+    }
+
     verifyAccessToken(
         token: string,
     ): JwtPayload {
 
-        return jwt.verify(
-
+        return this.verifyToken(
             token,
-
-            env.jwtSecret,
-
-        ) as JwtPayload;
+        );
 
     }
 
@@ -69,13 +120,9 @@ export class JwtServiceImpl
         token: string,
     ): JwtPayload {
 
-        return jwt.verify(
-
+        return this.verifyToken(
             token,
-
-            env.jwtSecret,
-
-        ) as JwtPayload;
+        );
 
     }
 
