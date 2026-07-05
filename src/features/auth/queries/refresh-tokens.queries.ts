@@ -20,18 +20,20 @@ export const RefreshTokensQueries = {
         WHERE user_id = $1;
     `,
 
-    DELETE_REFRESH_TOKEN: `
-        DELETE FROM refresh_tokens
-        WHERE user_id = $1;
-    `,
-
     UPDATE_REFRESH_TOKEN: `
         UPDATE refresh_tokens
         SET
             token_hash = $2,
             expires_at = $3,
-            revoked_at = NULL
+            updated_at = NOW()
         WHERE user_id = $1
         RETURNING *;
     `,
+
+    DELETE_REFRESH_TOKEN: `
+        DELETE
+        FROM refresh_tokens
+        WHERE user_id = $1;
+    `,
+
 };
