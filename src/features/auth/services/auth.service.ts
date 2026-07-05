@@ -22,12 +22,15 @@ import type {
 } from "../../users/interfaces/users.repository.interface.js";
 import { UsersService } from "../../users/services/users.service.js";
 import { User } from "../../users/models/user.model.js";
+import { IRefreshTokensRepository } from "../interfaces/refresh-tokens.repository.interface.js";
 
 export class AuthService {
 
     constructor(
 
         private readonly usersRepository: IUsersRepository,
+
+        private readonly refreshTokensRepository: IRefreshTokensRepository,
 
         private readonly usersService: UsersService,
 
@@ -37,9 +40,9 @@ export class AuthService {
 
     ) { }
 
-    private createAuthResult(
+    private async createAuthResult(
         user: User,
-    ): AuthResult {
+    ): Promise<AuthResult> {
 
         const payload: JwtPayload = {
 
@@ -49,21 +52,88 @@ export class AuthService {
 
         };
 
+        const accessToken =
+            this.jwtService.signAccessToken(
+                payload,
+            );
+
+        const refreshToken =
+            this.jwtService.signRefreshToken(
+                payload,
+            );
+
+        await this.saveRefreshToken(
+
+            user.id,
+
+            refreshToken,
+
+        );
+
         return {
 
-            accessToken:
-                this.jwtService.signAccessToken(
-                    payload,
-                ),
+            accessToken,
 
-            refreshToken:
-                this.jwtService.signRefreshToken(
-                    payload,
-                ),
+            refreshToken,
 
             user,
 
         };
+
+    }
+
+    private async saveRefreshToken(
+
+        userId: string,
+
+        refreshToken: string,
+
+    ): Promise<void> {
+
+        const tokenHash =
+            await this.passwordHasher.hash(
+                refreshToken,
+            );
+
+        const expiresAt =
+            new Date(
+
+                Date.now() +
+
+                30 * 24 * 60 * 60 * 1000,
+
+            );
+
+        const existing =
+            await this.refreshTokensRepository.findByUserId(
+                userId,
+            );
+
+        if (existing) {
+
+            await this.refreshTokensRepository.update(
+
+                userId,
+
+                tokenHash,
+
+                expiresAt,
+
+            );
+
+            return;
+
+        }
+
+        await this.refreshTokensRepository.create(
+
+            userId,
+
+            tokenHash,
+
+            expiresAt,
+
+        );
 
     }
 
@@ -115,7 +185,7 @@ export class AuthService {
 
         }
 
-        return this.createAuthResult(user);
+        return await this.createAuthResult(user);
 
     }
 
@@ -126,7 +196,101 @@ export class AuthService {
         const user =
             await this.usersService.createUser(dto);
 
-        return this.createAuthResult(user);
+        return await this.createAuthResult(user);
+
+    }
+
+    async refresh(
+        refreshToken: string,
+    ): Promise<AuthResult> {
+
+        const payload =
+            this.jwtService.verifyRefreshToken(
+                refreshToken,
+            );
+
+        const storedToken =
+            await this.refreshTokensRepository.findByUserId(
+                payload.userId,
+            );
+
+        if (!storedToken) {
+
+            throw new UnauthorizedError(
+
+                "Refresh token not found.",
+
+                "INVALID_REFRESH_TOKEN",
+
+            );
+
+        }
+
+        this.ensureRefreshTokenNotExpired(
+            storedToken.expiresAt,
+        );
+
+        const matches =
+            await this.passwordHasher.compare(
+
+                refreshToken,
+
+                storedToken.tokenHash,
+
+            );
+
+        if (!matches) {
+
+            throw new UnauthorizedError(
+
+                "Invalid refresh token.",
+
+                "INVALID_REFRESH_TOKEN",
+
+            );
+
+        }
+
+        const user =
+            await this.usersRepository.findById(
+                payload.userId,
+            );
+
+        if (!user) {
+
+            throw new UnauthorizedError(
+
+                "User not found.",
+
+                "USER_NOT_FOUND",
+
+            );
+
+        }
+
+        return await this.createAuthResult(
+            user,
+        );
+
+    }
+
+    private ensureRefreshTokenNotExpired(
+        expiresAt: Date,
+    ): void {
+
+        if (
+            expiresAt.getTime() <= Date.now()
+        ) {
+
+            throw new UnauthorizedError(
+
+                "Refresh token has expired.",
+
+                "REFRESH_TOKEN_EXPIRED",
+
+            );
+
+        }
 
     }
 

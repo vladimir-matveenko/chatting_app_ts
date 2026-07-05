@@ -89,4 +89,29 @@ export class AuthController
 
     }
 
+    async refresh(
+        req: Request,
+        res: Response,
+    ): Promise<void> {
+
+        const dto =
+            this.validators.refresh.validate(
+                req,
+            );
+
+        const result =
+            await this.authService.refresh(
+                dto.refreshToken,
+            );
+
+        res.json(
+
+            this.mappers.response.map(
+                result,
+            ),
+
+        );
+
+    }
+
 }

@@ -37,6 +37,20 @@ export function createAuthRouter(
 
     );
 
+    router.post(
+
+        "/refresh",
+
+        asyncHandler(
+
+            controller.refresh.bind(
+                controller,
+            ),
+
+        ),
+
+    );
+
     return router;
 
 }

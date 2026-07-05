@@ -5,6 +5,7 @@ import type {
 
 import { Database } from "./database.js";
 import type { Mapper } from "../mappers/mapper.js";
+import { InternalServerError } from "../errors/index.js";
 
 export abstract class BaseRepository<
     TEntity extends QueryResultRow,
@@ -103,6 +104,30 @@ export abstract class BaseRepository<
             );
 
         return this.mapMany(entities);
+
+    }
+
+    protected async saveOne(
+        sql: string,
+        params: readonly unknown[] = [],
+    ): Promise<TModel> {
+
+        const entity =
+            await this.queryOne(
+                sql,
+                params,
+            );
+
+        if (!entity) {
+
+            throw new InternalServerError(
+                "Database operation returned no rows.",
+                "DATABASE_OPERATION_FAILED",
+            );
+
+        }
+
+        return this.map(entity);
 
     }
 }

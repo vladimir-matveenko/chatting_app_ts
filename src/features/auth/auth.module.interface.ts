@@ -1,17 +1,24 @@
-import type { Router } from "express";
-
-import type { AuthController }
-    from "./controllers/auth.controller.js";
+import type { Router }
+    from "express";
 
 import type { AuthService }
     from "./services/auth.service.js";
 
+import type { AuthMappers }
+    from "./mappers/auth.mappers.js";
+
+import type {
+    IRefreshTokensRepository,
+} from "./interfaces/refresh-tokens.repository.interface.js";
+
 export interface AuthModule {
 
-    router: Router;
+    readonly router: Router;
 
-    controller: AuthController;
+    readonly service: AuthService;
 
-    service: AuthService;
+    readonly repository: IRefreshTokensRepository;
+
+    readonly mappers: AuthMappers;
 
 }
