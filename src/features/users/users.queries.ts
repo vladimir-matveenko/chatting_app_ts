@@ -28,4 +28,15 @@ export const UsersQueries = {
         WHERE name = $1
     `,
 
+    UPDATE_USER: `
+    UPDATE users
+    SET
+        email =
+            COALESCE($2, email),
+        name =
+            COALESCE($3, name)
+    WHERE id = $1
+    RETURNING *;
+`,
+
 };

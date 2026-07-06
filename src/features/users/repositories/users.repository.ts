@@ -2,6 +2,7 @@ import { BaseRepository } from "../../../core/database/base.repository.js";
 import { Database } from "../../../core/database/database.js";
 import { InternalServerError } from "../../../core/errors/index.js";
 import type { CreateUserDto } from "../dto/create-user.dto.js";
+import { UpdateUserDto } from "../dto/update-user.dto.js";
 import type { UserEntity } from "../entities/user.entity.js";
 import type { IUsersRepository } from "../interfaces/users.repository.interface.js";
 import { UserCredentialsMapper } from "../mappers/user-credentials.mapper.js";
@@ -99,6 +100,32 @@ export class UsersRepository
         return entity
             ? this.credentialsMapper.map(entity)
             : null;
+
+    }
+
+    async update(
+
+        id: string,
+
+        dto: UpdateUserDto,
+
+    ): Promise<User> {
+
+        return this.saveOne(
+
+            UsersQueries.UPDATE_USER,
+
+            [
+
+                id,
+
+                dto.email ?? null,
+
+                dto.username ?? null,
+
+            ],
+
+        );
 
     }
 

@@ -64,6 +64,22 @@ export function createUsersRouter(
         ),
     );
 
+    router.patch(
+
+        "/me",
+
+        jwtAuthMiddleware.handler,
+
+        asyncHandler(
+
+            controller.updateMe.bind(
+                controller,
+            ),
+
+        ),
+
+    );
+
     return router;
 
 }

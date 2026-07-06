@@ -18,6 +18,7 @@ import type {
 import type { User }
     from "../models/user.model.js";
 import { PasswordHasher } from "../../../core/security/password/index.js";
+import { UpdateUserDto } from "../dto/update-user.dto.js";
 
 export class UsersService {
 
@@ -170,6 +171,123 @@ export class UsersService {
             throw new ConflictError(
                 "Username already exists.",
                 "USERNAME_ALREADY_EXISTS",
+            );
+
+        }
+
+    }
+
+    async update(
+
+        id: string,
+
+        dto: UpdateUserDto,
+
+    ): Promise<User> {
+
+        const user =
+            await this.requireById(
+                id,
+            );
+
+        await this.ensureEmailIsAvailable(
+
+            dto.email,
+
+            user.email,
+
+        );
+
+        await this.ensureUsernameIsAvailable(
+
+            dto.username,
+
+            user.username,
+
+        );
+
+        return this.usersRepository.update(
+
+            id,
+
+            dto,
+
+        );
+
+    }
+
+    private async ensureEmailIsAvailable(
+
+        newEmail: string | undefined,
+
+        currentEmail: string,
+
+    ): Promise<void> {
+
+        if (
+
+            newEmail === undefined ||
+
+            newEmail === currentEmail
+
+        ) {
+
+            return;
+
+        }
+
+        const existing =
+            await this.usersRepository.findByEmail(
+                newEmail,
+            );
+
+        if (existing) {
+
+            throw new ConflictError(
+
+                "Email already exists.",
+
+                "EMAIL_ALREADY_EXISTS",
+
+            );
+
+        }
+
+    }
+
+    private async ensureUsernameIsAvailable(
+
+        newUsername: string | undefined,
+
+        currentUsername: string,
+
+    ): Promise<void> {
+
+        if (
+
+            newUsername === undefined ||
+
+            newUsername === currentUsername
+
+        ) {
+
+            return;
+
+        }
+
+        const existing =
+            await this.usersRepository.findByUsername(
+                newUsername,
+            );
+
+        if (existing) {
+
+            throw new ConflictError(
+
+                "Username already exists.",
+
+                "USERNAME_ALREADY_EXISTS",
+
             );
 
         }

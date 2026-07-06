@@ -16,6 +16,7 @@ import { UsersRequestValidators } from "./validators/users-request.validators.js
 import type { UsersFeature } from "./users.module.interface.js";
 import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
 import { BcryptPasswordHasher } from "../../core/security/password/index.js";
+import { UpdateUserRequestValidator } from "./validators/update-user-request.validator.js";
 
 export function createUsersModule(
     database: Database,
@@ -47,6 +48,7 @@ export function createUsersModule(
             new GetUserByIdRequestValidator(),
             new GetUserByEmailRequestValidator(),
             new GetUserByUsernameRequestValidator(),
+            new UpdateUserRequestValidator(),
         );
 
     const controller =
