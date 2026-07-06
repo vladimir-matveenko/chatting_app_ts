@@ -20,6 +20,7 @@ import { BcryptPasswordHasher } from "../../core/security/password/index.js";
 export function createUsersModule(
     database: Database,
     jwtService: JwtService,
+    jwtAuthMiddleware: JwtAuthMiddleware,
 ): UsersFeature {
 
     const mappers =
@@ -55,14 +56,9 @@ export function createUsersModule(
             mappers,
         );
 
-    const jwtAuth =
-        new JwtAuthMiddleware(
-            jwtService,
-        );
-
     const router =
         createUsersRouter(
-            controller, jwtAuth,
+            controller, jwtAuthMiddleware,
         );
 
     return {

@@ -296,4 +296,14 @@ export class AuthService {
 
     }
 
+    async logout(
+        userId: string,
+    ): Promise<void> {
+
+        await this.refreshTokensRepository.delete(
+            userId,
+        );
+
+    }
+
 }

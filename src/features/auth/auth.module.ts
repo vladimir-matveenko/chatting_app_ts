@@ -44,6 +44,7 @@ import { RefreshTokenRequestValidator }
     from "./validators/refresh-token-request.validator.js";
 import { PasswordHasher } from "../../core/security/password/index.js";
 import { TokenHasher } from "../../core/security/index.js";
+import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
 
 export function createAuthModule(
 
@@ -56,6 +57,8 @@ export function createAuthModule(
     tokenHasher: TokenHasher,
 
     jwtService: JwtService,
+
+    jwtAuthMiddleware: JwtAuthMiddleware,
 
 ): AuthModule {
 
@@ -117,6 +120,7 @@ export function createAuthModule(
         router:
             createAuthRouter(
                 controller,
+                jwtAuthMiddleware,
             ),
 
         service,

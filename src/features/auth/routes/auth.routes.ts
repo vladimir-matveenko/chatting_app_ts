@@ -5,9 +5,12 @@ import { asyncHandler }
 
 import type { AuthController }
     from "../controllers/auth.controller.js";
+import { JwtAuthMiddleware } from "../../../core/middleware/jwt-auth.middleware.js";
+
 
 export function createAuthRouter(
     controller: AuthController,
+    jwtAuthMiddleware: JwtAuthMiddleware,
 ): Router {
 
     const router =
@@ -44,6 +47,22 @@ export function createAuthRouter(
         asyncHandler(
 
             controller.refresh.bind(
+                controller,
+            ),
+
+        ),
+
+    );
+
+    router.post(
+
+        "/logout",
+
+        jwtAuthMiddleware.handler,
+
+        asyncHandler(
+
+            controller.logout.bind(
                 controller,
             ),
 

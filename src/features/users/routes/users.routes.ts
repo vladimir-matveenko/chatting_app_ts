@@ -8,7 +8,7 @@ import { JwtAuthMiddleware }
 
 export function createUsersRouter(
     controller: UsersController,
-    jwtAuth: JwtAuthMiddleware,
+    jwtAuthMiddleware: JwtAuthMiddleware,
 ): Router {
 
     const router = Router();
@@ -24,9 +24,7 @@ export function createUsersRouter(
 
         "/me",
 
-        jwtAuth.handle.bind(
-            jwtAuth,
-        ),
+        jwtAuthMiddleware.handler,
 
         asyncHandler(
             controller.me.bind(
@@ -38,6 +36,9 @@ export function createUsersRouter(
 
     router.get(
         "/:id",
+
+        jwtAuthMiddleware.handler,
+
         asyncHandler(
             controller.getById.bind(controller),
         ),
@@ -45,6 +46,9 @@ export function createUsersRouter(
 
     router.get(
         "/email/:email",
+
+        jwtAuthMiddleware.handler,
+
         asyncHandler(
             controller.getByEmail.bind(controller),
         ),
@@ -52,6 +56,9 @@ export function createUsersRouter(
 
     router.get(
         "/username/:username",
+
+        jwtAuthMiddleware.handler,
+
         asyncHandler(
             controller.getByUsername.bind(controller),
         ),

@@ -19,6 +19,7 @@ import {
 import { BcryptPasswordHasher } from "../security/password/index.js";
 import { JwtServiceImpl } from "../security/jwt/index.js";
 import { Sha256TokenHasher } from "../security/index.js";
+import { JwtAuthMiddleware } from "../middleware/jwt-auth.middleware.js";
 
 export class ApplicationContainer {
 
@@ -39,13 +40,16 @@ export class ApplicationContainer {
         const tokenHasher =
             new Sha256TokenHasher();
 
+        const jwtAuthMiddleware =
+            new JwtAuthMiddleware(
+                jwtService,
+            );
+
         this.users =
             createUsersModule(
-
                 database,
-
                 jwtService,
-
+                jwtAuthMiddleware,
             );
 
         this.auth =
@@ -60,6 +64,8 @@ export class ApplicationContainer {
                 tokenHasher,
 
                 jwtService,
+
+                jwtAuthMiddleware,
 
             );
 
