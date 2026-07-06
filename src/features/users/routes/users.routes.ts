@@ -80,6 +80,22 @@ export function createUsersRouter(
 
     );
 
+    router.patch(
+
+        "/me/password",
+
+        jwtAuthMiddleware.handler,
+
+        asyncHandler(
+
+            controller.updatePassword.bind(
+                controller,
+            ),
+
+        ),
+
+    );
+
     return router;
 
 }

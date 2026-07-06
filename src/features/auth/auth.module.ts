@@ -48,8 +48,6 @@ import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js"
 
 export function createAuthModule(
 
-    database: Database,
-
     users: UsersFeature,
 
     passwordHasher: PasswordHasher,
@@ -60,20 +58,13 @@ export function createAuthModule(
 
     jwtAuthMiddleware: JwtAuthMiddleware,
 
+    refreshTokensRepository: RefreshTokensRepository,
+
 ): AuthModule {
 
     const mappers =
         new AuthMappers(
             users.mappers.response,
-        );
-
-    const refreshTokensRepository =
-        new RefreshTokensRepository(
-
-            database,
-
-            new RefreshTokenMapper(),
-
         );
 
     const service =

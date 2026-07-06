@@ -16,5 +16,10 @@ export interface IUsersRepository {
 
     findByUsername(username: string): Promise<User | null>;
 
+    findCredentialsById(id: string): Promise<UserCredentials | null>;
+
     update(id: string, dto: UpdateUserDto): Promise<User>;
+
+    updatePassword(id: string, passwordHash: string): Promise<User>;
+
 }

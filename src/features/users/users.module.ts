@@ -15,13 +15,16 @@ import { UsersRequestValidators } from "./validators/users-request.validators.js
 
 import type { UsersFeature } from "./users.module.interface.js";
 import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
-import { BcryptPasswordHasher } from "../../core/security/password/index.js";
+import { BcryptPasswordHasher, PasswordHasher } from "../../core/security/password/index.js";
 import { UpdateUserRequestValidator } from "./validators/update-user-request.validator.js";
+import { UpdatePasswordRequestValidator } from "./validators/update-password-request.validator.js";
+import { RefreshTokensRepository } from "../auth/repositories/refresh-tokens.repository.js";
 
 export function createUsersModule(
     database: Database,
-    jwtService: JwtService,
     jwtAuthMiddleware: JwtAuthMiddleware,
+    passwordHasher: PasswordHasher,
+    refreshTokensRepository: RefreshTokensRepository,
 ): UsersFeature {
 
     const mappers =
@@ -33,12 +36,10 @@ export function createUsersModule(
             mappers,
         );
 
-    const passwordHasher =
-        new BcryptPasswordHasher();
-
     const service =
         new UsersService(
             repository,
+            refreshTokensRepository,
             passwordHasher,
         );
 
@@ -49,6 +50,7 @@ export function createUsersModule(
             new GetUserByEmailRequestValidator(),
             new GetUserByUsernameRequestValidator(),
             new UpdateUserRequestValidator(),
+            new UpdatePasswordRequestValidator(),
         );
 
     const controller =

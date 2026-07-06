@@ -41,6 +41,22 @@ export const UsersQueries = {
             COALESCE($5, avatar_url)
     WHERE id = $1
     RETURNING *;
-`,
+    `,
+
+    UPDATE_PASSWORD: `
+    UPDATE users
+    SET
+        password_hash = $2
+    WHERE id = $1
+    RETURNING *;
+    `,
+
+    FIND_CREDENTIALS_BY_ID: `
+    SELECT
+        id,
+        password_hash
+    FROM users
+    WHERE id = $1
+    `,
 
 };

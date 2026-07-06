@@ -1,6 +1,7 @@
 import {
     ConflictError,
     NotFoundError,
+    UnauthorizedError,
 } from "../../../core/errors/index.js";
 
 import type {
@@ -19,12 +20,16 @@ import type { User }
     from "../models/user.model.js";
 import { PasswordHasher } from "../../../core/security/password/index.js";
 import { UpdateUserDto } from "../dto/update-user.dto.js";
+import { UpdatePasswordDto } from "../dto/update-password.dto.js";
+import { IRefreshTokensRepository } from "../../auth/interfaces/refresh-tokens.repository.interface.js";
 
 export class UsersService {
 
     constructor(
 
         private readonly usersRepository: IUsersRepository,
+
+        private readonly refreshTokensRepository: IRefreshTokensRepository,
 
         private readonly passwordHasher: PasswordHasher,
 
@@ -291,6 +296,77 @@ export class UsersService {
             );
 
         }
+
+    }
+
+    async updatePassword(
+
+        id: string,
+
+        dto: UpdatePasswordDto,
+
+    ): Promise<User> {
+
+        const credentials =
+            await this.usersRepository
+                .findCredentialsById(
+                    id,
+                );
+
+        if (!credentials) {
+
+            throw new NotFoundError(
+
+                "User not found.",
+
+                "USER_NOT_FOUND",
+
+            );
+
+        }
+
+        const matches =
+            await this.passwordHasher.compare(
+
+                dto.currentPassword,
+
+                credentials.passwordHash,
+
+            );
+
+        if (!matches) {
+
+            throw new UnauthorizedError(
+
+                "Current password is incorrect.",
+
+                "INVALID_PASSWORD",
+
+            );
+
+        }
+
+        const passwordHash =
+            await this.passwordHasher.hash(
+
+                dto.newPassword,
+
+            );
+
+        const user =
+            await this.usersRepository.updatePassword(
+
+                id,
+
+                passwordHash,
+
+            );
+
+        await this.refreshTokensRepository.delete(
+            id,
+        );
+
+        return user;
 
     }
 

@@ -172,4 +172,43 @@ export class UsersController extends BaseController {
         );
 
     }
+
+    async updatePassword(
+
+        req: Request,
+
+        res: Response,
+
+    ): Promise<void> {
+
+        if (!req.user) {
+
+            throw new UnauthorizedError(
+
+                "Unauthorized.",
+
+                "UNAUTHORIZED",
+
+            );
+
+        }
+
+        const dto =
+            this.validators
+                .updatePassword
+                .validate(req);
+
+        await this.usersService.updatePassword(
+
+            req.user.userId,
+
+            dto,
+
+        );
+
+        this.noContent(
+            res,
+        );
+
+    }
 }

@@ -103,6 +103,26 @@ export class UsersRepository
 
     }
 
+    async findCredentialsById(
+
+        id: string,
+
+    ): Promise<UserCredentials | null> {
+
+        return this.findOne(
+
+            UsersQueries.FIND_CREDENTIALS_BY_ID,
+
+            [
+
+                id,
+
+            ],
+
+        );
+
+    }
+
     async update(
 
         id: string,
@@ -126,6 +146,30 @@ export class UsersRepository
                 dto.displayName ?? null,
 
                 dto.avatarUrl ?? null,
+
+            ],
+
+        );
+
+    }
+
+    async updatePassword(
+
+        id: string,
+
+        passwordHash: string,
+
+    ): Promise<User> {
+
+        return this.saveOne(
+
+            UsersQueries.UPDATE_PASSWORD,
+
+            [
+
+                id,
+
+                passwordHash,
 
             ],
 
