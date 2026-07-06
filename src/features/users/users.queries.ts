@@ -2,7 +2,7 @@ export const UsersQueries = {
 
     CREATE: `
         INSERT INTO users (
-            name,
+            user_name,
             email,
             password_hash
         )
@@ -25,7 +25,38 @@ export const UsersQueries = {
     FIND_BY_USERNAME: `
         SELECT *
         FROM users
-        WHERE name = $1
+        WHERE user_name = $1
+    `,
+
+    UPDATE_USER: `
+    UPDATE users
+    SET
+        email =
+            COALESCE($2, email),
+        user_name =
+            COALESCE($3, user_name),
+        display_name = 
+            COALESCE($4, display_name),
+        avatar_url = 
+            COALESCE($5, avatar_url)
+    WHERE id = $1
+    RETURNING *;
+    `,
+
+    UPDATE_PASSWORD: `
+    UPDATE users
+    SET
+        password_hash = $2
+    WHERE id = $1
+    RETURNING *;
+    `,
+
+    FIND_CREDENTIALS_BY_ID: `
+    SELECT
+        id,
+        password_hash
+    FROM users
+    WHERE id = $1
     `,
 
 };

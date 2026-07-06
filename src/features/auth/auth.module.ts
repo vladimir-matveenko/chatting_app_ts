@@ -44,10 +44,9 @@ import { RefreshTokenRequestValidator }
     from "./validators/refresh-token-request.validator.js";
 import { PasswordHasher } from "../../core/security/password/index.js";
 import { TokenHasher } from "../../core/security/index.js";
+import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
 
 export function createAuthModule(
-
-    database: Database,
 
     users: UsersFeature,
 
@@ -57,20 +56,15 @@ export function createAuthModule(
 
     jwtService: JwtService,
 
+    jwtAuthMiddleware: JwtAuthMiddleware,
+
+    refreshTokensRepository: RefreshTokensRepository,
+
 ): AuthModule {
 
     const mappers =
         new AuthMappers(
             users.mappers.response,
-        );
-
-    const refreshTokensRepository =
-        new RefreshTokensRepository(
-
-            database,
-
-            new RefreshTokenMapper(),
-
         );
 
     const service =
@@ -117,6 +111,7 @@ export function createAuthModule(
         router:
             createAuthRouter(
                 controller,
+                jwtAuthMiddleware,
             ),
 
         service,

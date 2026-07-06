@@ -18,7 +18,10 @@ export class JwtAuthMiddleware {
         private readonly jwtService: JwtService,
     ) { }
 
-    handle(
+    readonly handler =
+        this.handle.bind(this);
+
+    private handle(
         req: Request,
         _res: Response,
         next: NextFunction,

@@ -10,6 +10,8 @@ export class UserResponseMapper
         return {
             id: source.id,
             username: source.username,
+            displayName: source.displayName,
+            avatarUrl: source.avatarUrl,
             email: source.email,
             createdAt: source.createdAt,
             updatedAt: source.updatedAt,

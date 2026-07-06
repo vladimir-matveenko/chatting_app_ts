@@ -19,6 +19,9 @@ import {
 import { BcryptPasswordHasher } from "../security/password/index.js";
 import { JwtServiceImpl } from "../security/jwt/index.js";
 import { Sha256TokenHasher } from "../security/index.js";
+import { JwtAuthMiddleware } from "../middleware/jwt-auth.middleware.js";
+import { RefreshTokenMapper } from "../../features/auth/mappers/refresh-token.mapper.js";
+import { RefreshTokensRepository } from "../../features/auth/repositories/refresh-tokens.repository.js";
 
 export class ApplicationContainer {
 
@@ -39,19 +42,30 @@ export class ApplicationContainer {
         const tokenHasher =
             new Sha256TokenHasher();
 
+        const jwtAuthMiddleware =
+            new JwtAuthMiddleware(
+                jwtService,
+            );
+
+        const refreshTokenMapper =
+            new RefreshTokenMapper();
+
+        const refreshTokensRepository =
+            new RefreshTokensRepository(
+                database,
+                refreshTokenMapper,
+            );
+
         this.users =
             createUsersModule(
-
                 database,
-
-                jwtService,
-
+                jwtAuthMiddleware,
+                passwordHasher,
+                refreshTokensRepository,
             );
 
         this.auth =
             createAuthModule(
-
-                database,
 
                 this.users,
 
@@ -60,6 +74,10 @@ export class ApplicationContainer {
                 tokenHasher,
 
                 jwtService,
+
+                jwtAuthMiddleware,
+
+                refreshTokensRepository,
 
             );
 

@@ -15,6 +15,7 @@ import { AuthService }
 import { AuthRequestValidators }
     from "../validators/auth-request.validators.js";
 import { AuthResponseDto } from "../dto/response/auth.response.dto.js";
+import { UnauthorizedError } from "../../../core/errors/index.js";
 
 export class AuthController
     extends BaseController {
@@ -111,6 +112,36 @@ export class AuthController
             ),
 
         );
+
+    }
+
+    async logout(
+
+        req: Request,
+
+        res: Response,
+
+    ): Promise<void> {
+
+        if (!req.user) {
+
+            throw new UnauthorizedError(
+
+                "Unauthorized.",
+
+                "UNAUTHORIZED",
+
+            );
+
+        }
+
+        await this.authService.logout(
+
+            req.user.userId,
+
+        );
+
+        this.noContent(res);
 
     }
 
