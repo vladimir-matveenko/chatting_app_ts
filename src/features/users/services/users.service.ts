@@ -1,4 +1,5 @@
 import {
+    BadRequestError,
     ConflictError,
     NotFoundError,
     UnauthorizedError,
@@ -341,6 +342,24 @@ export class UsersService {
                 "Current password is incorrect.",
 
                 "INVALID_PASSWORD",
+
+            );
+
+        }
+
+        const isSamePassword =
+            await this.passwordHasher.compare(
+                dto.newPassword,
+                credentials.passwordHash,
+            );
+
+        if (isSamePassword) {
+
+            throw new BadRequestError(
+
+                "New password must be different from the current password.",
+
+                "PASSWORD_NOT_CHANGED",
 
             );
 
