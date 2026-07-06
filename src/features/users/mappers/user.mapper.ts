@@ -10,6 +10,8 @@ export class UserMapper implements Mapper<UserEntity, User> {
         return {
             id: entity.id,
             username: entity.username,
+            displayName: entity.display_name,
+            avatarUrl: entity.avatar_url,
             email: entity.email,
             passwordHash: entity.password_hash,
             createdAt: entity.created_at,

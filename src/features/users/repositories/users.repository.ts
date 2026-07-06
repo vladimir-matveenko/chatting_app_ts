@@ -123,6 +123,10 @@ export class UsersRepository
 
                 dto.username ?? null,
 
+                dto.displayName ?? null,
+
+                dto.avatarUrl ?? null,
+
             ],
 
         );

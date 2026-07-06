@@ -34,7 +34,11 @@ export const UsersQueries = {
         email =
             COALESCE($2, email),
         name =
-            COALESCE($3, name)
+            COALESCE($3, name),
+        display_name = 
+            COALESCE($4, display_name),
+        avatar_url = 
+            COALESCE($5, avatar_url)
     WHERE id = $1
     RETURNING *;
 `,

@@ -8,7 +8,7 @@ import type {
 import type {
     UpdateUserRequestDto,
 } from "../dto/request/update-user.request.dto.js";
-import { requireEmail, requireUsername } from "../../../core/http/validators/index.js";
+import { requireEmail, requireString, requireUsername } from "../../../core/http/validators/index.js";
 import { ValidationError } from "../../../core/errors/index.js";
 
 export class UpdateUserRequestValidator
@@ -37,11 +37,35 @@ export class UpdateUserRequestValidator
 
         }
 
+        if (request.body.displayName !== undefined) {
+
+            dto.displayName =
+                requireString(
+                    request.body.displayName,
+                    "displayName",
+                );
+
+        }
+
+        if (request.body.avatarUrl !== undefined) {
+
+            dto.avatarUrl =
+                requireString(
+                    request.body.avatarUrl,
+                    "avatarUrl",
+                );
+
+        }
+
         if (
 
             dto.email === undefined &&
 
-            dto.username === undefined
+            dto.username === undefined &&
+
+            dto.avatarUrl === undefined &&
+
+            dto.displayName === undefined
 
         ) {
 

@@ -4,4 +4,8 @@ export interface UpdateUserRequestDto {
 
     username?: string;
 
+    displayName?: string;
+
+    avatarUrl?: string;
+
 }
