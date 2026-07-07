@@ -5,6 +5,12 @@ import { ApplicationContainer } from "./core/container/application-container.js"
 
 import { errorHandler } from "./core/errors/error-handler.middleware.js";
 
+import swaggerUi from "swagger-ui-express";
+
+import {
+    swaggerSpec,
+} from "./swagger/swagger.js";
+
 export function createApp(
     container: ApplicationContainer,
 ) {
@@ -26,6 +32,18 @@ export function createApp(
 
     app.use(
         errorHandler,
+    );
+
+    app.use(
+
+        "/docs",
+
+        swaggerUi.serve,
+
+        swaggerUi.setup(
+            swaggerSpec,
+        ),
+
     );
 
     return app;
