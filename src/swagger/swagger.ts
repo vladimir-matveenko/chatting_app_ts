@@ -15,6 +15,10 @@ import {
     securitySchemes,
 } from "./security/index.js";
 
+import {
+    env,
+} from "../core/config/env.js";
+
 export const swaggerSpec =
     swaggerJSDoc({
 
@@ -24,11 +28,9 @@ export const swaggerSpec =
 
             info: {
 
-                title:
-                    "Chatting App API",
+                title: `${env.appName} API`,
 
-                version:
-                    "1.0.0",
+                version: env.appVersion,
 
                 description:
                     "REST API for Chatting App",

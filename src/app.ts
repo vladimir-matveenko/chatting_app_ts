@@ -46,5 +46,9 @@ export function createApp(
 
     );
 
+    app.use(
+        container.health.router,
+    );
+
     return app;
 }
