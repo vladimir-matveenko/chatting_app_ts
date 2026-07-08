@@ -19,6 +19,14 @@ export interface IChatsRepository {
         dto: CreateChatDto,
     ): Promise<Chat>;
 
+    createTx(
+
+        client: PoolClient,
+
+        dto: CreateChatDto,
+
+    ): Promise<Chat>;
+
     findByFingerprint(
 
         fingerprint: string,
@@ -38,19 +46,5 @@ export interface IChatsRepository {
         id: string,
 
     ): Promise<Chat | null>;
-
-    findAllByUser(
-
-        userId: string,
-
-    ): Promise<Chat[]>;
-
-    createTx(
-
-        client: PoolClient,
-
-        dto: CreateChatDto,
-
-    ): Promise<Chat>;
 
 }

@@ -81,11 +81,7 @@ export class ChatsController {
 
     ): Promise<void> {
 
-        if (
-
-            !request.user
-
-        ) {
+        if (!request.user) {
 
             throw new Error(
 
@@ -97,7 +93,7 @@ export class ChatsController {
 
         const chats =
 
-            await this.service.findAllByUser(
+            await this.service.findByUser(
 
                 request.user.userId,
 

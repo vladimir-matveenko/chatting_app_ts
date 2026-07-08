@@ -51,6 +51,9 @@ import type {
 } from "./chats.module.interface.js";
 
 import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
+import { ChatListItemMapper } from "./mappers/chat-list-item.mapper.js";
+import { ChatListRepository } from "./repositories/chat-list.repository.js";
+import { ChatDetailsMapper } from "./mappers/chat-details.mapper.js";
 
 export function createChatsModule(
 
@@ -89,6 +92,21 @@ export function createChatsModule(
     const fingerprintService =
         new ChatFingerprintService();
 
+    const chatListItemMapper =
+        new ChatListItemMapper();
+
+    const chatListRepository =
+        new ChatListRepository(
+
+            database,
+
+            chatListItemMapper,
+
+        );
+
+    const chatDetailsMapper =
+        new ChatDetailsMapper();
+
     const service =
         new ChatsService(
 
@@ -98,9 +116,13 @@ export function createChatsModule(
 
             chatsRepository,
 
+            chatListRepository,
+
             chatMembersRepository,
 
             fingerprintService,
+
+            chatDetailsMapper,
 
         );
 
@@ -139,6 +161,8 @@ export function createChatsModule(
         service,
 
         repository: chatsRepository,
+
+        chatListRepository,
 
         mapper: chatMapper,
 

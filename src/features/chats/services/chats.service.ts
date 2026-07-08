@@ -21,6 +21,12 @@ import type {
     IUsersRepository,
 } from "../../users/interfaces/users.repository.interface.js";
 import { Chat } from "../models/chat.model.js";
+import type {
+    IChatListRepository,
+} from "../interfaces/chat-list.repository.interface.js";
+import { ChatListItem } from "../models/chat-list-item.model.js";
+import { ChatDetailsMapper } from "../mappers/chat-details.mapper.js";
+import { ChatDetails } from "../models/chat-details.model.js";
 
 export class ChatsService {
 
@@ -32,9 +38,13 @@ export class ChatsService {
 
         private readonly chatsRepository: IChatsRepository,
 
+        private readonly chatListRepository: IChatListRepository,
+
         private readonly chatMembersRepository: IChatMembersRepository,
 
         private readonly fingerprintService: ChatFingerprintService,
+
+        private readonly chatDetailsMapper: ChatDetailsMapper,
 
     ) { }
 
@@ -42,7 +52,7 @@ export class ChatsService {
 
         dto: CreateChatDto,
 
-    ): Promise<Chat> {
+    ): Promise<ChatDetails> {
 
         const memberIds =
 
@@ -95,7 +105,15 @@ export class ChatsService {
 
                 if (existing) {
 
-                    return existing;
+                    if (existing) {
+
+                        return this.chatDetailsMapper.map(
+
+                            existing,
+
+                        );
+
+                    }
 
                 }
 
@@ -118,7 +136,11 @@ export class ChatsService {
 
                 );
 
-                return chat;
+                return this.chatDetailsMapper.map(
+
+                    chat,
+
+                );
 
             },
 
@@ -291,13 +313,13 @@ export class ChatsService {
 
     }
 
-    async findAllByUser(
+    async findByUser(
 
         userId: string,
 
-    ): Promise<Chat[]> {
+    ): Promise<ChatListItem[]> {
 
-        return this.chatsRepository.findAllByUser(
+        return this.chatListRepository.findByUser(
 
             userId,
 
