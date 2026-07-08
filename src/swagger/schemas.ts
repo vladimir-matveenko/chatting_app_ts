@@ -10,6 +10,10 @@ import {
     errorSchemas,
 } from "./schemas/index.js";
 
+import {
+    chatsSchemas,
+} from "../features/chats/swagger/index.js";
+
 export const schemas = {
 
     ...errorSchemas,
@@ -17,5 +21,7 @@ export const schemas = {
     ...authSchemas,
 
     ...usersSchemas,
+
+    ...chatsSchemas,
 
 };

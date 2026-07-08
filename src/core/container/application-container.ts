@@ -29,6 +29,7 @@ import {
     type HealthFeature,
 
 } from "../../features/health/index.js";
+import { ChatsFeature, createChatsModule } from "../../features/chats/index.js";
 
 export class ApplicationContainer {
 
@@ -37,6 +38,8 @@ export class ApplicationContainer {
     readonly auth: AuthModule;
 
     readonly health: HealthFeature;
+
+    readonly chats: ChatsFeature;
 
     constructor(
         database: Database,
@@ -92,6 +95,17 @@ export class ApplicationContainer {
 
         this.health =
             createHealthModule();
+
+        this.chats =
+            createChatsModule(
+
+                database,
+
+                this.users.repository,
+
+                jwtAuthMiddleware,
+
+            );
 
     }
 

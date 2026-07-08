@@ -177,4 +177,24 @@ export class UsersRepository
 
     }
 
+    async findByIds(
+
+        ids: string[],
+
+    ): Promise<User[]> {
+
+        return this.findMany(
+
+            UsersQueries.FIND_BY_IDS,
+
+            [
+
+                ids,
+
+            ],
+
+        );
+
+    }
+
 }

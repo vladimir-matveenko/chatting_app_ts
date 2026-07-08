@@ -1,0 +1,310 @@
+import type {
+    CreateChatDto,
+} from "../dto/create-chat.dto.js";
+
+import type {
+    ChatEntity,
+} from "../entities/chat.entity.js";
+import { IChatMembersRepository } from "../interfaces/chat-members.repository.interface.js";
+
+import type {
+    IChatsRepository,
+} from "../interfaces/chats.repository.interface.js";
+
+import { ChatFingerprintService } from "./chat-fingerprint.service.js";
+
+import {
+    ChatMemberRole,
+} from "../entities/chat-member-role.enum.js";
+import { Database } from "../../../core/database/database.js";
+import { PoolClient } from "pg";
+import { ChatType } from "../entities/chat-type.enum.js";
+import { ValidationError } from "../../../core/errors/index.js";
+import type {
+    IUsersRepository,
+} from "../../users/interfaces/users.repository.interface.js";
+
+export class ChatsService {
+
+    constructor(
+
+        private readonly database: Database,
+
+        private readonly usersRepository: IUsersRepository,
+
+        private readonly chatsRepository: IChatsRepository,
+
+        private readonly chatMembersRepository: IChatMembersRepository,
+
+        private readonly fingerprintService: ChatFingerprintService,
+
+    ) { }
+
+    async create(
+
+        dto: CreateChatDto,
+
+    ): Promise<ChatEntity> {
+
+        const memberIds =
+
+            this.normalizeMembers(
+
+                dto.memberIds,
+
+                dto.ownerId,
+
+            );
+
+        await this.validateMembers(
+            dto,
+            memberIds,
+        );
+
+        const normalizedDto: CreateChatDto = {
+
+            ...dto,
+
+            memberIds,
+
+            fingerprint:
+                this.fingerprintService.build({
+
+                    ...dto,
+
+                    memberIds,
+
+                }),
+
+        };
+
+        return this.database.transaction(
+
+            async (
+
+                client: PoolClient,
+
+            ) => {
+
+                const existing =
+                    await this.chatsRepository.findByFingerprintTx(
+
+                        client,
+
+                        normalizedDto.fingerprint,
+
+                    );
+
+                if (existing) {
+
+                    return existing;
+
+                }
+
+                const chat =
+                    await this.chatsRepository.createTx(
+
+                        client,
+
+                        normalizedDto,
+
+                    );
+
+                await this.createChatMembers(
+
+                    client,
+
+                    chat.id,
+
+                    normalizedDto,
+
+                );
+
+                return chat;
+
+            },
+
+        );
+
+    }
+
+    private normalizeMembers(
+
+        memberIds: string[],
+
+        ownerId: string,
+
+    ): string[] {
+
+        const normalized =
+
+            [...new Set(memberIds)];
+
+        if (
+
+            !normalized.includes(ownerId)
+
+        ) {
+
+            normalized.push(ownerId);
+
+        }
+
+        return normalized;
+
+    }
+
+    private async validateMembers(
+
+        dto: CreateChatDto,
+
+        memberIds: string[],
+
+    ): Promise<void> {
+
+        this.validateChatType(
+            dto.type,
+            memberIds,
+        );
+
+        const users =
+            await this.usersRepository.findByIds(
+                memberIds,
+            );
+
+        if (
+
+            users.length !== memberIds.length
+
+        ) {
+
+            throw new ValidationError(
+
+                "One or more users do not exist.",
+
+            );
+
+        }
+
+    }
+
+    private validateChatType(
+
+        type: ChatType,
+
+        memberIds: string[],
+
+    ): void {
+
+        if (
+
+            type === ChatType.PRIVATE
+
+            &&
+
+            memberIds.length !== 2
+
+        ) {
+
+            throw new ValidationError(
+
+                "Private chat must contain exactly two members.",
+
+
+            );
+
+        }
+
+        if (
+
+            type === ChatType.GROUP
+
+            &&
+
+            memberIds.length < 2
+
+        ) {
+
+            throw new ValidationError(
+
+                "Group chat must contain at least two members.",
+
+            );
+
+        }
+
+    }
+
+    private async createChatMembers(
+
+        client: PoolClient,
+
+        chatId: string,
+
+        dto: CreateChatDto,
+
+    ): Promise<void> {
+
+        for (
+
+            const memberId
+
+            of dto.memberIds
+
+        ) {
+
+            await this.chatMembersRepository.addTx(
+
+                client,
+
+                {
+
+                    chatId,
+
+                    userId: memberId,
+
+                    role:
+
+                        memberId === dto.ownerId
+
+                            ? ChatMemberRole.OWNER
+
+                            : ChatMemberRole.MEMBER,
+
+                },
+
+            );
+
+        }
+
+    }
+
+    async findById(
+
+        id: string,
+
+    ): Promise<ChatEntity | null> {
+
+        return this.chatsRepository.findById(
+
+            id,
+
+        );
+
+    }
+
+    async findAllByUser(
+
+        userId: string,
+
+    ): Promise<ChatEntity[]> {
+
+        return this.chatsRepository.findAllByUser(
+
+            userId,
+
+        );
+
+    }
+
+}

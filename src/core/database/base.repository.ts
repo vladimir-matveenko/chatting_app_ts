@@ -1,4 +1,5 @@
 import type {
+    PoolClient,
     QueryResult,
     QueryResultRow,
 } from "pg";
@@ -128,6 +129,104 @@ export abstract class BaseRepository<
         }
 
         return this.map(entity);
+
+    }
+
+    protected async queryOneTx(
+
+        client: PoolClient,
+
+        sql: string,
+
+        params: readonly unknown[] = [],
+
+    ): Promise<TEntity | null> {
+
+        const result =
+
+            await client.query<TEntity>(
+
+                sql,
+
+                [...params],
+
+            );
+
+        return this.getOneOrNull(
+
+            result,
+
+        );
+
+    }
+
+    protected async queryManyTx(
+
+        client: PoolClient,
+
+        sql: string,
+
+        params: readonly unknown[] = [],
+
+    ): Promise<TEntity[]> {
+
+        const result =
+
+            await client.query<TEntity>(
+
+                sql,
+
+                [...params],
+
+            );
+
+        return result.rows;
+
+    }
+
+    protected async saveOneTx(
+
+        client: PoolClient,
+
+        sql: string,
+
+        params: readonly unknown[] = [],
+
+    ): Promise<TModel> {
+
+        const entity =
+
+            await this.queryOneTx(
+
+                client,
+
+                sql,
+
+                params,
+
+            );
+
+        if (
+
+            !entity
+
+        ) {
+
+            throw new InternalServerError(
+
+                "Database operation returned no rows.",
+
+                "DATABASE_OPERATION_FAILED",
+
+            );
+
+        }
+
+        return this.map(
+
+            entity,
+
+        );
 
     }
 }

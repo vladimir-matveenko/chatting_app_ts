@@ -21,13 +21,21 @@ export function createApp(
     app.use(express.json());
 
     app.use(
+        "/auth",
+        container.auth.router,
+    );
+
+    app.use(
         "/users",
         container.users.router,
     );
 
     app.use(
-        "/auth",
-        container.auth.router,
+
+        "/chats",
+
+        container.chats.router,
+
     );
 
     app.use(

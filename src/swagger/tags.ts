@@ -4,8 +4,7 @@ export const tags = [
 
         name: "Auth",
 
-        description:
-            "Authentication endpoints",
+        description: "Authentication",
 
     },
 
@@ -13,8 +12,23 @@ export const tags = [
 
         name: "Users",
 
-        description:
-            "User management",
+        description: "Users",
+
+    },
+
+    {
+
+        name: "Chats",
+
+        description: "Chats",
+
+    },
+
+    {
+
+        name: "Health",
+
+        description: "Health check",
 
     },
 
