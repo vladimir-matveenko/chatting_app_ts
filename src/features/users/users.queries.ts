@@ -59,4 +59,10 @@ export const UsersQueries = {
     WHERE id = $1
     `,
 
+    FIND_BY_IDS: `
+    SELECT *
+    FROM users
+    WHERE id = ANY($1::bigint[])
+    `,
+
 };

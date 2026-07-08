@@ -22,12 +22,24 @@ import { Sha256TokenHasher } from "../security/index.js";
 import { JwtAuthMiddleware } from "../middleware/jwt-auth.middleware.js";
 import { RefreshTokenMapper } from "../../features/auth/mappers/refresh-token.mapper.js";
 import { RefreshTokensRepository } from "../../features/auth/repositories/refresh-tokens.repository.js";
+import {
+
+    createHealthModule,
+
+    type HealthFeature,
+
+} from "../../features/health/index.js";
+import { ChatsFeature, createChatsModule } from "../../features/chats/index.js";
 
 export class ApplicationContainer {
 
     readonly users: UsersFeature;
 
     readonly auth: AuthModule;
+
+    readonly health: HealthFeature;
+
+    readonly chats: ChatsFeature;
 
     constructor(
         database: Database,
@@ -78,6 +90,20 @@ export class ApplicationContainer {
                 jwtAuthMiddleware,
 
                 refreshTokensRepository,
+
+            );
+
+        this.health =
+            createHealthModule();
+
+        this.chats =
+            createChatsModule(
+
+                database,
+
+                this.users.repository,
+
+                jwtAuthMiddleware,
 
             );
 

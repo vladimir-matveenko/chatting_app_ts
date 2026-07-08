@@ -22,4 +22,6 @@ export interface IUsersRepository {
 
     updatePassword(id: string, passwordHash: string): Promise<User>;
 
+    findByIds(ids: string[]): Promise<User[]>;
+
 }

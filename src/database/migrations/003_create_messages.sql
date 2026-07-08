@@ -1,11 +1,20 @@
 CREATE TABLE messages (
-    id SERIAL PRIMARY KEY,
-    chat_id INTEGER REFERENCES chats(id),
-    sender_id INTEGER REFERENCES users(id),
+    id BIGSERIAL PRIMARY KEY,
+    chat_id BIGINT NOT NULL REFERENCES chats(id) ON DELETE CASCADE,
+    sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     text TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    edited_at TIMESTAMPTZ,
+    deleted_at TIMESTAMPTZ
 );
 
-CREATE INDEX IF NOT EXISTS idx_messages_chat_created ON messages(chat_id, created_at);
+ALTER TABLE
+    chat_members
+ADD
+    CONSTRAINT fk_last_read_message FOREIGN KEY (last_read_message_id) REFERENCES messages(id) ON DELETE
+SET
+    NULL;
 
-CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON messages(sender_id);
+CREATE INDEX idx_messages_chat ON messages (chat_id, created_at DESC);
+
+CREATE INDEX idx_messages_sender ON messages (sender_id);
