@@ -43,7 +43,7 @@ export function createChatsRouter(
 
     );
 
-    router.get(
+    router.post(
 
         "/",
 
@@ -51,7 +51,7 @@ export function createChatsRouter(
 
         asyncHandler(
 
-            controller.list.bind(
+            controller.create.bind(
 
                 controller,
 
