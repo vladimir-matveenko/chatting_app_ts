@@ -195,7 +195,7 @@ export class ChatsRepository
 
         return this.findMany(
 
-            ChatsQueries.FIND_BY_USER,
+            ChatsQueries.FIND_ALL_BY_USER,
 
             [
 

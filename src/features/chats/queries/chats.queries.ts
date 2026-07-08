@@ -25,7 +25,7 @@ export const ChatsQueries = {
 
             $4,
             
-            $5,
+            $5
 
         )
 
@@ -35,31 +35,13 @@ export const ChatsQueries = {
     FIND_BY_FINGERPRINT: `
         SELECT *
         FROM chats
-        WHERE fingerprint = $1
+        WHERE fingerprint = $1;
     `,
 
     FIND_BY_ID: `
     SELECT *
     FROM chats
     WHERE id = $1;
-    `,
-
-    FIND_BY_USER: `
-    SELECT c.*
-    FROM chats c
-    INNER JOIN chat_members cm
-
-        ON cm.chat_id = c.id
-
-    WHERE
-
-        cm.user_id = $1
-
-        AND cm.is_archived = FALSE
-
-    ORDER BY
-
-        c.updated_at DESC;
     `,
 
     FIND_ALL_BY_USER: `
@@ -74,7 +56,7 @@ export const ChatsQueries = {
         c.updated_at,
 
         NULL::text AS last_message,
-        NULL::timestamp AS last_message_at,
+        NULL::timestamptz AS last_message_at,
         0::integer AS unread_count
 
     FROM chats c
@@ -83,7 +65,7 @@ export const ChatsQueries = {
 
         ON cm.chat_id = c.id
 
-    WHERE cm.user_id = $1
+    WHERE cm.user_id = $1 AND cm.is_archived = FALSE;
 
     ORDER BY c.updated_at DESC;
     `,
