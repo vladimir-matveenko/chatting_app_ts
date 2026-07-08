@@ -1,5 +1,6 @@
-import { Mapper }
-    from "../../../core/mappers/mapper.js";
+import {
+    Mapper,
+} from "../../../core/mappers/mapper.js";
 
 import type {
     ChatEntity,
@@ -9,39 +10,41 @@ import type {
     Chat,
 } from "../models/chat.model.js";
 
-import { ChatType }
-    from "../entities/chat-type.enum.js";
-
 export class ChatMapper
-    implements Mapper<Chat, ChatEntity> {
+
+    implements Mapper<
+        ChatEntity,
+        Chat
+    > {
 
     map(
-        model: Chat,
-    ): ChatEntity {
+
+        entity: ChatEntity,
+
+    ): Chat {
 
         return {
 
             id:
-                model.id.toString(),
+                entity.id,
 
             type:
-                model.type as ChatType,
+                entity.type,
 
             title:
-                model.title,
+                entity.title,
 
             avatarUrl:
-                model.avatar_url,
+                entity.avatar_url,
 
             ownerId:
-                model.owner_id?.toString()
-                ?? null,
+                entity.owner_id,
 
             createdAt:
-                model.created_at,
+                entity.created_at,
 
             updatedAt:
-                model.updated_at,
+                entity.updated_at,
 
         };
 

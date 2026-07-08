@@ -9,12 +9,12 @@ export interface ChatEntity {
 
     title: string | null;
 
-    avatarUrl: string | null;
+    avatar_url: string | null;
 
-    ownerId: string | null;
+    owner_id: string | null;
 
-    createdAt: Date;
+    created_at: Date;
 
-    updatedAt: Date;
+    updated_at: Date;
 
 }

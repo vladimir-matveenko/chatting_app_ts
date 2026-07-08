@@ -38,7 +38,7 @@ import type {
 
 export class ChatsRepository
 
-    extends BaseRepository<Chat, ChatEntity>
+    extends BaseRepository<ChatEntity, Chat>
 
     implements IChatsRepository {
 
@@ -64,7 +64,7 @@ export class ChatsRepository
 
         dto: CreateChatDto,
 
-    ): Promise<ChatEntity> {
+    ): Promise<Chat> {
 
         const entity =
             await this.queryOne(
@@ -107,7 +107,7 @@ export class ChatsRepository
 
         fingerprint: string,
 
-    ): Promise<ChatEntity | null> {
+    ): Promise<Chat | null> {
 
         return this.findOne(
 
@@ -129,7 +129,7 @@ export class ChatsRepository
 
         fingerprint: string,
 
-    ): Promise<ChatEntity | null> {
+    ): Promise<Chat | null> {
 
         const entity =
 
@@ -161,7 +161,7 @@ export class ChatsRepository
 
         dto: CreateChatDto,
 
-    ): Promise<ChatEntity> {
+    ): Promise<Chat> {
 
         return this.saveOneTx(
 
@@ -191,7 +191,7 @@ export class ChatsRepository
 
         userId: string,
 
-    ): Promise<ChatEntity[]> {
+    ): Promise<Chat[]> {
 
         return this.findMany(
 
@@ -211,7 +211,7 @@ export class ChatsRepository
 
         id: string,
 
-    ): Promise<ChatEntity | null> {
+    ): Promise<Chat | null> {
 
         return this.findOne(
 

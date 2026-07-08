@@ -10,19 +10,20 @@ import type {
 import type {
     PoolClient,
 } from "pg";
-import { ChatListItem } from "../models/chat-list-item.model.js";
+
+import { Chat } from "../models/chat.model.js";
 
 export interface IChatsRepository {
 
     create(
         dto: CreateChatDto,
-    ): Promise<ChatEntity>;
+    ): Promise<Chat>;
 
     findByFingerprint(
 
         fingerprint: string,
 
-    ): Promise<ChatEntity | null>;
+    ): Promise<Chat | null>;
 
     findByFingerprintTx(
 
@@ -30,19 +31,19 @@ export interface IChatsRepository {
 
         fingerprint: string,
 
-    ): Promise<ChatEntity | null>;
+    ): Promise<Chat | null>;
 
     findById(
 
         id: string,
 
-    ): Promise<ChatEntity | null>;
+    ): Promise<Chat | null>;
 
     findAllByUser(
 
         userId: string,
 
-    ): Promise<ChatEntity[]>;
+    ): Promise<Chat[]>;
 
     createTx(
 
@@ -50,6 +51,6 @@ export interface IChatsRepository {
 
         dto: CreateChatDto,
 
-    ): Promise<ChatEntity>;
+    ): Promise<Chat>;
 
 }

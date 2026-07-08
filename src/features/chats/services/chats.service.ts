@@ -2,9 +2,6 @@ import type {
     CreateChatDto,
 } from "../dto/create-chat.dto.js";
 
-import type {
-    ChatEntity,
-} from "../entities/chat.entity.js";
 import { IChatMembersRepository } from "../interfaces/chat-members.repository.interface.js";
 
 import type {
@@ -23,6 +20,7 @@ import { ValidationError } from "../../../core/errors/index.js";
 import type {
     IUsersRepository,
 } from "../../users/interfaces/users.repository.interface.js";
+import { Chat } from "../models/chat.model.js";
 
 export class ChatsService {
 
@@ -44,7 +42,7 @@ export class ChatsService {
 
         dto: CreateChatDto,
 
-    ): Promise<ChatEntity> {
+    ): Promise<Chat> {
 
         const memberIds =
 
@@ -283,7 +281,7 @@ export class ChatsService {
 
         id: string,
 
-    ): Promise<ChatEntity | null> {
+    ): Promise<Chat | null> {
 
         return this.chatsRepository.findById(
 
@@ -297,7 +295,7 @@ export class ChatsService {
 
         userId: string,
 
-    ): Promise<ChatEntity[]> {
+    ): Promise<Chat[]> {
 
         return this.chatsRepository.findAllByUser(
 
