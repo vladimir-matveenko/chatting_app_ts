@@ -16,37 +16,38 @@ import {
 
 export class ChatMembersMapper
 
-    implements Mapper<ChatMember, ChatMemberEntity> {
+    implements Mapper<ChatMemberEntity, ChatMember> {
 
     map(
 
-        model: ChatMember,
+        entity: ChatMemberEntity,
 
-    ): ChatMemberEntity {
+    ): ChatMember {
 
         return {
 
-            chat_id:
-                model.chatId.toString(),
+            chatId:
+                entity.chat_id,
 
-            user_id:
-                model.userId.toString(),
+            userId:
+                entity.user_id,
 
             role:
-                model.role as ChatMemberRole,
+                entity.role,
 
-            joined_at:
-                model.joinedAt,
+            joinedAt:
+                entity.joined_at,
 
-            last_read_message_id:
-                model.lastReadMessageId?.toString()
-                ?? null,
+            lastReadMessageId:
+                entity.last_read_message_id === null
+                    ? null
+                    : entity.last_read_message_id,
 
-            is_muted:
-                model.isMuted,
+            isMuted:
+                entity.is_muted,
 
-            is_archived:
-                model.isArchived,
+            isArchived:
+                entity.is_archived,
 
         };
 

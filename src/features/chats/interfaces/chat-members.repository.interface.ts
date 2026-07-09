@@ -9,6 +9,7 @@ import type {
 import type {
     PoolClient,
 } from "pg";
+import { ChatMember } from "../models/chat-member.model.js";
 
 export interface IChatMembersRepository {
 
@@ -16,7 +17,7 @@ export interface IChatMembersRepository {
 
         dto: CreateChatMemberDto,
 
-    ): Promise<ChatMemberEntity>;
+    ): Promise<ChatMember>;
 
     addMany(
 
@@ -30,6 +31,6 @@ export interface IChatMembersRepository {
 
         dto: CreateChatMemberDto,
 
-    ): Promise<ChatMemberEntity>;
+    ): Promise<ChatMember>;
 
 }

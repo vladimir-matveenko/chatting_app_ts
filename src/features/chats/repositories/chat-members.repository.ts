@@ -38,7 +38,7 @@ import type {
 
 export class ChatMembersRepository
 
-    extends BaseRepository<ChatMember, ChatMemberEntity>
+    extends BaseRepository<ChatMemberEntity, ChatMember>
 
     implements IChatMembersRepository {
 
@@ -64,7 +64,7 @@ export class ChatMembersRepository
 
         dto: CreateChatMemberDto,
 
-    ): Promise<ChatMemberEntity> {
+    ): Promise<ChatMember> {
 
         const entity =
             await this.queryOne(
@@ -119,7 +119,7 @@ export class ChatMembersRepository
 
         dto: CreateChatMemberDto,
 
-    ): Promise<ChatMemberEntity> {
+    ): Promise<ChatMember> {
 
         return this.saveOneTx(
 

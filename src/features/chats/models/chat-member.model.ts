@@ -1,14 +1,14 @@
 export interface ChatMember {
 
-    chatId: number;
+    chatId: string;
 
-    userId: number;
+    userId: string;
 
     role: string;
 
     joinedAt: Date;
 
-    lastReadMessageId: number | null;
+    lastReadMessageId: string | null;
 
     isMuted: boolean;
 
