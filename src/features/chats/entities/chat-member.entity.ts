@@ -3,18 +3,18 @@ import { ChatMemberRole }
 
 export interface ChatMemberEntity {
 
-    chatId: string;
+    chat_id: string;
 
-    userId: string;
+    user_id: string;
 
     role: ChatMemberRole;
 
-    joinedAt: Date;
+    joined_at: Date;
 
-    lastReadMessageId: string | null;
+    last_read_message_id: string | null;
 
-    isMuted: boolean;
+    is_muted: boolean;
 
-    isArchived: boolean;
+    is_archived: boolean;
 
 }

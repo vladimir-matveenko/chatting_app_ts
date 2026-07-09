@@ -1,17 +1,17 @@
 export interface ChatMember {
 
-    chat_id: number;
+    chatId: number;
 
-    user_id: number;
+    userId: number;
 
     role: string;
 
-    joined_at: Date;
+    joinedAt: Date;
 
-    last_read_message_id: number | null;
+    lastReadMessageId: number | null;
 
-    is_muted: boolean;
+    isMuted: boolean;
 
-    is_archived: boolean;
+    isArchived: boolean;
 
 }

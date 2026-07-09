@@ -26,27 +26,27 @@ export class ChatMembersMapper
 
         return {
 
-            chatId:
-                model.chat_id.toString(),
+            chat_id:
+                model.chatId.toString(),
 
-            userId:
-                model.user_id.toString(),
+            user_id:
+                model.userId.toString(),
 
             role:
                 model.role as ChatMemberRole,
 
-            joinedAt:
-                model.joined_at,
+            joined_at:
+                model.joinedAt,
 
-            lastReadMessageId:
-                model.last_read_message_id?.toString()
+            last_read_message_id:
+                model.lastReadMessageId?.toString()
                 ?? null,
 
-            isMuted:
-                model.is_muted,
+            is_muted:
+                model.isMuted,
 
-            isArchived:
-                model.is_archived,
+            is_archived:
+                model.isArchived,
 
         };
 
