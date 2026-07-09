@@ -53,7 +53,7 @@ import type {
 import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
 import { ChatListItemMapper } from "./mappers/chat-list-item.mapper.js";
 import { ChatListRepository } from "./repositories/chat-list.repository.js";
-import { ChatDetailsMapper } from "./mappers/chat-details.mapper.js";
+
 
 export function createChatsModule(
 
@@ -104,8 +104,6 @@ export function createChatsModule(
 
         );
 
-    const chatDetailsMapper =
-        new ChatDetailsMapper();
 
     const service =
         new ChatsService(
@@ -121,8 +119,6 @@ export function createChatsModule(
             chatMembersRepository,
 
             fingerprintService,
-
-            chatDetailsMapper,
 
         );
 

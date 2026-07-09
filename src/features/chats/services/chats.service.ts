@@ -25,8 +25,6 @@ import type {
     IChatListRepository,
 } from "../interfaces/chat-list.repository.interface.js";
 import { ChatListItem } from "../models/chat-list-item.model.js";
-import { ChatDetailsMapper } from "../mappers/chat-details.mapper.js";
-import { ChatDetails } from "../models/chat-details.model.js";
 
 export class ChatsService {
 
@@ -44,15 +42,13 @@ export class ChatsService {
 
         private readonly fingerprintService: ChatFingerprintService,
 
-        private readonly chatDetailsMapper: ChatDetailsMapper,
-
     ) { }
 
     async create(
 
         dto: CreateChatDto,
 
-    ): Promise<ChatDetails> {
+    ): Promise<Chat> {
 
         const memberIds =
 
@@ -96,51 +92,29 @@ export class ChatsService {
 
                 const existing =
                     await this.chatsRepository.findByFingerprintTx(
-
                         client,
-
                         normalizedDto.fingerprint,
-
                     );
 
                 if (existing) {
 
-                    if (existing) {
-
-                        return this.chatDetailsMapper.map(
-
-                            existing,
-
-                        );
-
-                    }
+                    return existing;
 
                 }
 
                 const chat =
                     await this.chatsRepository.createTx(
-
                         client,
-
                         normalizedDto,
-
                     );
 
                 await this.createChatMembers(
-
                     client,
-
                     chat.id,
-
                     normalizedDto,
-
                 );
 
-                return this.chatDetailsMapper.map(
-
-                    chat,
-
-                );
+                return chat;
 
             },
 
