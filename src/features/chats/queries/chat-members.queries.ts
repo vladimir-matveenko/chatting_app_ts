@@ -43,4 +43,30 @@ export const ChatMembersQueries = {
         );
     `,
 
+    FIND_BY_CHAT: `
+    SELECT *
+
+    FROM chat_members
+
+    WHERE chat_id = $1
+
+    ORDER BY joined_at;
+    `,
+
+    IS_MEMBER: `
+    SELECT 1
+
+    FROM chat_members
+
+    WHERE
+
+        chat_id = $1
+
+        AND user_id = $2
+
+        AND is_archived = FALSE
+
+    LIMIT 1;
+    `,
+
 };

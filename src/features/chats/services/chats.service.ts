@@ -16,7 +16,7 @@ import {
 import { Database } from "../../../core/database/database.js";
 import { PoolClient } from "pg";
 import { ChatType } from "../entities/chat-type.enum.js";
-import { ValidationError } from "../../../core/errors/index.js";
+import { ForbiddenError, ValidationError } from "../../../core/errors/index.js";
 import type {
     IUsersRepository,
 } from "../../users/interfaces/users.repository.interface.js";
@@ -25,6 +25,7 @@ import type {
     IChatListRepository,
 } from "../interfaces/chat-list.repository.interface.js";
 import { ChatListItem } from "../models/chat-list-item.model.js";
+import { ChatMember } from "../models/chat-member.model.js";
 
 export class ChatsService {
 
@@ -298,6 +299,62 @@ export class ChatsService {
             userId,
 
         );
+
+    }
+
+    async findMembers(
+
+        chatId: string,
+
+        userId: string,
+
+    ): Promise<ChatMember[]> {
+
+        await this.ensureMember(
+
+            chatId,
+
+            userId,
+
+        );
+
+        return this.chatMembersRepository.findByChat(
+
+            chatId,
+
+        );
+
+    }
+
+    private async ensureMember(
+
+        chatId: string,
+
+        userId: string,
+
+    ): Promise<void> {
+
+        const isMember =
+
+            await this.chatMembersRepository.isMember(
+
+                chatId,
+
+                userId,
+
+            );
+
+        if (!isMember) {
+
+            throw new ForbiddenError(
+
+                "You are not a member of this chat.",
+
+                "CHAT_ACCESS_DENIED",
+
+            );
+
+        }
 
     }
 

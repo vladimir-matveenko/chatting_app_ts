@@ -61,6 +61,20 @@ export function createChatsRouter(
 
     );
 
+    router.get(
+
+        "/:id/members",
+
+        jwtAuthMiddleware.handler,
+
+        controller.findMembers.bind(
+
+            controller,
+
+        ),
+
+    );
+
     return router;
 
 }

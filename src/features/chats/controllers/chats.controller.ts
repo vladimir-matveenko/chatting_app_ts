@@ -14,6 +14,7 @@ import {
 import {
     CreateChatRequestMapper,
 } from "../mappers/create-chat-request.mapper.js";
+import { ValidationError } from "../../../core/errors/index.js";
 
 export class ChatsController {
 
@@ -102,6 +103,50 @@ export class ChatsController {
         response.json(
 
             chats,
+
+        );
+
+    }
+
+    async findMembers(
+
+        request: Request,
+
+        response: Response,
+
+    ): Promise<void> {
+
+        const id =
+
+            request.params.id;
+
+        if (
+
+            typeof id !== "string"
+
+        ) {
+
+            throw new ValidationError(
+
+                "Chat id is required.",
+
+            );
+
+        }
+
+        const members =
+
+            await this.service.findMembers(
+
+                id,
+
+                request.user!.userId,
+
+            );
+
+        response.json(
+
+            members,
 
         );
 

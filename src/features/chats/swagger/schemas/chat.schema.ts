@@ -64,4 +64,70 @@ export const ChatSchema = {
 
     },
 
+    ChatMember: {
+
+        type: "object",
+
+        properties: {
+
+            chatId: {
+
+                type: "string",
+
+            },
+
+            userId: {
+
+                type: "string",
+
+            },
+
+            role: {
+
+                type: "string",
+
+                enum: [
+
+                    "owner",
+
+                    "admin",
+
+                    "member",
+
+                ],
+
+            },
+
+            joinedAt: {
+
+                type: "string",
+
+                format: "date-time",
+
+            },
+
+            lastReadMessageId: {
+
+                type: "string",
+
+                nullable: true,
+
+            },
+
+            isMuted: {
+
+                type: "boolean",
+
+            },
+
+            isArchived: {
+
+                type: "boolean",
+
+            },
+
+        },
+
+    },
+
 };

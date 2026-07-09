@@ -33,4 +33,16 @@ export interface IChatMembersRepository {
 
     ): Promise<ChatMember>;
 
+    findByChat(
+        chatId: string,
+    ): Promise<ChatMember[]>;
+
+    isMember(
+
+        chatId: string,
+
+        userId: string,
+
+    ): Promise<boolean>;
+
 }

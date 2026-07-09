@@ -141,4 +141,52 @@ export class ChatMembersRepository
 
     }
 
+    async findByChat(
+
+        chatId: string,
+
+    ): Promise<ChatMember[]> {
+
+        return this.findMany(
+
+            ChatMembersQueries.FIND_BY_CHAT,
+
+            [
+
+                chatId,
+
+            ],
+
+        );
+
+    }
+
+    async isMember(
+
+        chatId: string,
+
+        userId: string,
+
+    ): Promise<boolean> {
+
+        const entity =
+
+            await this.queryOne(
+
+                ChatMembersQueries.IS_MEMBER,
+
+                [
+
+                    chatId,
+
+                    userId,
+
+                ],
+
+            );
+
+        return entity !== null;
+
+    }
+
 }

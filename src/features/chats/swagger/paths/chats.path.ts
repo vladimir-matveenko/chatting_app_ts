@@ -1,3 +1,15 @@
+import {
+
+    badRequestResponse,
+
+    conflictResponse,
+
+    notFoundResponse,
+
+    unauthorizedResponse,
+
+} from "../../../../swagger/responses/index.js";
+
 export const ChatsPaths = {
 
     "/chats": {
@@ -58,27 +70,7 @@ export const ChatsPaths = {
 
                 },
 
-                401: {
-
-                    description:
-
-                        "Unauthorized.",
-
-                    content: {
-
-                        "application/json": {
-
-                            schema: {
-
-                                $ref: "#/components/schemas/ErrorResponse",
-
-                            },
-
-                        },
-
-                    },
-
-                },
+                401: unauthorizedResponse,
 
             },
 
@@ -144,7 +136,7 @@ export const ChatsPaths = {
 
                             schema: {
 
-                                $ref: "#/components/schemas/ChatDetails",
+                                $ref: "#/components/schemas/Chat",
 
                             },
 
@@ -154,74 +146,95 @@ export const ChatsPaths = {
 
                 },
 
-                400: {
+                400: badRequestResponse,
 
-                    description:
+                401: unauthorizedResponse,
 
-                        "Validation error.",
-
-                    content: {
-
-                        "application/json": {
-
-                            schema: {
-
-                                $ref: "#/components/schemas/ErrorResponse",
-
-                            },
-
-                        },
-
-                    },
-
-                },
-
-                401: {
-
-                    description:
-
-                        "Unauthorized.",
-
-                    content: {
-
-                        "application/json": {
-
-                            schema: {
-
-                                $ref: "#/components/schemas/ErrorResponse",
-
-                            },
-
-                        },
-
-                    },
-
-                },
-
-                409: {
-
-                    description:
-
-                        "Chat already exists.",
-
-                    content: {
-
-                        "application/json": {
-
-                            schema: {
-
-                                $ref: "#/components/schemas/ErrorResponse",
-
-                            },
-
-                        },
-
-                    },
-
-                },
+                409: conflictResponse,
 
             },
 
+        },
+
+    },
+
+    "/chats/{id}/members": {
+
+        get: {
+
+            tags: [
+
+                "Chats",
+
+            ],
+
+            summary:
+
+                "Get chat members",
+
+            security: [
+
+                {
+
+                    bearerAuth: [],
+
+                },
+
+            ],
+
+            parameters: [
+
+                {
+
+                    name: "id",
+
+                    in: "path",
+
+                    required: true,
+
+                    schema: {
+
+                        type: "string",
+
+                    },
+
+                },
+
+            ],
+
+            responses: {
+
+                201: {
+
+                    description:
+
+                        "Chat created successfully.",
+
+                    content: {
+
+                        "application/json": {
+
+                            schema: {
+
+                                $ref: "#/components/schemas/Chat",
+
+                            },
+
+                        },
+
+                    },
+
+                },
+
+                400: badRequestResponse,
+
+                401: unauthorizedResponse,
+
+                404: notFoundResponse,
+
+                409: conflictResponse,
+
+            },
         },
 
     },
