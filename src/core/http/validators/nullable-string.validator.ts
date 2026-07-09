@@ -1,33 +1,17 @@
-import {
-    requireString,
-} from "./string.validator.js";
+import { requireString } from "./string.validator.js";
 
 export function requireNullableString(
+  value: unknown,
 
-    value: unknown,
-
-    field: string,
-
+  field: string,
 ): string | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
 
-    if (
+  return requireString(
+    value,
 
-        value === null ||
-
-        value === undefined
-
-    ) {
-
-        return null;
-
-    }
-
-    return requireString(
-
-        value,
-
-        field,
-
-    );
-
+    field,
+  );
 }

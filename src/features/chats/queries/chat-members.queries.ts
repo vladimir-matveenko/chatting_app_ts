@@ -1,6 +1,5 @@
 export const ChatMembersQueries = {
-
-    ADD: `
+  ADD: `
         INSERT INTO chat_members (
 
             chat_id,
@@ -22,7 +21,7 @@ export const ChatMembersQueries = {
         RETURNING *;
     `,
 
-    ADD_MANY: `
+  ADD_MANY: `
         INSERT INTO chat_members (
 
             chat_id,
@@ -43,7 +42,7 @@ export const ChatMembersQueries = {
         );
     `,
 
-    FIND_BY_CHAT: `
+  FIND_BY_CHAT: `
     SELECT *
 
     FROM chat_members
@@ -53,7 +52,7 @@ export const ChatMembersQueries = {
     ORDER BY joined_at;
     `,
 
-    IS_MEMBER: `
+  IS_MEMBER: `
     SELECT 1
 
     FROM chat_members
@@ -68,5 +67,4 @@ export const ChatMembersQueries = {
 
     LIMIT 1;
     `,
-
 };

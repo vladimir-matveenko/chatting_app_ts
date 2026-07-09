@@ -1,12 +1,9 @@
 export const updateUserExample = {
+  username: "john_new",
 
-    username: "john_new",
+  displayName: "John Smith",
 
-    displayName: "John Smith",
+  email: "john@example.com",
 
-    email: "john@example.com",
-
-    avatarUrl:
-        "https://example.com/avatar.png",
-
+  avatarUrl: "https://example.com/avatar.png",
 };

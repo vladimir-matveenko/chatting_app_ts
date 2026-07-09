@@ -1,21 +1,11 @@
 export const conflictResponse = {
+  description: "Conflict.",
 
-    description:
-        "Conflict.",
-
-    content: {
-
-        "application/json": {
-
-            schema: {
-
-                $ref:
-                    "#/components/schemas/ErrorResponse",
-
-            },
-
-        },
-
+  content: {
+    "application/json": {
+      schema: {
+        $ref: "#/components/schemas/ErrorResponse",
+      },
     },
-
+  },
 };

@@ -11,190 +11,84 @@ import type { UserCredentials } from "../models/user-credentials.model.js";
 import type { User } from "../models/user.model.js";
 import { UsersQueries } from "../users.queries.js";
 
-export class UsersRepository
-    extends BaseRepository<UserEntity, User>
-    implements IUsersRepository {
-    private readonly credentialsMapper: UserCredentialsMapper;
+export class UsersRepository extends BaseRepository<UserEntity, User> implements IUsersRepository {
+  private readonly credentialsMapper: UserCredentialsMapper;
 
-    constructor(
-        db: Database,
-        mappers: UsersMappers,
-    ) {
-        super(
-            db,
-            mappers.user,
-        );
+  constructor(db: Database, mappers: UsersMappers) {
+    super(db, mappers.user);
 
-        this.credentialsMapper =
-            mappers.credentials;
+    this.credentialsMapper = mappers.credentials;
+  }
+
+  async create(dto: CreateUserDto): Promise<User> {
+    const entity = await this.queryOne(UsersQueries.CREATE, [
+      dto.username,
+      dto.email,
+      dto.passwordHash,
+    ]);
+
+    if (!entity) {
+      throw new InternalServerError("User was not created.", "USER_CREATE_FAILED");
     }
 
-    async create(
-        dto: CreateUserDto,
-    ): Promise<User> {
+    return this.map(entity);
+  }
 
-        const entity =
-            await this.queryOne(
-                UsersQueries.CREATE,
-                [
-                    dto.username,
-                    dto.email,
-                    dto.passwordHash,
-                ],
-            );
+  async findById(id: string): Promise<User | null> {
+    return this.findOne(UsersQueries.FIND_BY_ID, [id]);
+  }
 
-        if (!entity) {
-            throw new InternalServerError(
-                "User was not created.",
-                "USER_CREATE_FAILED",
-            );
-        }
+  async findByEmail(email: string): Promise<User | null> {
+    return this.findOne(UsersQueries.FIND_BY_EMAIL, [email]);
+  }
 
-        return this.map(entity);
+  async findByUsername(username: string): Promise<User | null> {
+    return this.findOne(UsersQueries.FIND_BY_USERNAME, [username]);
+  }
 
-    }
+  async findCredentialsByEmail(email: string): Promise<UserCredentials | null> {
+    const entity = await this.queryOne(UsersQueries.FIND_BY_EMAIL, [email]);
 
-    async findById(
-        id: string,
-    ): Promise<User | null> {
+    return entity ? this.credentialsMapper.map(entity) : null;
+  }
 
-        return this.findOne(
-            UsersQueries.FIND_BY_ID,
-            [id],
-        );
+  async findCredentialsById(id: string): Promise<UserCredentials | null> {
+    return this.findOne(
+      UsersQueries.FIND_CREDENTIALS_BY_ID,
 
-    }
+      [id],
+    );
+  }
 
-    async findByEmail(
-        email: string,
-    ): Promise<User | null> {
+  async update(
+    id: string,
 
-        return this.findOne(
-            UsersQueries.FIND_BY_EMAIL,
-            [email],
-        );
+    dto: UpdateUserDto,
+  ): Promise<User> {
+    return this.saveOne(
+      UsersQueries.UPDATE_USER,
 
-    }
+      [id, dto.email ?? null, dto.username ?? null, dto.displayName ?? null, dto.avatarUrl ?? null],
+    );
+  }
 
-    async findByUsername(
-        username: string,
-    ): Promise<User | null> {
+  async updatePassword(
+    id: string,
 
-        return this.findOne(
-            UsersQueries.FIND_BY_USERNAME,
-            [username],
-        );
+    passwordHash: string,
+  ): Promise<User> {
+    return this.saveOne(
+      UsersQueries.UPDATE_PASSWORD,
 
-    }
+      [id, passwordHash],
+    );
+  }
 
-    async findCredentialsByEmail(
-        email: string,
-    ): Promise<UserCredentials | null> {
+  async findByIds(ids: string[]): Promise<User[]> {
+    return this.findMany(
+      UsersQueries.FIND_BY_IDS,
 
-        const entity =
-            await this.queryOne(
-                UsersQueries.FIND_BY_EMAIL,
-                [email],
-            );
-
-        return entity
-            ? this.credentialsMapper.map(entity)
-            : null;
-
-    }
-
-    async findCredentialsById(
-
-        id: string,
-
-    ): Promise<UserCredentials | null> {
-
-        return this.findOne(
-
-            UsersQueries.FIND_CREDENTIALS_BY_ID,
-
-            [
-
-                id,
-
-            ],
-
-        );
-
-    }
-
-    async update(
-
-        id: string,
-
-        dto: UpdateUserDto,
-
-    ): Promise<User> {
-
-        return this.saveOne(
-
-            UsersQueries.UPDATE_USER,
-
-            [
-
-                id,
-
-                dto.email ?? null,
-
-                dto.username ?? null,
-
-                dto.displayName ?? null,
-
-                dto.avatarUrl ?? null,
-
-            ],
-
-        );
-
-    }
-
-    async updatePassword(
-
-        id: string,
-
-        passwordHash: string,
-
-    ): Promise<User> {
-
-        return this.saveOne(
-
-            UsersQueries.UPDATE_PASSWORD,
-
-            [
-
-                id,
-
-                passwordHash,
-
-            ],
-
-        );
-
-    }
-
-    async findByIds(
-
-        ids: string[],
-
-    ): Promise<User[]> {
-
-        return this.findMany(
-
-            UsersQueries.FIND_BY_IDS,
-
-            [
-
-                ids,
-
-            ],
-
-        );
-
-    }
-
+      [ids],
+    );
+  }
 }

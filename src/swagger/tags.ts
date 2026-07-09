@@ -1,35 +1,25 @@
 export const tags = [
+  {
+    name: "Auth",
 
-    {
+    description: "Authentication",
+  },
 
-        name: "Auth",
+  {
+    name: "Users",
 
-        description: "Authentication",
+    description: "Users",
+  },
 
-    },
+  {
+    name: "Chats",
 
-    {
+    description: "Chats",
+  },
 
-        name: "Users",
+  {
+    name: "Health",
 
-        description: "Users",
-
-    },
-
-    {
-
-        name: "Chats",
-
-        description: "Chats",
-
-    },
-
-    {
-
-        name: "Health",
-
-        description: "Health check",
-
-    },
-
+    description: "Health check",
+  },
 ];

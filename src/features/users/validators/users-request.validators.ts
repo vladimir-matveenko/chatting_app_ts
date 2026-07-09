@@ -6,14 +6,12 @@ import { UpdatePasswordRequestValidator } from "./update-password-request.valida
 import { UpdateUserRequestValidator } from "./update-user-request.validator.js";
 
 export class UsersRequestValidators {
-
-    constructor(
-        public readonly create: CreateUserRequestValidator,
-        public readonly getById: GetUserByIdRequestValidator,
-        public readonly getByEmail: GetUserByEmailRequestValidator,
-        public readonly getByUsername: GetUserByUsernameRequestValidator,
-        public readonly update: UpdateUserRequestValidator,
-        public readonly updatePassword: UpdatePasswordRequestValidator,
-    ) { }
-
+  constructor(
+    public readonly create: CreateUserRequestValidator,
+    public readonly getById: GetUserByIdRequestValidator,
+    public readonly getByEmail: GetUserByEmailRequestValidator,
+    public readonly getByUsername: GetUserByUsernameRequestValidator,
+    public readonly update: UpdateUserRequestValidator,
+    public readonly updatePassword: UpdatePasswordRequestValidator,
+  ) {}
 }

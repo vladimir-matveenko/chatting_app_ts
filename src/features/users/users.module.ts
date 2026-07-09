@@ -21,62 +21,39 @@ import { UpdatePasswordRequestValidator } from "./validators/update-password-req
 import { RefreshTokensRepository } from "../auth/repositories/refresh-tokens.repository.js";
 
 export function createUsersModule(
-    database: Database,
-    jwtAuthMiddleware: JwtAuthMiddleware,
-    passwordHasher: PasswordHasher,
-    refreshTokensRepository: RefreshTokensRepository,
+  database: Database,
+  jwtAuthMiddleware: JwtAuthMiddleware,
+  passwordHasher: PasswordHasher,
+  refreshTokensRepository: RefreshTokensRepository,
 ): UsersFeature {
+  const mappers = new UsersMappers();
 
-    const mappers =
-        new UsersMappers();
+  const repository = new UsersRepository(database, mappers);
 
-    const repository =
-        new UsersRepository(
-            database,
-            mappers,
-        );
+  const service = new UsersService(repository, refreshTokensRepository, passwordHasher);
 
-    const service =
-        new UsersService(
-            repository,
-            refreshTokensRepository,
-            passwordHasher,
-        );
+  const validators = new UsersRequestValidators(
+    new CreateUserRequestValidator(),
+    new GetUserByIdRequestValidator(),
+    new GetUserByEmailRequestValidator(),
+    new GetUserByUsernameRequestValidator(),
+    new UpdateUserRequestValidator(),
+    new UpdatePasswordRequestValidator(),
+  );
 
-    const validators =
-        new UsersRequestValidators(
-            new CreateUserRequestValidator(),
-            new GetUserByIdRequestValidator(),
-            new GetUserByEmailRequestValidator(),
-            new GetUserByUsernameRequestValidator(),
-            new UpdateUserRequestValidator(),
-            new UpdatePasswordRequestValidator(),
-        );
+  const controller = new UsersController(service, validators, mappers);
 
-    const controller =
-        new UsersController(
-            service,
-            validators,
-            mappers,
-        );
+  const router = createUsersRouter(controller, jwtAuthMiddleware);
 
-    const router =
-        createUsersRouter(
-            controller, jwtAuthMiddleware,
-        );
+  return {
+    router,
 
-    return {
+    controller,
 
-        router,
+    service,
 
-        controller,
+    repository,
 
-        service,
-
-        repository,
-
-        mappers,
-
-    };
-
+    mappers,
+  };
 }

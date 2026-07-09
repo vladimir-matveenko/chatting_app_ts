@@ -1,17 +1,15 @@
 export interface Chat {
+  id: string;
 
-    id: string;
+  type: string;
 
-    type: string;
+  title: string | null;
 
-    title: string | null;
+  avatarUrl: string | null;
 
-    avatarUrl: string | null;
+  ownerId: string | null;
 
-    ownerId: string | null;
+  createdAt: Date;
 
-    createdAt: Date;
-
-    updatedAt: Date;
-
+  updatedAt: Date;
 }

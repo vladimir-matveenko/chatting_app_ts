@@ -1,7 +1,5 @@
 export interface TokenResponseDto {
+  accessToken: string;
 
-    accessToken: string;
-
-    refreshToken: string;
-
+  refreshToken: string;
 }

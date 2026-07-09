@@ -1,6 +1,3 @@
 export const refreshRequestExample = {
-
-    refreshToken:
-        "<refresh-token>",
-
+  refreshToken: "<refresh-token>",
 };

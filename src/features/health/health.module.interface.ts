@@ -1,15 +1,9 @@
-import type {
-    Router,
-} from "express";
+import type { Router } from "express";
 
-import type {
-    HealthController,
-} from "./controllers/health.controller.js";
+import type { HealthController } from "./controllers/health.controller.js";
 
 export interface HealthFeature {
+  router: Router;
 
-    router: Router;
-
-    controller: HealthController;
-
+  controller: HealthController;
 }

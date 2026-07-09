@@ -1,3 +1,3 @@
 export interface GetUserByEmailRequestDto {
-    email: string;
+  email: string;
 }

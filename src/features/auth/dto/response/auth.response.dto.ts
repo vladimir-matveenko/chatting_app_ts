@@ -1,13 +1,9 @@
-import type { UserResponseDto }
-    from "../../../users/dto/response/user-response.dto.js";
+import type { UserResponseDto } from "../../../users/dto/response/user-response.dto.js";
 
-import type { TokenResponseDto }
-    from "./token-response.dto.js";
+import type { TokenResponseDto } from "./token-response.dto.js";
 
 export interface AuthResponseDto {
+  user: UserResponseDto;
 
-    user: UserResponseDto;
-
-    tokens: TokenResponseDto;
-
+  tokens: TokenResponseDto;
 }

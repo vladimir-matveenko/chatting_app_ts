@@ -1,26 +1,11 @@
-import type { RefreshToken }
-    from "../models/refresh-token.model.js";
+import type { RefreshToken } from "../models/refresh-token.model.js";
 
 export interface IRefreshTokensRepository {
+  create(userId: string, tokenHash: string, expiresAt: Date): Promise<RefreshToken>;
 
-    create(
-        userId: string,
-        tokenHash: string,
-        expiresAt: Date,
-    ): Promise<RefreshToken>;
+  findByUserId(userId: string): Promise<RefreshToken | null>;
 
-    findByUserId(
-        userId: string,
-    ): Promise<RefreshToken | null>;
+  update(userId: string, tokenHash: string, expiresAt: Date): Promise<RefreshToken>;
 
-    update(
-        userId: string,
-        tokenHash: string,
-        expiresAt: Date,
-    ): Promise<RefreshToken>;
-
-    delete(
-        userId: string,
-    ): Promise<void>;
-
+  delete(userId: string): Promise<void>;
 }

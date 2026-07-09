@@ -1,39 +1,21 @@
-import type { Mapper }
-    from "../../../core/mappers/mapper.js";
+import type { Mapper } from "../../../core/mappers/mapper.js";
 
-import type { RefreshTokenEntity }
-    from "../entities/refresh-token.entity.js";
+import type { RefreshTokenEntity } from "../entities/refresh-token.entity.js";
 
-import type { RefreshToken }
-    from "../models/refresh-token.model.js";
+import type { RefreshToken } from "../models/refresh-token.model.js";
 
-export class RefreshTokenMapper
-    implements Mapper<
-        RefreshTokenEntity,
-        RefreshToken
-    > {
+export class RefreshTokenMapper implements Mapper<RefreshTokenEntity, RefreshToken> {
+  map(entity: RefreshTokenEntity): RefreshToken {
+    return {
+      userId: entity.user_id,
 
-    map(
-        entity: RefreshTokenEntity,
-    ): RefreshToken {
+      tokenHash: entity.token_hash,
 
-        return {
+      expiresAt: entity.expires_at,
 
-            userId: entity.user_id,
+      createdAt: entity.created_at,
 
-            tokenHash:
-                entity.token_hash,
-
-            expiresAt:
-                entity.expires_at,
-
-            createdAt:
-                entity.created_at,
-
-            updatedAt: entity.updated_at,
-
-        };
-
-    }
-
+      updatedAt: entity.updated_at,
+    };
+  }
 }

@@ -1,6 +1,5 @@
 export interface UserCredentials {
-    id: string;
-    email: string;
-    passwordHash: string;
-
+  id: string;
+  email: string;
+  passwordHash: string;
 }

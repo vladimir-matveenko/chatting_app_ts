@@ -1,57 +1,21 @@
-import {
-    ValidationError,
-} from "../../errors/index.js";
+import { ValidationError } from "../../errors/index.js";
 
-export function requireEnum<
+export function requireEnum<T extends Record<string, string>>(
+  value: unknown,
 
-    T extends Record<string, string>,
+  enumType: T,
 
->(
-
-    value: unknown,
-
-    enumType: T,
-
-    field: string,
-
+  field: string,
 ): T[keyof T] {
+  if (typeof value !== "string") {
+    throw new ValidationError(`${field} must be a string.`);
+  }
 
-    if (
+  const values = Object.values(enumType);
 
-        typeof value !== "string"
+  if (!values.includes(value as T[keyof T])) {
+    throw new ValidationError(`${field} has invalid value.`);
+  }
 
-    ) {
-
-        throw new ValidationError(
-
-            `${field} must be a string.`,
-
-        );
-
-    }
-
-    const values =
-
-        Object.values(enumType);
-
-    if (
-
-        !values.includes(
-
-            value as T[keyof T],
-
-        )
-
-    ) {
-
-        throw new ValidationError(
-
-            `${field} has invalid value.`,
-
-        );
-
-    }
-
-    return value as T[keyof T];
-
+  return value as T[keyof T];
 }

@@ -1,84 +1,45 @@
 export const refreshPath = {
+  "/auth/refresh": {
+    post: {
+      tags: ["Auth"],
 
-    "/auth/refresh": {
+      security: [],
 
-        post: {
+      summary: "Refresh tokens",
 
-            tags: [
+      requestBody: {
+        required: true,
 
-                "Auth",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
 
-            ],
+              required: ["refreshToken"],
 
-            security: [],
-
-            summary:
-                "Refresh tokens",
-
-            requestBody: {
-
-                required: true,
-
-                content: {
-
-                    "application/json": {
-
-                        schema: {
-
-                            type: "object",
-
-                            required: [
-
-                                "refreshToken",
-
-                            ],
-
-                            properties: {
-
-                                refreshToken: {
-
-                                    type: "string",
-
-                                },
-
-                            },
-
-                        },
-
-                    },
-
+              properties: {
+                refreshToken: {
+                  type: "string",
                 },
-
+              },
             },
-
-            responses: {
-
-                "200": {
-
-                    description:
-                        "Tokens refreshed.",
-
-                    content: {
-
-                        "application/json": {
-
-                            schema: {
-
-                                $ref:
-                                    "#/components/schemas/AuthResponse",
-
-                            },
-
-                        },
-
-                    },
-
-                },
-
-            },
-
+          },
         },
+      },
 
+      responses: {
+        "200": {
+          description: "Tokens refreshed.",
+
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/AuthResponse",
+              },
+            },
+          },
+        },
+      },
     },
-
+  },
 };

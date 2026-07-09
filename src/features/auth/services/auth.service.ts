@@ -1,24 +1,14 @@
-import {
-    UnauthorizedError,
-} from "../../../core/errors/index.js";
+import { UnauthorizedError } from "../../../core/errors/index.js";
 
-import type {
-    JwtPayload,
-    JwtService,
-} from "../../../core/security/jwt/index.js";
+import type { JwtPayload, JwtService } from "../../../core/security/jwt/index.js";
 
-import type { LoginRequestDto }
-    from "../dto/request/login.request.dto.js";
+import type { LoginRequestDto } from "../dto/request/login.request.dto.js";
 
-import type { RegisterRequestDto }
-    from "../dto/request/register.request.dto.js";
+import type { RegisterRequestDto } from "../dto/request/register.request.dto.js";
 
-import type { AuthResult }
-    from "../models/auth-result.model.js";
+import type { AuthResult } from "../models/auth-result.model.js";
 
-import type {
-    IUsersRepository,
-} from "../../users/interfaces/users.repository.interface.js";
+import type { IUsersRepository } from "../../users/interfaces/users.repository.interface.js";
 import { UsersService } from "../../users/services/users.service.js";
 import { User } from "../../users/models/user.model.js";
 import { IRefreshTokensRepository } from "../interfaces/refresh-tokens.repository.interface.js";
@@ -26,284 +16,158 @@ import { PasswordHasher } from "../../../core/security/password/index.js";
 import { TokenHasher } from "../../../core/security/index.js";
 
 export class AuthService {
+  constructor(
+    private readonly usersRepository: IUsersRepository,
 
-    constructor(
+    private readonly refreshTokensRepository: IRefreshTokensRepository,
 
-        private readonly usersRepository: IUsersRepository,
+    private readonly usersService: UsersService,
 
-        private readonly refreshTokensRepository: IRefreshTokensRepository,
+    private readonly passwordHasher: PasswordHasher,
 
-        private readonly usersService: UsersService,
+    private readonly tokenHasher: TokenHasher,
 
-        private readonly passwordHasher: PasswordHasher,
+    private readonly jwtService: JwtService,
+  ) {}
 
-        private readonly tokenHasher: TokenHasher,
+  private async createAuthResult(user: User): Promise<AuthResult> {
+    const payload: JwtPayload = {
+      userId: user.id,
 
-        private readonly jwtService: JwtService,
+      email: user.email,
+    };
 
-    ) { }
+    const accessToken = this.jwtService.signAccessToken(payload);
 
-    private async createAuthResult(
-        user: User,
-    ): Promise<AuthResult> {
+    const refreshToken = this.jwtService.signRefreshToken(payload);
 
-        const payload: JwtPayload = {
+    await this.saveRefreshToken(
+      user.id,
 
-            userId: user.id,
+      refreshToken,
+    );
 
-            email: user.email,
+    return {
+      accessToken,
 
-        };
+      refreshToken,
 
-        const accessToken =
-            this.jwtService.signAccessToken(
-                payload,
-            );
+      user,
+    };
+  }
 
-        const refreshToken =
-            this.jwtService.signRefreshToken(
-                payload,
-            );
+  private async saveRefreshToken(
+    userId: string,
 
-        await this.saveRefreshToken(
+    refreshToken: string,
+  ): Promise<void> {
+    const tokenHash = this.tokenHasher.hash(refreshToken);
 
-            user.id,
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-            refreshToken,
+    const existing = await this.refreshTokensRepository.findByUserId(userId);
 
-        );
+    if (existing) {
+      await this.refreshTokensRepository.update(
+        userId,
 
-        return {
+        tokenHash,
 
-            accessToken,
+        expiresAt,
+      );
 
-            refreshToken,
-
-            user,
-
-        };
-
+      return;
     }
 
-    private async saveRefreshToken(
+    await this.refreshTokensRepository.create(
+      userId,
 
-        userId: string,
+      tokenHash,
 
-        refreshToken: string,
+      expiresAt,
+    );
+  }
 
-    ): Promise<void> {
+  async login(dto: LoginRequestDto): Promise<AuthResult> {
+    const credentials = await this.usersRepository.findCredentialsByEmail(dto.email);
 
-        const tokenHash =
-            this.tokenHasher.hash(
-                refreshToken,
-            );
-
-        const expiresAt =
-            new Date(
-
-                Date.now() +
-
-                30 * 24 * 60 * 60 * 1000,
-
-            );
-
-        const existing =
-            await this.refreshTokensRepository.findByUserId(
-                userId,
-            );
-
-        if (existing) {
-
-            await this.refreshTokensRepository.update(
-
-                userId,
-
-                tokenHash,
-
-                expiresAt,
-
-            );
-
-            return;
-
-        }
-
-        await this.refreshTokensRepository.create(
-
-            userId,
-
-            tokenHash,
-
-            expiresAt,
-
-        );
-
+    if (!credentials) {
+      throw new UnauthorizedError("Invalid email or password.", "INVALID_CREDENTIALS");
     }
 
-    async login(
-        dto: LoginRequestDto,
-    ): Promise<AuthResult> {
+    const passwordMatches = await this.passwordHasher.compare(
+      dto.password,
+      credentials.passwordHash,
+    );
 
-        const credentials =
-            await this.usersRepository
-                .findCredentialsByEmail(
-                    dto.email,
-                );
-
-        if (!credentials) {
-
-            throw new UnauthorizedError(
-                "Invalid email or password.",
-                "INVALID_CREDENTIALS",
-            );
-
-        }
-
-        const passwordMatches =
-            await this.passwordHasher.compare(
-                dto.password,
-                credentials.passwordHash,
-            );
-
-        if (!passwordMatches) {
-
-            throw new UnauthorizedError(
-                "Invalid email or password.",
-                "INVALID_CREDENTIALS",
-            );
-
-        }
-
-        const user =
-            await this.usersRepository.findById(
-                credentials.id,
-            );
-
-        if (!user) {
-
-            throw new UnauthorizedError(
-                "Invalid email or password.",
-                "INVALID_CREDENTIALS",
-            );
-
-        }
-
-        return await this.createAuthResult(user);
-
+    if (!passwordMatches) {
+      throw new UnauthorizedError("Invalid email or password.", "INVALID_CREDENTIALS");
     }
 
-    async register(
-        dto: RegisterRequestDto,
-    ): Promise<AuthResult> {
+    const user = await this.usersRepository.findById(credentials.id);
 
-        const user =
-            await this.usersService.createUser(dto);
-
-        return await this.createAuthResult(user);
-
+    if (!user) {
+      throw new UnauthorizedError("Invalid email or password.", "INVALID_CREDENTIALS");
     }
 
-    async refresh(
-        refreshToken: string,
-    ): Promise<AuthResult> {
+    return await this.createAuthResult(user);
+  }
 
-        const payload =
-            this.jwtService.verifyRefreshToken(
-                refreshToken,
-            );
+  async register(dto: RegisterRequestDto): Promise<AuthResult> {
+    const user = await this.usersService.createUser(dto);
 
-        const storedToken =
-            await this.refreshTokensRepository.findByUserId(
-                payload.userId,
-            );
+    return await this.createAuthResult(user);
+  }
 
-        if (!storedToken) {
+  async refresh(refreshToken: string): Promise<AuthResult> {
+    const payload = this.jwtService.verifyRefreshToken(refreshToken);
 
-            throw new UnauthorizedError(
+    const storedToken = await this.refreshTokensRepository.findByUserId(payload.userId);
 
-                "Refresh token not found.",
+    if (!storedToken) {
+      throw new UnauthorizedError(
+        "Refresh token not found.",
 
-                "INVALID_REFRESH_TOKEN",
-
-            );
-
-        }
-
-        this.ensureRefreshTokenNotExpired(
-            storedToken.expiresAt,
-        );
-
-        const incomingHash =
-            this.tokenHasher.hash(
-                refreshToken,
-            );
-
-        if (
-            incomingHash !==
-            storedToken.tokenHash
-        ) {
-
-            throw new UnauthorizedError(
-
-                "Invalid refresh token.",
-
-                "INVALID_REFRESH_TOKEN",
-
-            );
-
-        }
-
-        const user =
-            await this.usersRepository.findById(
-                payload.userId,
-            );
-
-        if (!user) {
-
-            throw new UnauthorizedError(
-
-                "User not found.",
-
-                "USER_NOT_FOUND",
-
-            );
-
-        }
-
-        return await this.createAuthResult(
-            user,
-        );
-
+        "INVALID_REFRESH_TOKEN",
+      );
     }
 
-    private ensureRefreshTokenNotExpired(
-        expiresAt: Date,
-    ): void {
+    this.ensureRefreshTokenNotExpired(storedToken.expiresAt);
 
-        if (
-            expiresAt.getTime() <= Date.now()
-        ) {
+    const incomingHash = this.tokenHasher.hash(refreshToken);
 
-            throw new UnauthorizedError(
+    if (incomingHash !== storedToken.tokenHash) {
+      throw new UnauthorizedError(
+        "Invalid refresh token.",
 
-                "Refresh token has expired.",
-
-                "REFRESH_TOKEN_EXPIRED",
-
-            );
-
-        }
-
+        "INVALID_REFRESH_TOKEN",
+      );
     }
 
-    async logout(
-        userId: string,
-    ): Promise<void> {
+    const user = await this.usersRepository.findById(payload.userId);
 
-        await this.refreshTokensRepository.delete(
-            userId,
-        );
+    if (!user) {
+      throw new UnauthorizedError(
+        "User not found.",
 
+        "USER_NOT_FOUND",
+      );
     }
 
+    return await this.createAuthResult(user);
+  }
+
+  private ensureRefreshTokenNotExpired(expiresAt: Date): void {
+    if (expiresAt.getTime() <= Date.now()) {
+      throw new UnauthorizedError(
+        "Refresh token has expired.",
+
+        "REFRESH_TOKEN_EXPIRED",
+      );
+    }
+  }
+
+  async logout(userId: string): Promise<void> {
+    await this.refreshTokensRepository.delete(userId);
+  }
 }

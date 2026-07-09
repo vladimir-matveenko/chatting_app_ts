@@ -1,133 +1,87 @@
 export const ChatSchema = {
+  Chat: {
+    type: "object",
 
-    Chat: {
+    properties: {
+      id: {
+        type: "string",
 
-        type: "object",
+        format: "uuid",
+      },
 
-        properties: {
+      type: {
+        type: "string",
+      },
 
-            id: {
+      title: {
+        type: "string",
 
-                type: "string",
+        nullable: true,
+      },
 
-                format: "uuid",
+      avatarUrl: {
+        type: "string",
 
-            },
+        nullable: true,
+      },
 
-            type: {
+      ownerId: {
+        type: "string",
 
-                type: "string",
+        format: "uuid",
+      },
 
-            },
+      createdAt: {
+        type: "string",
 
-            title: {
+        format: "date-time",
+      },
 
-                type: "string",
+      updatedAt: {
+        type: "string",
 
-                nullable: true,
-
-            },
-
-            avatarUrl: {
-
-                type: "string",
-
-                nullable: true,
-
-            },
-
-            ownerId: {
-
-                type: "string",
-
-                format: "uuid",
-
-            },
-
-            createdAt: {
-
-                type: "string",
-
-                format: "date-time",
-
-            },
-
-            updatedAt: {
-
-                type: "string",
-
-                format: "date-time",
-
-            },
-
-        },
-
+        format: "date-time",
+      },
     },
+  },
 
-    ChatMember: {
+  ChatMember: {
+    type: "object",
 
-        type: "object",
+    properties: {
+      chatId: {
+        type: "string",
+      },
 
-        properties: {
+      userId: {
+        type: "string",
+      },
 
-            chatId: {
+      role: {
+        type: "string",
 
-                type: "string",
+        enum: ["owner", "admin", "member"],
+      },
 
-            },
+      joinedAt: {
+        type: "string",
 
-            userId: {
+        format: "date-time",
+      },
 
-                type: "string",
+      lastReadMessageId: {
+        type: "string",
 
-            },
+        nullable: true,
+      },
 
-            role: {
+      isMuted: {
+        type: "boolean",
+      },
 
-                type: "string",
-
-                enum: [
-
-                    "owner",
-
-                    "admin",
-
-                    "member",
-
-                ],
-
-            },
-
-            joinedAt: {
-
-                type: "string",
-
-                format: "date-time",
-
-            },
-
-            lastReadMessageId: {
-
-                type: "string",
-
-                nullable: true,
-
-            },
-
-            isMuted: {
-
-                type: "boolean",
-
-            },
-
-            isArchived: {
-
-                type: "boolean",
-
-            },
-
-        },
-
+      isArchived: {
+        type: "boolean",
+      },
     },
-
+  },
 };

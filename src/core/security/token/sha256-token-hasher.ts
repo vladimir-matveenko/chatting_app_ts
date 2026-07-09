@@ -1,23 +1,15 @@
 import crypto from "node:crypto";
 
-import type { TokenHasher }
-    from "./token-hasher.js";
+import type { TokenHasher } from "./token-hasher.js";
 
-export class Sha256TokenHasher
-    implements TokenHasher {
+export class Sha256TokenHasher implements TokenHasher {
+  hash(token: string): string {
+    return crypto
 
-    hash(
-        token: string,
-    ): string {
+      .createHash("sha256")
 
-        return crypto
+      .update(token)
 
-            .createHash("sha256")
-
-            .update(token)
-
-            .digest("hex");
-
-    }
-
+      .digest("hex");
+  }
 }

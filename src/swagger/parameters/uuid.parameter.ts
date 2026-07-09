@@ -1,17 +1,13 @@
 export const uuidParameter = {
+  name: "id",
 
-    name: "id",
+  in: "path",
 
-    in: "path",
+  required: true,
 
-    required: true,
+  schema: {
+    type: "string",
 
-    schema: {
-
-        type: "string",
-
-        format: "uuid",
-
-    },
-
+    format: "uuid",
+  },
 };

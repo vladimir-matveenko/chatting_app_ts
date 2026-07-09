@@ -1,35 +1,27 @@
 export const pageParameter = {
+  name: "page",
 
-    name: "page",
+  in: "query",
 
-    in: "query",
+  required: false,
 
-    required: false,
+  schema: {
+    type: "integer",
 
-    schema: {
-
-        type: "integer",
-
-        default: 1,
-
-    },
-
+    default: 1,
+  },
 };
 
 export const limitParameter = {
+  name: "limit",
 
-    name: "limit",
+  in: "query",
 
-    in: "query",
+  required: false,
 
-    required: false,
+  schema: {
+    type: "integer",
 
-    schema: {
-
-        type: "integer",
-
-        default: 20,
-
-    },
-
+    default: 20,
+  },
 };

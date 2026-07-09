@@ -1,91 +1,49 @@
-import type {
-    Request,
-} from "express";
+import type { Request } from "express";
 
-import type {
-    RequestValidator,
-} from "../../../core/http/request-validator.js";
+import type { RequestValidator } from "../../../core/http/request-validator.js";
 
 import {
-
-    requireArray,
-
-    requireEnum,
-
-    requireId,
-
-    requireNullableString,
-
-    requireNullableUrl,
-
+  requireArray,
+  requireEnum,
+  requireId,
+  requireNullableString,
+  requireNullableUrl,
 } from "../../../core/http/validators/index.js";
 
-import type {
-    CreateChatRequestDto,
-} from "../dto/request/create-chat.request.dto.js";
+import type { CreateChatRequestDto } from "../dto/request/create-chat.request.dto.js";
 
-import {
-    ChatType,
-} from "../entities/chat-type.enum.js";
+import { ChatType } from "../entities/chat-type.enum.js";
 
-export class CreateChatRequestValidator
+export class CreateChatRequestValidator implements RequestValidator<CreateChatRequestDto> {
+  validate(request: Request): CreateChatRequestDto {
+    return {
+      type: requireEnum(
+        request.body.type,
 
-    implements RequestValidator<CreateChatRequestDto> {
+        ChatType,
 
-    validate(
+        "type",
+      ),
 
-        request: Request,
+      title: requireNullableString(
+        request.body.title,
 
-    ): CreateChatRequestDto {
+        "title",
+      ),
 
-        return {
+      avatarUrl: requireNullableUrl(
+        request.body.avatarUrl,
 
-            type:
+        "avatarUrl",
+      ),
 
-                requireEnum(
+      memberIds: requireArray(
+        request.body.memberIds,
 
-                    request.body.type,
+        "memberIds",
 
-                    ChatType,
-
-                    "type",
-
-                ),
-
-            title:
-
-                requireNullableString(
-
-                    request.body.title,
-
-                    "title",
-
-                ),
-
-            avatarUrl:
-
-                requireNullableUrl(
-
-                    request.body.avatarUrl,
-
-                    "avatarUrl",
-
-                ),
-
-            memberIds:
-
-                requireArray(
-
-                    request.body.memberIds,
-
-                    "memberIds",
-
-                    requireId,
-
-                ),
-
-        };
-
-    }
-
+        requireId,
+      ),
+    };
+  }
 }

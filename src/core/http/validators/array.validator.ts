@@ -1,62 +1,30 @@
-import {
-    ValidationError,
-} from "../../errors/index.js";
+import { ValidationError } from "../../errors/index.js";
 
 export function requireArray<T>(
+  value: unknown,
 
-    value: unknown,
+  field: string,
 
-    field: string,
-
-    validator?: (
-        value: unknown,
-        field: string,
-    ) => T,
-
+  validator?: (value: unknown, field: string) => T,
 ): T[] {
+  if (!Array.isArray(value)) {
+    throw new ValidationError(`${field} must be an array.`);
+  }
 
-    if (
+  if (!validator) {
+    return value as T[];
+  }
 
-        !Array.isArray(value)
+  return value.map(
+    (
+      item,
 
-    ) {
+      index,
+    ) =>
+      validator(
+        item,
 
-        throw new ValidationError(
-
-            `${field} must be an array.`,
-
-        );
-
-    }
-
-    if (
-
-        !validator
-
-    ) {
-
-        return value as T[];
-
-    }
-
-    return value.map(
-
-        (
-
-            item,
-
-            index,
-
-        ) =>
-
-            validator(
-
-                item,
-
-                `${field}[${index}]`,
-
-            ),
-
-    );
-
+        `${field}[${index}]`,
+      ),
+  );
 }

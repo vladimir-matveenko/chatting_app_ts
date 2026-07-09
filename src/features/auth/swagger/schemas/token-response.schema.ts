@@ -1,21 +1,13 @@
 export const TokenResponse = {
+  type: "object",
 
-    type: "object",
-
-    properties: {
-
-        accessToken: {
-
-            type: "string",
-
-        },
-
-        refreshToken: {
-
-            type: "string",
-
-        },
-
+  properties: {
+    accessToken: {
+      type: "string",
     },
 
+    refreshToken: {
+      type: "string",
+    },
+  },
 };

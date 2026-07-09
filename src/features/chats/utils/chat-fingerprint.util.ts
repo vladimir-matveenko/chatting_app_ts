@@ -1,88 +1,49 @@
-import crypto
-    from "node:crypto";
+import crypto from "node:crypto";
 
-import {
-    ChatType,
-} from "../entities/chat-type.enum.js";
+import { ChatType } from "../entities/chat-type.enum.js";
 
 interface BuildFingerprintParams {
+  type: ChatType;
 
-    type: ChatType;
+  ownerId: string | null;
 
-    ownerId: string | null;
+  title: string | null;
 
-    title: string | null;
+  avatarUrl: string | null;
 
-    avatarUrl: string | null;
-
-    memberIds: string[];
-
+  memberIds: string[];
 }
 
-export function buildChatFingerprint(
+export function buildChatFingerprint(params: BuildFingerprintParams): string {
+  const members = [...params.memberIds].sort();
 
-    params: BuildFingerprintParams,
-
-): string {
-
-    const members =
-        [...params.memberIds]
-            .sort();
-
-    if (
-
-        params.type === ChatType.PRIVATE
-
-    ) {
-
-        return crypto
-
-            .createHash(
-                "sha256",
-            )
-
-            .update(
-
-                `private:${members.join(":")}`,
-
-            )
-
-            .digest(
-
-                "hex",
-
-            );
-
-    }
-
+  if (params.type === ChatType.PRIVATE) {
     return crypto
 
-        .createHash(
-            "sha256",
-        )
+      .createHash("sha256")
 
-        .update(
+      .update(`private:${members.join(":")}`)
 
-            [
+      .digest("hex");
+  }
 
-                "group",
+  return crypto
 
-                params.ownerId ?? "",
+    .createHash("sha256")
 
-                params.title ?? "",
+    .update(
+      [
+        "group",
 
-                params.avatarUrl ?? "",
+        params.ownerId ?? "",
 
-                members.join(","),
+        params.title ?? "",
 
-            ].join("|"),
+        params.avatarUrl ?? "",
 
-        )
+        members.join(","),
+      ].join("|"),
+    )
 
-        .digest(
-
-            "hex",
-
-        );
-
+    .digest("hex");
 }

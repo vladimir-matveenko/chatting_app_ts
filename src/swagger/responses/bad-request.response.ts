@@ -1,21 +1,11 @@
 export const badRequestResponse = {
+  description: "Bad request.",
 
-    description:
-        "Bad request.",
-
-    content: {
-
-        "application/json": {
-
-            schema: {
-
-                $ref:
-                    "#/components/schemas/ErrorResponse",
-
-            },
-
-        },
-
+  content: {
+    "application/json": {
+      schema: {
+        $ref: "#/components/schemas/ErrorResponse",
+      },
     },
-
+  },
 };

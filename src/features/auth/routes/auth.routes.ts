@@ -1,75 +1,41 @@
 import { Router } from "express";
 
-import { asyncHandler }
-    from "../../../core/middleware/async-handler.js";
+import { asyncHandler } from "../../../core/middleware/async-handler.js";
 
-import type { AuthController }
-    from "../controllers/auth.controller.js";
+import type { AuthController } from "../controllers/auth.controller.js";
 import { JwtAuthMiddleware } from "../../../core/middleware/jwt-auth.middleware.js";
 
-
 export function createAuthRouter(
-    controller: AuthController,
-    jwtAuthMiddleware: JwtAuthMiddleware,
+  controller: AuthController,
+  jwtAuthMiddleware: JwtAuthMiddleware,
 ): Router {
+  const router = Router();
 
-    const router =
-        Router();
+  router.post(
+    "/register",
 
-    router.post(
+    asyncHandler(controller.register.bind(controller)),
+  );
 
-        "/register",
+  router.post(
+    "/login",
 
-        asyncHandler(
-            controller.register.bind(
-                controller,
-            ),
-        ),
+    asyncHandler(controller.login.bind(controller)),
+  );
 
-    );
+  router.post(
+    "/refresh",
 
-    router.post(
+    asyncHandler(controller.refresh.bind(controller)),
+  );
 
-        "/login",
+  router.post(
+    "/logout",
 
-        asyncHandler(
-            controller.login.bind(
-                controller,
-            ),
-        ),
+    jwtAuthMiddleware.handler,
 
-    );
+    asyncHandler(controller.logout.bind(controller)),
+  );
 
-    router.post(
-
-        "/refresh",
-
-        asyncHandler(
-
-            controller.refresh.bind(
-                controller,
-            ),
-
-        ),
-
-    );
-
-    router.post(
-
-        "/logout",
-
-        jwtAuthMiddleware.handler,
-
-        asyncHandler(
-
-            controller.logout.bind(
-                controller,
-            ),
-
-        ),
-
-    );
-
-    return router;
-
+  return router;
 }

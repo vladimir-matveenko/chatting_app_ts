@@ -1,35 +1,21 @@
 export const LoginRequest = {
+  type: "object",
 
-    type: "object",
+  required: ["email", "password"],
 
-    required: [
+  properties: {
+    email: {
+      type: "string",
 
-        "email",
+      format: "email",
 
-        "password",
-
-    ],
-
-    properties: {
-
-        email: {
-
-            type: "string",
-
-            format: "email",
-
-            example: "john@example.com",
-
-        },
-
-        password: {
-
-            type: "string",
-
-            example: "Password123!",
-
-        },
-
+      example: "john@example.com",
     },
 
+    password: {
+      type: "string",
+
+      example: "Password123!",
+    },
+  },
 };

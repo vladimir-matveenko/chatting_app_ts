@@ -1,48 +1,26 @@
-import type {
-    ChatMemberEntity,
-} from "../entities/chat-member.entity.js";
+import type { ChatMemberEntity } from "../entities/chat-member.entity.js";
 
-import type {
-    CreateChatMemberDto,
-} from "../dto/create-chat-member.dto.js";
+import type { CreateChatMemberDto } from "../dto/create-chat-member.dto.js";
 
-import type {
-    PoolClient,
-} from "pg";
+import type { PoolClient } from "pg";
 import { ChatMember } from "../models/chat-member.model.js";
 
 export interface IChatMembersRepository {
+  add(dto: CreateChatMemberDto): Promise<ChatMember>;
 
-    add(
+  addMany(members: CreateChatMemberDto[]): Promise<void>;
 
-        dto: CreateChatMemberDto,
+  addTx(
+    client: PoolClient,
 
-    ): Promise<ChatMember>;
+    dto: CreateChatMemberDto,
+  ): Promise<ChatMember>;
 
-    addMany(
+  findByChat(chatId: string): Promise<ChatMember[]>;
 
-        members: CreateChatMemberDto[],
+  isMember(
+    chatId: string,
 
-    ): Promise<void>;
-
-    addTx(
-
-        client: PoolClient,
-
-        dto: CreateChatMemberDto,
-
-    ): Promise<ChatMember>;
-
-    findByChat(
-        chatId: string,
-    ): Promise<ChatMember[]>;
-
-    isMember(
-
-        chatId: string,
-
-        userId: string,
-
-    ): Promise<boolean>;
-
+    userId: string,
+  ): Promise<boolean>;
 }

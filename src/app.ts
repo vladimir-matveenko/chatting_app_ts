@@ -7,56 +7,36 @@ import { errorHandler } from "./core/errors/error-handler.middleware.js";
 
 import swaggerUi from "swagger-ui-express";
 
-import {
-    swaggerSpec,
-} from "./swagger/swagger.js";
+import { swaggerSpec } from "./swagger/swagger.js";
 
-export function createApp(
-    container: ApplicationContainer,
-) {
-    const app = express();
+export function createApp(container: ApplicationContainer) {
+  const app = express();
 
-    app.use(cors());
+  app.use(cors());
 
-    app.use(express.json());
+  app.use(express.json());
 
-    app.use(
-        "/auth",
-        container.auth.router,
-    );
+  app.use("/auth", container.auth.router);
 
-    app.use(
-        "/users",
-        container.users.router,
-    );
+  app.use("/users", container.users.router);
 
-    app.use(
+  app.use(
+    "/chats",
 
-        "/chats",
+    container.chats.router,
+  );
 
-        container.chats.router,
+  app.use(errorHandler);
 
-    );
+  app.use(
+    "/docs",
 
-    app.use(
-        errorHandler,
-    );
+    swaggerUi.serve,
 
-    app.use(
+    swaggerUi.setup(swaggerSpec),
+  );
 
-        "/docs",
+  app.use(container.health.router);
 
-        swaggerUi.serve,
-
-        swaggerUi.setup(
-            swaggerSpec,
-        ),
-
-    );
-
-    app.use(
-        container.health.router,
-    );
-
-    return app;
+  return app;
 }

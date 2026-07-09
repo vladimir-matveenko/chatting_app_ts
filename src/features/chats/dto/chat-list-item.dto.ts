@@ -1,23 +1,21 @@
 export interface ChatListItemDto {
+  id: string;
 
-    id: string;
+  type: string;
 
-    type: string;
+  title: string | null;
 
-    title: string | null;
+  avatarUrl: string | null;
 
-    avatarUrl: string | null;
+  ownerId: string;
 
-    ownerId: string;
+  createdAt: Date;
 
-    createdAt: Date;
+  updatedAt: Date;
 
-    updatedAt: Date;
+  lastMessage: string | null;
 
-    lastMessage: string | null;
+  lastMessageAt: Date | null;
 
-    lastMessageAt: Date | null;
-
-    unreadCount: number;
-
+  unreadCount: number;
 }

@@ -1,23 +1,13 @@
 export const AuthResponse = {
+  type: "object",
 
-    type: "object",
-
-    properties: {
-
-        user: {
-
-            $ref:
-                "#/components/schemas/User",
-
-        },
-
-        tokens: {
-
-            $ref:
-                "#/components/schemas/TokenResponse",
-
-        },
-
+  properties: {
+    user: {
+      $ref: "#/components/schemas/User",
     },
 
+    tokens: {
+      $ref: "#/components/schemas/TokenResponse",
+    },
+  },
 };

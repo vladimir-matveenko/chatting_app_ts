@@ -1,76 +1,48 @@
-import swaggerJSDoc
-    from "swagger-jsdoc";
+import swaggerJSDoc from "swagger-jsdoc";
 
-import { paths }
-    from "./paths.js";
+import { paths } from "./paths.js";
 
-import { schemas }
-    from "./schemas.js";
+import { schemas } from "./schemas.js";
 
-import { tags }
-    from "./tags.js";
+import { tags } from "./tags.js";
 
+import { securitySchemes } from "./security/index.js";
 
-import {
-    securitySchemes,
-} from "./security/index.js";
+import { env } from "../core/config/env.js";
 
-import {
-    env,
-} from "../core/config/env.js";
+export const swaggerSpec = swaggerJSDoc({
+  definition: {
+    openapi: "3.0.3",
 
-export const swaggerSpec =
-    swaggerJSDoc({
+    info: {
+      title: `${env.appName} API`,
 
-        definition: {
+      version: env.appVersion,
 
-            openapi: "3.0.3",
+      description: "REST API for Chatting App",
+    },
 
-            info: {
+    servers: [
+      {
+        url: "http://localhost:3000",
+      },
+    ],
 
-                title: `${env.appName} API`,
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
 
-                version: env.appVersion,
+    tags,
 
-                description:
-                    "REST API for Chatting App",
+    components: {
+      schemas,
+      securitySchemes,
+    },
 
-            },
+    paths,
+  },
 
-            servers: [
-
-                {
-
-                    url:
-                        "http://localhost:3000",
-
-                },
-
-            ],
-
-            security: [
-
-                {
-
-                    bearerAuth: [],
-
-                },
-
-            ],
-
-            tags,
-
-            components: {
-
-                schemas,
-                securitySchemes,
-
-            },
-
-            paths,
-
-        },
-
-        apis: [],
-
-    });
+  apis: [],
+});

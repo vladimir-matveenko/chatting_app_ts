@@ -1,19 +1,15 @@
-import type {
-    ChatType,
-} from "../entities/chat-type.enum.js";
+import type { ChatType } from "../entities/chat-type.enum.js";
 
 export interface CreateChatDto {
+  type: ChatType;
 
-    type: ChatType;
+  fingerprint: string;
 
-    fingerprint: string;
+  title: string | null;
 
-    title: string | null;
+  avatarUrl: string | null;
 
-    avatarUrl: string | null;
+  ownerId: string;
 
-    ownerId: string;
-
-    memberIds: string[];
-
+  memberIds: string[];
 }

@@ -1,112 +1,68 @@
-import { Database }
-    from "../database/database.js";
+import { Database } from "../database/database.js";
 
-import {
+import { createUsersModule, type UsersFeature } from "../../features/users/index.js";
 
-    createUsersModule,
-
-    type UsersFeature,
-
-} from "../../features/users/index.js";
-
-import {
-
-    createAuthModule,
-
-    type AuthModule,
-
-} from "../../features/auth/index.js";
+import { createAuthModule, type AuthModule } from "../../features/auth/index.js";
 import { BcryptPasswordHasher } from "../security/password/index.js";
 import { JwtServiceImpl } from "../security/jwt/index.js";
 import { Sha256TokenHasher } from "../security/index.js";
 import { JwtAuthMiddleware } from "../middleware/jwt-auth.middleware.js";
 import { RefreshTokenMapper } from "../../features/auth/mappers/refresh-token.mapper.js";
 import { RefreshTokensRepository } from "../../features/auth/repositories/refresh-tokens.repository.js";
-import {
-
-    createHealthModule,
-
-    type HealthFeature,
-
-} from "../../features/health/index.js";
+import { createHealthModule, type HealthFeature } from "../../features/health/index.js";
 import { ChatsFeature, createChatsModule } from "../../features/chats/index.js";
 
 export class ApplicationContainer {
+  readonly users: UsersFeature;
 
-    readonly users: UsersFeature;
+  readonly auth: AuthModule;
 
-    readonly auth: AuthModule;
+  readonly health: HealthFeature;
 
-    readonly health: HealthFeature;
+  readonly chats: ChatsFeature;
 
-    readonly chats: ChatsFeature;
+  constructor(database: Database) {
+    const passwordHasher = new BcryptPasswordHasher();
 
-    constructor(
-        database: Database,
-    ) {
+    const jwtService = new JwtServiceImpl();
 
-        const passwordHasher =
-            new BcryptPasswordHasher();
+    const tokenHasher = new Sha256TokenHasher();
 
-        const jwtService =
-            new JwtServiceImpl();
+    const jwtAuthMiddleware = new JwtAuthMiddleware(jwtService);
 
-        const tokenHasher =
-            new Sha256TokenHasher();
+    const refreshTokenMapper = new RefreshTokenMapper();
 
-        const jwtAuthMiddleware =
-            new JwtAuthMiddleware(
-                jwtService,
-            );
+    const refreshTokensRepository = new RefreshTokensRepository(database, refreshTokenMapper);
 
-        const refreshTokenMapper =
-            new RefreshTokenMapper();
+    this.users = createUsersModule(
+      database,
+      jwtAuthMiddleware,
+      passwordHasher,
+      refreshTokensRepository,
+    );
 
-        const refreshTokensRepository =
-            new RefreshTokensRepository(
-                database,
-                refreshTokenMapper,
-            );
+    this.auth = createAuthModule(
+      this.users,
 
-        this.users =
-            createUsersModule(
-                database,
-                jwtAuthMiddleware,
-                passwordHasher,
-                refreshTokensRepository,
-            );
+      passwordHasher,
 
-        this.auth =
-            createAuthModule(
+      tokenHasher,
 
-                this.users,
+      jwtService,
 
-                passwordHasher,
+      jwtAuthMiddleware,
 
-                tokenHasher,
+      refreshTokensRepository,
+    );
 
-                jwtService,
+    this.health = createHealthModule();
 
-                jwtAuthMiddleware,
+    this.chats = createChatsModule(
+      database,
 
-                refreshTokensRepository,
+      this.users.repository,
 
-            );
-
-        this.health =
-            createHealthModule();
-
-        this.chats =
-            createChatsModule(
-
-                database,
-
-                this.users.repository,
-
-                jwtAuthMiddleware,
-
-            );
-
-    }
-
+      jwtAuthMiddleware,
+    );
+  }
 }

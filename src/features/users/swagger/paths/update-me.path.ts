@@ -1,58 +1,27 @@
-import {
+import { jsonRequest, jsonResponse } from "../../../../swagger/builders/index.js";
 
-    jsonRequest,
-
-    jsonResponse,
-
-} from "../../../../swagger/builders/index.js";
-
-import {
-
-    updateUserExample,
-
-} from "../examples/index.js";
+import { updateUserExample } from "../examples/index.js";
 
 export const updateMePath = {
+  "/users/me": {
+    patch: {
+      tags: ["Users"],
 
-    "/users/me": {
+      summary: "Update current user",
 
-        patch: {
+      requestBody: jsonRequest(
+        "#/components/schemas/UpdateUserRequest",
 
-            tags: [
+        updateUserExample,
+      ),
 
-                "Users",
+      responses: {
+        "200": jsonResponse(
+          "Updated user.",
 
-            ],
-
-            summary:
-                "Update current user",
-
-            requestBody:
-
-                jsonRequest(
-
-                    "#/components/schemas/UpdateUserRequest",
-
-                    updateUserExample,
-
-                ),
-
-            responses: {
-
-                "200":
-
-                    jsonResponse(
-
-                        "Updated user.",
-
-                        "#/components/schemas/User",
-
-                    ),
-
-            },
-
-        },
-
+          "#/components/schemas/User",
+        ),
+      },
     },
-
+  },
 };

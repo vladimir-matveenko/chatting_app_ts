@@ -1,33 +1,17 @@
-import {
-    requireUrl,
-} from "./url.validator.js";
+import { requireUrl } from "./url.validator.js";
 
 export function requireNullableUrl(
+  value: unknown,
 
-    value: unknown,
-
-    field: string,
-
+  field: string,
 ): string | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
 
-    if (
+  return requireUrl(
+    value,
 
-        value === null ||
-
-        value === undefined
-
-    ) {
-
-        return null;
-
-    }
-
-    return requireUrl(
-
-        value,
-
-        field,
-
-    );
-
+    field,
+  );
 }

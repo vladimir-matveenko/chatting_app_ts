@@ -1,9 +1,7 @@
 export enum ChatMemberRole {
+  OWNER = "owner",
 
-    OWNER = "owner",
+  ADMIN = "admin",
 
-    ADMIN = "admin",
-
-    MEMBER = "member",
-
+  MEMBER = "member",
 }

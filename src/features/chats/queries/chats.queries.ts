@@ -1,6 +1,5 @@
 export const ChatsQueries = {
-
-    CREATE_CHAT: `
+  CREATE_CHAT: `
         INSERT INTO chats (
 
             type,
@@ -32,19 +31,19 @@ export const ChatsQueries = {
         RETURNING *;
     `,
 
-    FIND_BY_FINGERPRINT: `
+  FIND_BY_FINGERPRINT: `
         SELECT *
         FROM chats
         WHERE fingerprint = $1;
     `,
 
-    FIND_BY_ID: `
+  FIND_BY_ID: `
     SELECT *
     FROM chats
     WHERE id = $1;
     `,
 
-    FIND_ALL_BY_USER: `
+  FIND_ALL_BY_USER: `
     SELECT
 
         c.id,
@@ -69,5 +68,4 @@ export const ChatsQueries = {
 
     ORDER BY c.updated_at DESC;
     `,
-
 };

@@ -1,9 +1,5 @@
-import {
-    ChatsPaths,
-} from "./chats.path.js";
+import { ChatsPaths } from "./chats.path.js";
 
 export const chatsPaths = {
-
-    ...ChatsPaths,
-
+  ...ChatsPaths,
 };

@@ -3,99 +3,63 @@ import { Router } from "express";
 import { asyncHandler } from "../../../core/middleware/async-handler.js";
 
 import { UsersController } from "../controllers/users.controller.js";
-import { JwtAuthMiddleware }
-    from "../../../core/middleware/jwt-auth.middleware.js";
+import { JwtAuthMiddleware } from "../../../core/middleware/jwt-auth.middleware.js";
 
 export function createUsersRouter(
-    controller: UsersController,
-    jwtAuthMiddleware: JwtAuthMiddleware,
+  controller: UsersController,
+  jwtAuthMiddleware: JwtAuthMiddleware,
 ): Router {
+  const router = Router();
 
-    const router = Router();
+  router.post("/", asyncHandler(controller.create.bind(controller)));
 
-    router.post(
-        "/",
-        asyncHandler(
-            controller.create.bind(controller),
-        ),
-    );
+  router.get(
+    "/me",
 
-    router.get(
+    jwtAuthMiddleware.handler,
 
-        "/me",
+    asyncHandler(controller.me.bind(controller)),
+  );
 
-        jwtAuthMiddleware.handler,
+  router.get(
+    "/:id",
 
-        asyncHandler(
-            controller.me.bind(
-                controller,
-            ),
-        ),
+    jwtAuthMiddleware.handler,
 
-    );
+    asyncHandler(controller.getById.bind(controller)),
+  );
 
-    router.get(
-        "/:id",
+  router.get(
+    "/email/:email",
 
-        jwtAuthMiddleware.handler,
+    jwtAuthMiddleware.handler,
 
-        asyncHandler(
-            controller.getById.bind(controller),
-        ),
-    );
+    asyncHandler(controller.getByEmail.bind(controller)),
+  );
 
-    router.get(
-        "/email/:email",
+  router.get(
+    "/username/:username",
 
-        jwtAuthMiddleware.handler,
+    jwtAuthMiddleware.handler,
 
-        asyncHandler(
-            controller.getByEmail.bind(controller),
-        ),
-    );
+    asyncHandler(controller.getByUsername.bind(controller)),
+  );
 
-    router.get(
-        "/username/:username",
+  router.patch(
+    "/me",
 
-        jwtAuthMiddleware.handler,
+    jwtAuthMiddleware.handler,
 
-        asyncHandler(
-            controller.getByUsername.bind(controller),
-        ),
-    );
+    asyncHandler(controller.updateMe.bind(controller)),
+  );
 
-    router.patch(
+  router.patch(
+    "/me/password",
 
-        "/me",
+    jwtAuthMiddleware.handler,
 
-        jwtAuthMiddleware.handler,
+    asyncHandler(controller.updatePassword.bind(controller)),
+  );
 
-        asyncHandler(
-
-            controller.updateMe.bind(
-                controller,
-            ),
-
-        ),
-
-    );
-
-    router.patch(
-
-        "/me/password",
-
-        jwtAuthMiddleware.handler,
-
-        asyncHandler(
-
-            controller.updatePassword.bind(
-                controller,
-            ),
-
-        ),
-
-    );
-
-    return router;
-
+  return router;
 }

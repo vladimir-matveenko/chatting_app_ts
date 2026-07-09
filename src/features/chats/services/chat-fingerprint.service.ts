@@ -1,37 +1,19 @@
-import {
+import { buildChatFingerprint } from "../utils/chat-fingerprint.util.js";
 
-    buildChatFingerprint,
-
-} from "../utils/chat-fingerprint.util.js";
-
-import type {
-
-    CreateChatDto,
-
-} from "../dto/create-chat.dto.js";
+import type { CreateChatDto } from "../dto/create-chat.dto.js";
 
 export class ChatFingerprintService {
+  build(dto: CreateChatDto): string {
+    return buildChatFingerprint({
+      type: dto.type,
 
-    build(
+      ownerId: dto.ownerId,
 
-        dto: CreateChatDto,
+      title: dto.title,
 
-    ): string {
+      avatarUrl: dto.avatarUrl,
 
-        return buildChatFingerprint({
-
-            type: dto.type,
-
-            ownerId: dto.ownerId,
-
-            title: dto.title,
-
-            avatarUrl: dto.avatarUrl,
-
-            memberIds: dto.memberIds,
-
-        });
-
-    }
-
+      memberIds: dto.memberIds,
+    });
+  }
 }
