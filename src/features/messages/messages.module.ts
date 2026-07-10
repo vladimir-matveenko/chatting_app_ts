@@ -51,24 +51,24 @@ export function createMessagesModule(
     chatMembersRepository,
   );
 
-  const createValidator = new CreateMessageRequestValidator();
+  const createRequestValidator = new CreateMessageRequestValidator();
 
-  const createMapper = new CreateMessageRequestMapper();
+  const createRequestMapper = new CreateMessageRequestMapper();
 
-  const updateValidator = new UpdateMessageRequestValidator();
+  const updateRequestValidator = new UpdateMessageRequestValidator();
 
-  const updateMapper = new UpdateMessageRequestMapper();
+  const updateRequestMapper = new UpdateMessageRequestMapper();
 
   const controller = new MessagesController(
     service,
 
-    createValidator,
+    createRequestValidator,
 
-    createMapper,
+    createRequestMapper,
 
-    updateValidator,
+    updateRequestValidator,
 
-    updateMapper,
+    updateRequestMapper,
   );
 
   const router = createMessagesRouter(

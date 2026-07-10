@@ -188,5 +188,50 @@ export const MessagesPaths = {
         404: notFoundResponse,
       },
     },
+    delete: {
+      tags: ["Messages"],
+
+      summary: "Delete message",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "id",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      responses: {
+        200: {
+          description: "Deleted message.",
+
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Message",
+              },
+            },
+          },
+        },
+
+        401: unauthorizedResponse,
+
+        403: forbiddenResponse,
+
+        404: notFoundResponse,
+      },
+    },
   },
 };

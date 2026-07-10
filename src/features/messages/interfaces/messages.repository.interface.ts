@@ -24,4 +24,6 @@ export interface IMessagesRepository {
   ): Promise<Message[]>;
 
   update(dto: UpdateMessageDto): Promise<Message>;
+
+  delete(id: string): Promise<Message>;
 }

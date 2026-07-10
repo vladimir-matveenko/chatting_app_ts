@@ -37,7 +37,7 @@ export const MessagesQueries = {
     FROM messages
 
     WHERE id = $1;
-`,
+    `,
 
   FIND_BY_CHAT: `
     SELECT *
@@ -75,6 +75,26 @@ export const MessagesQueries = {
         edited_at = NOW(),
 
         updated_at = NOW()
+
+    WHERE
+
+        id = $1
+
+    RETURNING *;
+    `,
+
+  DELETE: `
+    UPDATE messages
+
+    SET
+
+        is_deleted = TRUE,
+
+        deleted_at = NOW(),
+
+        updated_at = NOW(),
+
+        body = NULL
 
     WHERE
 

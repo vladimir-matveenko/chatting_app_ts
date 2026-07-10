@@ -175,4 +175,30 @@ export class MessagesService {
 
     return this.messagesRepository.update(dto);
   }
+
+  async delete(
+    id: string,
+
+    userId: string,
+  ): Promise<Message> {
+    const message = await this.messagesRepository.findById(id);
+
+    if (!message) {
+      throw new NotFoundError("Message not found.");
+    }
+
+    if (message.senderId !== userId) {
+      throw new ForbiddenError(
+        "You can delete only your own messages.",
+
+        "MESSAGE_DELETE_DENIED",
+      );
+    }
+
+    if (message.isDeleted) {
+      return message;
+    }
+
+    return this.messagesRepository.delete(id);
+  }
 }

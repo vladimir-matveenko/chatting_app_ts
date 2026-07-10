@@ -73,4 +73,12 @@ export class MessagesRepository
       [dto.id, dto.body],
     );
   }
+
+  async delete(id: string): Promise<Message> {
+    return this.saveOne(
+      MessagesQueries.DELETE,
+
+      [id],
+    );
+  }
 }

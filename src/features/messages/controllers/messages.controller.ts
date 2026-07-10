@@ -14,13 +14,13 @@ export class MessagesController {
   constructor(
     private readonly service: MessagesService,
 
-    private readonly createValidator: CreateMessageRequestValidator,
+    private readonly createRequestValidator: CreateMessageRequestValidator,
 
-    private readonly createMapper: CreateMessageRequestMapper,
+    private readonly createRequestMapper: CreateMessageRequestMapper,
 
-    private readonly updateValidator: UpdateMessageRequestValidator,
+    private readonly updateRequestValidator: UpdateMessageRequestValidator,
 
-    private readonly updateMapper: UpdateMessageRequestMapper,
+    private readonly updateRequestMapper: UpdateMessageRequestMapper,
   ) {}
 
   async create(
@@ -28,7 +28,7 @@ export class MessagesController {
 
     response: Response,
   ): Promise<void> {
-    const dto = this.createValidator.validate(request.body);
+    const dto = this.createRequestValidator.validate(request.body);
 
     if (!request.user) {
       throw new Error("Authenticated user is missing.");
@@ -41,7 +41,7 @@ export class MessagesController {
     }
 
     const message = await this.service.create(
-      this.createMapper.map(
+      this.createRequestMapper.map(
         dto,
 
         id,
@@ -128,16 +128,40 @@ export class MessagesController {
       throw new Error("Authenticated user is missing.");
     }
 
-    const dto = this.updateValidator.validate(request.body);
+    const dto = this.updateRequestValidator.validate(request.body);
 
     const message = await this.service.update(
-      this.updateMapper.map(
+      this.updateRequestMapper.map(
         dto,
 
         id,
 
         request.user.userId,
       ),
+    );
+
+    response.json(message);
+  }
+
+  async delete(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    const id = request.params.id;
+
+    if (typeof id !== "string") {
+      throw new ValidationError("Message id is required.");
+    }
+
+    if (!request.user) {
+      throw new Error("Authenticated user is missing.");
+    }
+
+    const message = await this.service.delete(
+      id,
+
+      request.user.userId,
     );
 
     response.json(message);

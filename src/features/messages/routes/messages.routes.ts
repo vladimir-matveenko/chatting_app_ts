@@ -45,5 +45,13 @@ export function createMessagesRouter(
     asyncHandler(controller.update.bind(controller)),
   );
 
+  router.delete(
+    "/:id",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.delete.bind(controller)),
+  );
+
   return router;
 }
