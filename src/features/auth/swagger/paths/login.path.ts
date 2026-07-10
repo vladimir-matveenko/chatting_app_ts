@@ -1,9 +1,5 @@
 import { jsonRequest, jsonResponse } from "../../../../swagger/builders/index.js";
-import {
-  badRequestResponse,
-  internalServerResponse,
-  unauthorizedResponse,
-} from "../../../../swagger/responses/index.js";
+import { unauthorizedResponse } from "../../../../swagger/responses/index.js";
 import { authResponseExample, loginRequestExample } from "../auth/index.js";
 
 export const loginPath = {

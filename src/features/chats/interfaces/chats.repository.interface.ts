@@ -1,7 +1,4 @@
 import type { CreateChatDto } from "../dto/create-chat.dto.js";
-import { ChatListItemEntity } from "../entities/chat-list-item.entity.js";
-
-import type { ChatEntity } from "../entities/chat.entity.js";
 
 import type { PoolClient } from "pg";
 

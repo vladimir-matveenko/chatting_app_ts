@@ -4,8 +4,6 @@ import type { ChatMemberEntity } from "../entities/chat-member.entity.js";
 
 import type { ChatMember } from "../models/chat-member.model.js";
 
-import { ChatMemberRole } from "../entities/chat-member-role.enum.js";
-
 export class ChatMembersMapper implements Mapper<ChatMemberEntity, ChatMember> {
   map(entity: ChatMemberEntity): ChatMember {
     return {

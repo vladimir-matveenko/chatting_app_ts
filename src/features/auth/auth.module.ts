@@ -1,5 +1,3 @@
-import { Database } from "../../core/database/database.js";
-
 import type { JwtService } from "../../core/security/jwt/index.js";
 
 import type { UsersFeature } from "../users/index.js";
@@ -9,8 +7,6 @@ import type { AuthModule } from "./auth.module.interface.js";
 import { AuthController } from "./controllers/auth.controller.js";
 
 import { AuthMappers } from "./mappers/auth.mappers.js";
-
-import { RefreshTokenMapper } from "./mappers/refresh-token.mapper.js";
 
 import { RefreshTokensRepository } from "./repositories/refresh-tokens.repository.js";
 

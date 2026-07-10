@@ -1,5 +1,4 @@
 import { Database } from "../../core/database/database.js";
-import { JwtService } from "../../core/security/jwt/index.js";
 
 import { UsersController } from "./controllers/users.controller.js";
 import { UsersMappers } from "./mappers/users.mappers.js";
@@ -15,7 +14,7 @@ import { UsersRequestValidators } from "./validators/users-request.validators.js
 
 import type { UsersFeature } from "./users.module.interface.js";
 import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
-import { BcryptPasswordHasher, PasswordHasher } from "../../core/security/password/index.js";
+import { PasswordHasher } from "../../core/security/password/index.js";
 import { UpdateUserRequestValidator } from "./validators/update-user-request.validator.js";
 import { UpdatePasswordRequestValidator } from "./validators/update-password-request.validator.js";
 import { RefreshTokensRepository } from "../auth/repositories/refresh-tokens.repository.js";

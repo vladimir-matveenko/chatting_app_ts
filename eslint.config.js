@@ -7,6 +7,9 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   eslintPluginPrettierRecommended,
   {
+    ignores: ["dist/**", "**/dist/**", "node_modules/**", "**/node_modules/**"],
+  },
+  {
     rules: {
       // add rules here
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],

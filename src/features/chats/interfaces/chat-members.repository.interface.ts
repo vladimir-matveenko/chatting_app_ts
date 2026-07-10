@@ -1,5 +1,3 @@
-import type { ChatMemberEntity } from "../entities/chat-member.entity.js";
-
 import type { CreateChatMemberDto } from "../dto/create-chat-member.dto.js";
 
 import type { PoolClient } from "pg";

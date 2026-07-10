@@ -2,8 +2,6 @@ import { BaseRepository } from "../../../core/database/base.repository.js";
 
 import { Database } from "../../../core/database/database.js";
 
-import { InternalServerError } from "../../../core/errors/index.js";
-
 import type { IRefreshTokensRepository } from "../interfaces/refresh-tokens.repository.interface.js";
 
 import { RefreshTokenMapper } from "../mappers/refresh-token.mapper.js";
