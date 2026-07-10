@@ -2,6 +2,7 @@ import { PoolClient } from "pg";
 import type { CreateMessageDto } from "../dto/create-message.dto.js";
 
 import type { Message } from "../models/message.model.js";
+import { UpdateMessageDto } from "../dto/update-message.dto.js";
 
 export interface IMessagesRepository {
   create(dto: CreateMessageDto): Promise<Message>;
@@ -21,4 +22,6 @@ export interface IMessagesRepository {
 
     before?: string,
   ): Promise<Message[]>;
+
+  update(dto: UpdateMessageDto): Promise<Message>;
 }

@@ -21,9 +21,13 @@ export class MessagesMapper implements Mapper<MessageEntity, Message> {
 
       editedAt: entity.edited_at,
 
+      deletedAt: entity.deleted_at,
+
       createdAt: entity.created_at,
 
       updatedAt: entity.updated_at,
+
+      isDeleted: entity.is_deleted,
     };
   }
 }

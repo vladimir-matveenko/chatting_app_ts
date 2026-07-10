@@ -14,6 +14,7 @@ import { MessagesMapper } from "../mappers/messages.mapper.js";
 import type { Message } from "../models/message.model.js";
 
 import { MessagesQueries } from "../queries/messages.queries.js";
+import { UpdateMessageDto } from "../dto/update-message.dto.js";
 
 export class MessagesRepository
   extends BaseRepository<MessageEntity, Message>
@@ -61,7 +62,15 @@ export class MessagesRepository
     return this.findMany(
       MessagesQueries.FIND_BY_CHAT,
 
-      before ? [chatId, before, limit] : [chatId, limit],
+      [chatId, before ?? null, limit],
+    );
+  }
+
+  async update(dto: UpdateMessageDto): Promise<Message> {
+    return this.saveOne(
+      MessagesQueries.UPDATE,
+
+      [dto.id, dto.body],
     );
   }
 }

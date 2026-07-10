@@ -15,7 +15,11 @@ export interface Message {
 
   editedAt: Date | null;
 
+  deletedAt: Date | null;
+
   createdAt: Date;
 
   updatedAt: Date;
+
+  isDeleted: boolean;
 }

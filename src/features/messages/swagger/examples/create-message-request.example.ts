@@ -1,4 +1,4 @@
-export const CreateMessageRequestExample = {
+export const createMessageRequestExample = {
   type: "TEXT",
 
   body: "Hello!",

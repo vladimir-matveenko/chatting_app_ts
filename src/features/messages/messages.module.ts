@@ -18,9 +18,11 @@ import { createMessagesRouter } from "./routes/messages.routes.js";
 
 import { CreateMessageRequestValidator } from "./validators/create-message-request.validator.js";
 
-import type { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
-
 import type { MessagesFeature } from "./messages.module.interface.js";
+
+import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
+import { UpdateMessageRequestValidator } from "./validators/update-message-request.validator.js";
+import { UpdateMessageRequestMapper } from "./mappers/update-message-request.mapper.js";
 
 export function createMessagesModule(
   database: Database,
@@ -49,16 +51,24 @@ export function createMessagesModule(
     chatMembersRepository,
   );
 
-  const validator = new CreateMessageRequestValidator();
+  const createValidator = new CreateMessageRequestValidator();
 
-  const requestMapper = new CreateMessageRequestMapper();
+  const createMapper = new CreateMessageRequestMapper();
+
+  const updateValidator = new UpdateMessageRequestValidator();
+
+  const updateMapper = new UpdateMessageRequestMapper();
 
   const controller = new MessagesController(
     service,
 
-    validator,
+    createValidator,
 
-    requestMapper,
+    createMapper,
+
+    updateValidator,
+
+    updateMapper,
   );
 
   const router = createMessagesRouter(

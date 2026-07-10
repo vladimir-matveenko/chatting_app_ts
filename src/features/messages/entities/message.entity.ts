@@ -15,7 +15,11 @@ export interface MessageEntity {
 
   edited_at: Date | null;
 
+  deleted_at: Date | null;
+
   created_at: Date;
 
   updated_at: Date;
+
+  is_deleted: boolean;
 }

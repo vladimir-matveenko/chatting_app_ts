@@ -2,7 +2,7 @@ import type { PoolClient } from "pg";
 
 import { Database } from "../../../core/database/database.js";
 
-import { ForbiddenError, NotFoundError } from "../../../core/errors/index.js";
+import { ForbiddenError, NotFoundError, ValidationError } from "../../../core/errors/index.js";
 
 import type { CreateMessageDto } from "../dto/create-message.dto.js";
 
@@ -13,6 +13,7 @@ import type { IChatsRepository } from "../../chats/interfaces/chats.repository.i
 import type { IChatMembersRepository } from "../../chats/interfaces/chat-members.repository.interface.js";
 
 import type { Message } from "../models/message.model.js";
+import { UpdateMessageDto } from "../dto/update-message.dto.js";
 
 export class MessagesService {
   constructor(
@@ -53,8 +54,24 @@ export class MessagesService {
     });
   }
 
-  async findById(id: string): Promise<Message | null> {
-    return this.messagesRepository.findById(id);
+  async findById(
+    id: string,
+
+    userId: string,
+  ): Promise<Message | null> {
+    const message = await this.messagesRepository.findById(id);
+
+    if (!message) {
+      return null;
+    }
+
+    await this.ensureMember(
+      message.chatId,
+
+      userId,
+    );
+
+    return message;
   }
 
   async findByChat(
@@ -135,5 +152,27 @@ export class MessagesService {
         "INVALID_REPLY",
       );
     }
+  }
+
+  async update(dto: UpdateMessageDto): Promise<Message> {
+    const message = await this.messagesRepository.findById(dto.id);
+
+    if (!message) {
+      throw new NotFoundError("Message not found.");
+    }
+
+    if (message.senderId !== dto.userId) {
+      throw new ForbiddenError(
+        "You can edit only your own messages.",
+
+        "MESSAGE_EDIT_DENIED",
+      );
+    }
+
+    if (message.isDeleted) {
+      throw new ValidationError("Deleted message cannot be edited.");
+    }
+
+    return this.messagesRepository.update(dto);
   }
 }

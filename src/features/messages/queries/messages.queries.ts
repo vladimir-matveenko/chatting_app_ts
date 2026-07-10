@@ -32,12 +32,12 @@ export const MessagesQueries = {
     `,
 
   FIND_BY_ID: `
-        SELECT *
+    SELECT *
 
-        FROM messages
+    FROM messages
 
-        WHERE id = $1;
-    `,
+    WHERE id = $1;
+`,
 
   FIND_BY_CHAT: `
     SELECT *
@@ -63,5 +63,23 @@ export const MessagesQueries = {
     ORDER BY id DESC
 
     LIMIT $3;
+    `,
+
+  UPDATE: `
+        UPDATE messages
+
+    SET
+
+        body = $2,
+
+        edited_at = NOW(),
+
+        updated_at = NOW()
+
+    WHERE
+
+        id = $1
+
+    RETURNING *;
     `,
 };

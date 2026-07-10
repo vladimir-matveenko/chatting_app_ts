@@ -21,5 +21,29 @@ export function createMessagesRouter(
     asyncHandler(controller.create.bind(controller)),
   );
 
+  router.get(
+    "/chat/:id",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.findByChat.bind(controller)),
+  );
+
+  router.get(
+    "/:id",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.findById.bind(controller)),
+  );
+
+  router.patch(
+    "/:id",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.update.bind(controller)),
+  );
+
   return router;
 }

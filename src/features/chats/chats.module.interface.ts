@@ -10,6 +10,8 @@ import type { ChatMapper } from "./mappers/chats.mapper.js";
 
 import type { ChatListRepository } from "./repositories/chat-list.repository.js";
 
+import type { ChatMembersRepository } from "./repositories/chat-members.repository.js";
+
 export interface ChatsFeature {
   router: Router;
 
@@ -22,4 +24,6 @@ export interface ChatsFeature {
   chatListRepository: ChatListRepository;
 
   mapper: ChatMapper;
+
+  chatMembersRepository: ChatMembersRepository;
 }

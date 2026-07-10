@@ -104,6 +104,8 @@ export function createChatsModule(
 
     chatListRepository,
 
+    chatMembersRepository,
+
     mapper: chatMapper,
   };
 }
