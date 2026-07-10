@@ -78,6 +78,18 @@ export class ChatMembersRepository
     );
   }
 
+  async findByChatAndUser(
+    chatId: string,
+
+    userId: string,
+  ): Promise<ChatMember | null> {
+    return this.findOne(
+      ChatMembersQueries.FIND_BY_CHAT_AND_USER,
+
+      [chatId, userId],
+    );
+  }
+
   async isMember(
     chatId: string,
 

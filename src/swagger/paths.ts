@@ -4,10 +4,14 @@ import { usersPaths } from "../features/users/swagger/index.js";
 
 import { chatsPaths } from "../features/chats/swagger/index.js";
 
+import { messagesPaths } from "../features/messages/swagger/index.js";
+
 export const paths = {
   ...authPaths,
 
   ...usersPaths,
 
   ...chatsPaths,
+
+  ...messagesPaths,
 };

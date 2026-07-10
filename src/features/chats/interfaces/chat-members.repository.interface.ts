@@ -21,4 +21,10 @@ export interface IChatMembersRepository {
 
     userId: string,
   ): Promise<boolean>;
+
+  findByChatAndUser(
+    chatId: string,
+
+    userId: string,
+  ): Promise<ChatMember | null>;
 }

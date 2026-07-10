@@ -67,4 +67,18 @@ export const ChatMembersQueries = {
 
     LIMIT 1;
     `,
+
+  FIND_BY_CHAT_AND_USER: `
+    SELECT *
+
+    FROM chat_members
+
+    WHERE
+
+        chat_id = $1
+
+    AND
+
+        user_id = $2;
+    `,
 };

@@ -1,25 +1,27 @@
 export const CreateMessageRequestSchema = {
-  type: "object",
+  CreateMessageRequest: {
+    type: "object",
 
-  required: ["type"],
+    required: ["type"],
 
-  properties: {
-    type: {
-      type: "string",
+    properties: {
+      type: {
+        type: "string",
 
-      enum: ["TEXT", "IMAGE", "VIDEO", "FILE"],
-    },
+        enum: ["TEXT", "IMAGE", "VIDEO", "FILE"],
+      },
 
-    body: {
-      type: "string",
+      body: {
+        type: "string",
 
-      nullable: true,
-    },
+        nullable: true,
+      },
 
-    replyToId: {
-      type: "string",
+      replyToId: {
+        type: "string",
 
-      nullable: true,
+        nullable: true,
+      },
     },
   },
 };

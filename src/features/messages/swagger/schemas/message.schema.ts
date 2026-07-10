@@ -1,57 +1,57 @@
 export const MessageSchema = {
-  type: "object",
+  Message: {
+    type: "object",
 
-  properties: {
-    id: {
-      type: "string",
-    },
+    required: ["id", "chatId", "senderId", "type", "createdAt", "isDeleted"],
 
-    chatId: {
-      type: "string",
-    },
+    properties: {
+      id: {
+        type: "string",
+      },
 
-    senderId: {
-      type: "string",
-    },
+      chatId: {
+        type: "string",
+      },
 
-    type: {
-      type: "string",
+      senderId: {
+        type: "string",
+      },
 
-      enum: ["TEXT", "IMAGE", "VIDEO", "FILE"],
-    },
+      type: {
+        type: "string",
+        enum: ["TEXT", "IMAGE", "VIDEO", "FILE"],
+      },
 
-    body: {
-      type: "string",
+      body: {
+        type: "string",
+        nullable: true,
+      },
 
-      nullable: true,
-    },
+      replyToId: {
+        type: "string",
+        nullable: true,
+      },
 
-    replyToId: {
-      type: "string",
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
 
-      nullable: true,
-    },
+      editedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
 
-    createdAt: {
-      type: "string",
+      deletedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
 
-      format: "date-time",
-    },
-
-    editedAt: {
-      type: "string",
-
-      format: "date-time",
-    },
-
-    deletedAt: {
-      type: "string",
-      format: "date-time",
-      nullable: true,
-    },
-
-    isDeleted: {
-      type: "boolean",
+      isDeleted: {
+        type: "boolean",
+      },
     },
   },
 };
