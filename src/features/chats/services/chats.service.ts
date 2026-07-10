@@ -6,10 +6,10 @@ import type { IChatsRepository } from "../interfaces/chats.repository.interface.
 
 import { ChatFingerprintService } from "./chat-fingerprint.service.js";
 
-import { ChatMemberRole } from "../entities/chat-member-role.enum.js";
+import { ChatMemberRole } from "../enums/chat-member-role.enum.js";
 import { Database } from "../../../core/database/database.js";
 import { PoolClient } from "pg";
-import { ChatType } from "../entities/chat-type.enum.js";
+import { ChatType } from "../enums/chat-type.enum.js";
 import { ForbiddenError, ValidationError } from "../../../core/errors/index.js";
 import type { IUsersRepository } from "../../users/interfaces/users.repository.interface.js";
 import { Chat } from "../models/chat.model.js";

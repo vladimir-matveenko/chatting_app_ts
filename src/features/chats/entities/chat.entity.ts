@@ -1,4 +1,4 @@
-import { ChatType } from "./chat-type.enum.js";
+import { ChatType } from "../enums/chat-type.enum.js";
 
 export interface ChatEntity {
   id: string;

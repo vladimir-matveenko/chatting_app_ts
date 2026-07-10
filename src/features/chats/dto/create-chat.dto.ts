@@ -1,4 +1,4 @@
-import type { ChatType } from "../entities/chat-type.enum.js";
+import type { ChatType } from "../enums/chat-type.enum.js";
 
 export interface CreateChatDto {
   type: ChatType;

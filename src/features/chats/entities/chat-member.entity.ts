@@ -1,4 +1,4 @@
-import { ChatMemberRole } from "./chat-member-role.enum.js";
+import { ChatMemberRole } from "../enums/chat-member-role.enum.js";
 
 export interface ChatMemberEntity {
   chat_id: string;

@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 
-import { ChatType } from "../entities/chat-type.enum.js";
+import { ChatType } from "../enums/chat-type.enum.js";
 
 interface BuildFingerprintParams {
   type: ChatType;

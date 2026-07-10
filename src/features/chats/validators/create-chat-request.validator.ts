@@ -12,7 +12,7 @@ import {
 
 import type { CreateChatRequestDto } from "../dto/request/create-chat.request.dto.js";
 
-import { ChatType } from "../entities/chat-type.enum.js";
+import { ChatType } from "../enums/chat-type.enum.js";
 
 export class CreateChatRequestValidator implements RequestValidator<CreateChatRequestDto> {
   validate(request: Request): CreateChatRequestDto {
