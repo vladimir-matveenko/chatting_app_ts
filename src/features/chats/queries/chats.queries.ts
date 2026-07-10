@@ -68,4 +68,12 @@ export const ChatsQueries = {
 
     ORDER BY c.updated_at DESC;
     `,
+
+  UPDATE_ACTIVITY: `
+    UPDATE chats
+
+    SET updated_at = NOW()
+
+    WHERE id = $1;
+    `,
 };

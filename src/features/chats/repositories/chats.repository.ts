@@ -102,4 +102,18 @@ export class ChatsRepository extends BaseRepository<ChatEntity, Chat> implements
       [id],
     );
   }
+
+  async updateActivityTx(
+    client: PoolClient,
+
+    chatId: string,
+  ): Promise<void> {
+    await this.queryTx(
+      client,
+
+      ChatsQueries.UPDATE_ACTIVITY,
+
+      [chatId],
+    );
+  }
 }

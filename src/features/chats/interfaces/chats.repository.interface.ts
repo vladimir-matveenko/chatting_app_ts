@@ -22,4 +22,10 @@ export interface IChatsRepository {
   ): Promise<Chat | null>;
 
   findById(id: string): Promise<Chat | null>;
+
+  updateActivityTx(
+    client: PoolClient,
+
+    chatId: string,
+  ): Promise<void>;
 }

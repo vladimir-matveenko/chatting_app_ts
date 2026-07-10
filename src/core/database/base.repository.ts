@@ -120,4 +120,66 @@ export abstract class BaseRepository<TEntity extends QueryResultRow, TModel> {
 
     return this.map(entity);
   }
+
+  protected async query(
+    sql: string,
+
+    params: readonly unknown[] = [],
+  ): Promise<void> {
+    await this.db.query(
+      sql,
+
+      params,
+    );
+  }
+
+  protected async queryTx(
+    client: PoolClient,
+
+    sql: string,
+
+    params: readonly unknown[] = [],
+  ): Promise<void> {
+    await client.query(
+      sql,
+
+      [...params],
+    );
+  }
+
+  protected async findOneTx(
+    client: PoolClient,
+
+    sql: string,
+
+    params: readonly unknown[] = [],
+  ): Promise<TModel | null> {
+    const entity = await this.queryOneTx(
+      client,
+
+      sql,
+
+      params,
+    );
+
+    return this.mapNullable(entity);
+  }
+
+  protected async findManyTx(
+    client: PoolClient,
+
+    sql: string,
+
+    params: readonly unknown[] = [],
+  ): Promise<TModel[]> {
+    const entities = await this.queryManyTx(
+      client,
+
+      sql,
+
+      params,
+    );
+
+    return this.mapMany(entities);
+  }
 }
