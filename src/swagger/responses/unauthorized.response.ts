@@ -1,21 +1,11 @@
 export const unauthorizedResponse = {
+  description: "Unauthorized.",
 
-    description:
-        "Unauthorized.",
-
-    content: {
-
-        "application/json": {
-
-            schema: {
-
-                $ref:
-                    "#/components/schemas/ErrorResponse",
-
-            },
-
-        },
-
+  content: {
+    "application/json": {
+      schema: {
+        $ref: "#/components/schemas/ErrorResponse",
+      },
     },
-
+  },
 };

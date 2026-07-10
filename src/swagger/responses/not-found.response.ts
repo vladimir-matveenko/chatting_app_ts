@@ -1,21 +1,11 @@
 export const notFoundResponse = {
+  description: "Resource not found.",
 
-    description:
-        "Resource not found.",
-
-    content: {
-
-        "application/json": {
-
-            schema: {
-
-                $ref:
-                    "#/components/schemas/ErrorResponse",
-
-            },
-
-        },
-
+  content: {
+    "application/json": {
+      schema: {
+        $ref: "#/components/schemas/ErrorResponse",
+      },
     },
-
+  },
 };

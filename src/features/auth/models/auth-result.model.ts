@@ -1,11 +1,9 @@
 import type { User } from "../../users/models/user.model.js";
 
 export interface AuthResult {
+  accessToken: string;
 
-    accessToken: string;
+  refreshToken: string;
 
-    refreshToken: string;
-
-    user: User;
-
+  user: User;
 }

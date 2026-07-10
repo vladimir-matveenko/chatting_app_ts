@@ -1,21 +1,11 @@
 export const internalServerResponse = {
+  description: "Internal server error.",
 
-    description:
-        "Internal server error.",
-
-    content: {
-
-        "application/json": {
-
-            schema: {
-
-                $ref:
-                    "#/components/schemas/ErrorResponse",
-
-            },
-
-        },
-
+  content: {
+    "application/json": {
+      schema: {
+        $ref: "#/components/schemas/ErrorResponse",
+      },
     },
-
+  },
 };

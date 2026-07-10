@@ -1,62 +1,31 @@
-import type {
-    Mapper,
-} from "../../../core/mappers/mapper.js";
+import type { Mapper } from "../../../core/mappers/mapper.js";
 
-import type {
-    ChatListItemEntity,
-} from "../entities/chat-list-item.entity.js";
+import type { ChatListItemEntity } from "../entities/chat-list-item.entity.js";
 
-import type {
-    ChatListItem,
-} from "../models/chat-list-item.model.js";
+import type { ChatListItem } from "../models/chat-list-item.model.js";
 
-export class ChatListItemMapper
+export class ChatListItemMapper implements Mapper<ChatListItemEntity, ChatListItem> {
+  map(entity: ChatListItemEntity): ChatListItem {
+    return {
+      id: entity.id,
 
-    implements Mapper<
-        ChatListItemEntity,
-        ChatListItem
-    > {
+      type: entity.type,
 
-    map(
+      title: entity.title,
 
-        entity: ChatListItemEntity,
+      avatarUrl: entity.avatar_url,
 
-    ): ChatListItem {
+      ownerId: entity.owner_id,
 
-        return {
+      createdAt: entity.created_at,
 
-            id:
-                entity.id,
+      updatedAt: entity.updated_at,
 
-            type:
-                entity.type,
+      lastMessage: entity.last_message,
 
-            title:
-                entity.title,
+      lastMessageAt: entity.last_message_at,
 
-            avatarUrl:
-                entity.avatar_url,
-
-            ownerId:
-                entity.owner_id,
-
-            createdAt:
-                entity.created_at,
-
-            updatedAt:
-                entity.updated_at,
-
-            lastMessage:
-                entity.last_message,
-
-            lastMessageAt:
-                entity.last_message_at,
-
-            unreadCount:
-                entity.unread_count,
-
-        };
-
-    }
-
+      unreadCount: entity.unread_count,
+    };
+  }
 }

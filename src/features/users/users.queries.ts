@@ -1,6 +1,5 @@
 export const UsersQueries = {
-
-    CREATE: `
+  CREATE: `
         INSERT INTO users (
             user_name,
             email,
@@ -10,25 +9,25 @@ export const UsersQueries = {
         RETURNING *
     `,
 
-    FIND_BY_ID: `
+  FIND_BY_ID: `
         SELECT *
         FROM users
         WHERE id = $1
     `,
 
-    FIND_BY_EMAIL: `
+  FIND_BY_EMAIL: `
         SELECT *
         FROM users
         WHERE email = $1
     `,
 
-    FIND_BY_USERNAME: `
+  FIND_BY_USERNAME: `
         SELECT *
         FROM users
         WHERE user_name = $1
     `,
 
-    UPDATE_USER: `
+  UPDATE_USER: `
     UPDATE users
     SET
         email =
@@ -43,7 +42,7 @@ export const UsersQueries = {
     RETURNING *;
     `,
 
-    UPDATE_PASSWORD: `
+  UPDATE_PASSWORD: `
     UPDATE users
     SET
         password_hash = $2
@@ -51,7 +50,7 @@ export const UsersQueries = {
     RETURNING *;
     `,
 
-    FIND_CREDENTIALS_BY_ID: `
+  FIND_CREDENTIALS_BY_ID: `
     SELECT
         id,
         password_hash
@@ -59,10 +58,9 @@ export const UsersQueries = {
     WHERE id = $1
     `,
 
-    FIND_BY_IDS: `
+  FIND_BY_IDS: `
     SELECT *
     FROM users
     WHERE id = ANY($1::bigint[])
     `,
-
 };

@@ -1,37 +1,25 @@
 export const errorSchemas = {
+  ErrorResponse: {
+    type: "object",
 
-    ErrorResponse: {
+    properties: {
+      status: {
+        type: "integer",
 
-        type: "object",
+        example: 401,
+      },
 
-        properties: {
+      code: {
+        type: "string",
 
-            status: {
+        example: "UNAUTHORIZED",
+      },
 
-                type: "integer",
+      message: {
+        type: "string",
 
-                example: 401,
-
-            },
-
-            code: {
-
-                type: "string",
-
-                example: "UNAUTHORIZED",
-
-            },
-
-            message: {
-
-                type: "string",
-
-                example: "Unauthorized.",
-
-            },
-
-        },
-
+        example: "Unauthorized.",
+      },
     },
-
+  },
 };

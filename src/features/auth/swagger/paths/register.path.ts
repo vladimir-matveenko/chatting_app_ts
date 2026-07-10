@@ -1,72 +1,39 @@
 export const registerPath = {
+  "/auth/register": {
+    post: {
+      tags: ["Auth"],
 
-    "/auth/register": {
+      security: [],
 
-        post: {
+      summary: "Register",
 
-            tags: [
+      description: "Create new user.",
 
-                "Auth",
+      requestBody: {
+        required: true,
 
-            ],
-
-            security: [],
-
-            summary:
-                "Register",
-
-            description:
-                "Create new user.",
-
-            requestBody: {
-
-                required: true,
-
-                content: {
-
-                    "application/json": {
-
-                        schema: {
-
-                            $ref:
-                                "#/components/schemas/RegisterRequest",
-
-                        },
-
-                    },
-
-                },
-
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/RegisterRequest",
             },
-
-            responses: {
-
-                "201": {
-
-                    description:
-                        "User created.",
-
-                    content: {
-
-                        "application/json": {
-
-                            schema: {
-
-                                $ref:
-                                    "#/components/schemas/AuthResponse",
-
-                            },
-
-                        },
-
-                    },
-
-                },
-
-            },
-
+          },
         },
+      },
 
+      responses: {
+        "201": {
+          description: "User created.",
+
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/AuthResponse",
+              },
+            },
+          },
+        },
+      },
     },
-
+  },
 };

@@ -1,43 +1,19 @@
-import {
-    ValidationError,
-} from "../../errors/index.js";
+import { ValidationError } from "../../errors/index.js";
 
 export function requireUrl(
+  value: unknown,
 
-    value: unknown,
-
-    field: string,
-
+  field: string,
 ): string {
+  if (typeof value !== "string") {
+    throw new ValidationError(`${field} must be a string.`);
+  }
 
-    if (
+  try {
+    new URL(value);
+  } catch {
+    throw new ValidationError(`${field} must be a valid URL.`);
+  }
 
-        typeof value !== "string"
-
-    ) {
-
-        throw new ValidationError(
-
-            `${field} must be a string.`,
-
-        );
-
-    }
-
-    try {
-
-        new URL(value);
-
-    } catch {
-
-        throw new ValidationError(
-
-            `${field} must be a valid URL.`,
-
-        );
-
-    }
-
-    return value;
-
+  return value;
 }

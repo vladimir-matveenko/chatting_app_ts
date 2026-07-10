@@ -1,20 +1,17 @@
-import { ChatMemberRole }
-    from "./chat-member-role.enum.js";
+import { ChatMemberRole } from "../enums/chat-member-role.enum.js";
 
 export interface ChatMemberEntity {
+  chat_id: string;
 
-    chatId: string;
+  user_id: string;
 
-    userId: string;
+  role: ChatMemberRole;
 
-    role: ChatMemberRole;
+  joined_at: Date;
 
-    joinedAt: Date;
+  last_read_message_id: string | null;
 
-    lastReadMessageId: string | null;
+  is_muted: boolean;
 
-    isMuted: boolean;
-
-    isArchived: boolean;
-
+  is_archived: boolean;
 }

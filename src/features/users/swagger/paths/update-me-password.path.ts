@@ -1,53 +1,25 @@
-import {
+import { jsonRequest } from "../../../../swagger/builders/index.js";
 
-    jsonRequest,
-
-} from "../../../../swagger/builders/index.js";
-
-import {
-
-    updatePasswordExample,
-
-} from "../examples/index.js";
+import { updatePasswordExample } from "../examples/index.js";
 
 export const updateMePasswordPath = {
+  "/users/me/password": {
+    patch: {
+      tags: ["Users"],
 
-    "/users/me/password": {
+      summary: "Change password",
 
-        patch: {
+      requestBody: jsonRequest(
+        "#/components/schemas/UpdatePasswordRequest",
 
-            tags: [
+        updatePasswordExample,
+      ),
 
-                "Users",
-
-            ],
-
-            summary:
-                "Change password",
-
-            requestBody:
-
-                jsonRequest(
-
-                    "#/components/schemas/UpdatePasswordRequest",
-
-                    updatePasswordExample,
-
-                ),
-
-            responses: {
-
-                "204": {
-
-                    description:
-                        "Password updated.",
-
-                },
-
-            },
-
+      responses: {
+        "204": {
+          description: "Password updated.",
         },
-
+      },
     },
-
+  },
 };

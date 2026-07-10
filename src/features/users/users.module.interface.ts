@@ -1,25 +1,20 @@
 import type { Router } from "express";
 
-import type { UsersController }
-    from "./controllers/users.controller.js";
+import type { UsersController } from "./controllers/users.controller.js";
 
-import type { UsersRepository }
-    from "./repositories/users.repository.js";
+import type { UsersRepository } from "./repositories/users.repository.js";
 
-import type { UsersService }
-    from "./services/users.service.js";
+import type { UsersService } from "./services/users.service.js";
 import { UsersMappers } from "./mappers/users.mappers.js";
 
 export interface UsersFeature {
+  router: Router;
 
-    router: Router;
+  controller: UsersController;
 
-    controller: UsersController;
+  service: UsersService;
 
-    service: UsersService;
+  repository: UsersRepository;
 
-    repository: UsersRepository;
-
-    mappers: UsersMappers;
-
+  mappers: UsersMappers;
 }

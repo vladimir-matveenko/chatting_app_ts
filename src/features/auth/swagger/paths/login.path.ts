@@ -1,55 +1,33 @@
 import { jsonRequest, jsonResponse } from "../../../../swagger/builders/index.js";
-import { badRequestResponse, internalServerResponse, unauthorizedResponse } from "../../../../swagger/responses/index.js";
+import { unauthorizedResponse } from "../../../../swagger/responses/index.js";
 import { authResponseExample, loginRequestExample } from "../auth/index.js";
 
 export const loginPath = {
+  "/auth/login": {
+    post: {
+      tags: ["Auth"],
 
-    "/auth/login": {
+      security: [],
 
-        post: {
+      summary: "Login",
 
-            tags: [
+      requestBody: jsonRequest(
+        "#/components/schemas/LoginRequest",
 
-                "Auth",
+        loginRequestExample,
+      ),
 
-            ],
+      responses: {
+        "200": jsonResponse(
+          "Authenticated.",
 
-            security: [],
+          "#/components/schemas/AuthResponse",
 
-            summary:
-                "Login",
+          authResponseExample,
+        ),
 
-            requestBody:
-
-                jsonRequest(
-
-                    "#/components/schemas/LoginRequest",
-
-                    loginRequestExample,
-
-                ),
-
-            responses: {
-
-                "200":
-
-                    jsonResponse(
-
-                        "Authenticated.",
-
-                        "#/components/schemas/AuthResponse",
-
-                        authResponseExample,
-
-                    ),
-
-                "401":
-                    unauthorizedResponse,
-
-            },
-
-        },
-
+        "401": unauthorizedResponse,
+      },
     },
-
+  },
 };

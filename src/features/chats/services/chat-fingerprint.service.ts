@@ -1,37 +1,31 @@
-import {
+import crypto from "node:crypto";
 
-    buildChatFingerprint,
+import { ChatType } from "../enums/chat-type.enum.js";
 
-} from "../utils/chat-fingerprint.util.js";
-
-import type {
-
-    CreateChatDto,
-
-} from "../dto/create-chat.dto.js";
+import type { CreateChatDto } from "../dto/create-chat.dto.js";
 
 export class ChatFingerprintService {
+  build(dto: CreateChatDto): string {
+    const members = [...dto.memberIds].sort();
 
-    build(
+    if (dto.type === ChatType.PRIVATE) {
+      return crypto
 
-        dto: CreateChatDto,
+        .createHash("sha256")
 
-    ): string {
+        .update(`private:${members.join(":")}`)
 
-        return buildChatFingerprint({
-
-            type: dto.type,
-
-            ownerId: dto.ownerId,
-
-            title: dto.title,
-
-            avatarUrl: dto.avatarUrl,
-
-            memberIds: dto.memberIds,
-
-        });
-
+        .digest("hex");
     }
 
+    return crypto
+
+      .createHash("sha256")
+
+      .update(
+        ["group", dto.ownerId, dto.title ?? "", dto.avatarUrl ?? "", members.join(",")].join("|"),
+      )
+
+      .digest("hex");
+  }
 }

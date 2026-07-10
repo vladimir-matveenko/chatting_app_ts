@@ -3,14 +3,9 @@ import { UserCredentialsMapper } from "./user-credentials.mapper.js";
 import { UserResponseMapper } from "./user-response.mapper.js";
 
 export class UsersMappers {
+  readonly user = new UserMapper();
 
-    readonly user =
-        new UserMapper();
+  readonly credentials = new UserCredentialsMapper();
 
-    readonly credentials =
-        new UserCredentialsMapper();
-
-    readonly response =
-        new UserResponseMapper();
-
+  readonly response = new UserResponseMapper();
 }

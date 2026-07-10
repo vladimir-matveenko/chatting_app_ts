@@ -1,67 +1,39 @@
 export const CreateChatRequestSchema = {
+  CreateChatRequest: {
+    type: "object",
 
-    CreateChatRequest: {
+    required: ["type", "memberIds"],
 
-        type: "object",
+    properties: {
+      type: {
+        type: "string",
 
-        required: [
+        enum: ["PRIVATE", "GROUP"],
+      },
 
-            "type",
+      title: {
+        type: "string",
 
-            "memberIds",
+        nullable: true,
+      },
 
-        ],
+      avatarUrl: {
+        type: "string",
 
-        properties: {
+        format: "uri",
 
-            type: {
+        nullable: true,
+      },
 
-                type: "string",
+      memberIds: {
+        type: "array",
 
-                enum: [
+        items: {
+          type: "string",
 
-                    "PRIVATE",
-
-                    "GROUP",
-
-                ],
-
-            },
-
-            title: {
-
-                type: "string",
-
-                nullable: true,
-
-            },
-
-            avatarUrl: {
-
-                type: "string",
-
-                format: "uri",
-
-                nullable: true,
-
-            },
-
-            memberIds: {
-
-                type: "array",
-
-                items: {
-
-                    type: "string",
-
-                    format: "uuid",
-
-                },
-
-            },
-
+          format: "uuid",
         },
-
+      },
     },
-
+  },
 };

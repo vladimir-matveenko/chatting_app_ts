@@ -1,39 +1,29 @@
-import type {
-    Router,
-} from "express";
+import type { Router } from "express";
 
-import type {
-    ChatsController,
-} from "./controllers/chats.controller.js";
+import type { ChatsController } from "./controllers/chats.controller.js";
 
-import type {
-    ChatsService,
-} from "./services/chats.service.js";
+import type { ChatsService } from "./services/chats.service.js";
 
-import type {
-    ChatsRepository,
-} from "./repositories/chats.repository.js";
+import type { ChatsRepository } from "./repositories/chats.repository.js";
 
-import type {
-    ChatMapper,
-} from "./mappers/chats.mapper.js";
+import type { ChatMapper } from "./mappers/chats.mapper.js";
 
-import type {
-    ChatListRepository,
-} from "./repositories/chat-list.repository.js";
+import type { ChatListRepository } from "./repositories/chat-list.repository.js";
+
+import type { ChatMembersRepository } from "./repositories/chat-members.repository.js";
 
 export interface ChatsFeature {
+  router: Router;
 
-    router: Router;
+  controller: ChatsController;
 
-    controller: ChatsController;
+  service: ChatsService;
 
-    service: ChatsService;
+  repository: ChatsRepository;
 
-    repository: ChatsRepository;
+  chatListRepository: ChatListRepository;
 
-    chatListRepository: ChatListRepository;
+  mapper: ChatMapper;
 
-    mapper: ChatMapper;
-
+  chatMembersRepository: ChatMembersRepository;
 }

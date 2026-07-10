@@ -1,55 +1,25 @@
-import type {
-    Mapper,
-} from "../../../core/mappers/mapper.js";
+import type { Mapper } from "../../../core/mappers/mapper.js";
 
-import type {
-    ChatMemberEntity,
-} from "../entities/chat-member.entity.js";
+import type { ChatMemberEntity } from "../entities/chat-member.entity.js";
 
-import type {
-    ChatMember,
-} from "../models/chat-member.model.js";
+import type { ChatMember } from "../models/chat-member.model.js";
 
-import {
-    ChatMemberRole,
-} from "../entities/chat-member-role.enum.js";
+export class ChatMembersMapper implements Mapper<ChatMemberEntity, ChatMember> {
+  map(entity: ChatMemberEntity): ChatMember {
+    return {
+      chatId: entity.chat_id,
 
-export class ChatMembersMapper
+      userId: entity.user_id,
 
-    implements Mapper<ChatMember, ChatMemberEntity> {
+      role: entity.role,
 
-    map(
+      joinedAt: entity.joined_at,
 
-        model: ChatMember,
+      lastReadMessageId: entity.last_read_message_id === null ? null : entity.last_read_message_id,
 
-    ): ChatMemberEntity {
+      isMuted: entity.is_muted,
 
-        return {
-
-            chatId:
-                model.chat_id.toString(),
-
-            userId:
-                model.user_id.toString(),
-
-            role:
-                model.role as ChatMemberRole,
-
-            joinedAt:
-                model.joined_at,
-
-            lastReadMessageId:
-                model.last_read_message_id?.toString()
-                ?? null,
-
-            isMuted:
-                model.is_muted,
-
-            isArchived:
-                model.is_archived,
-
-        };
-
-    }
-
+      isArchived: entity.is_archived,
+    };
+  }
 }

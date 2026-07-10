@@ -1,87 +1,61 @@
 export const ChatListItemSchema = {
+  ChatListItem: {
+    type: "object",
 
-    ChatListItem: {
+    properties: {
+      id: {
+        type: "string",
+      },
 
-        type: "object",
+      type: {
+        type: "string",
+      },
 
-        properties: {
+      title: {
+        type: "string",
 
-            id: {
+        nullable: true,
+      },
 
-                type: "string",
+      avatarUrl: {
+        type: "string",
 
-            },
+        nullable: true,
+      },
 
-            type: {
+      ownerId: {
+        type: "string",
+      },
 
-                type: "string",
+      createdAt: {
+        type: "string",
 
-            },
+        format: "date-time",
+      },
 
-            title: {
+      updatedAt: {
+        type: "string",
 
-                type: "string",
+        format: "date-time",
+      },
 
-                nullable: true,
+      lastMessage: {
+        type: "string",
 
-            },
+        nullable: true,
+      },
 
-            avatarUrl: {
+      lastMessageAt: {
+        type: "string",
 
-                type: "string",
+        format: "date-time",
 
-                nullable: true,
+        nullable: true,
+      },
 
-            },
-
-            ownerId: {
-
-                type: "string",
-
-            },
-
-            createdAt: {
-
-                type: "string",
-
-                format: "date-time",
-
-            },
-
-            updatedAt: {
-
-                type: "string",
-
-                format: "date-time",
-
-            },
-
-            lastMessage: {
-
-                type: "string",
-
-                nullable: true,
-
-            },
-
-            lastMessageAt: {
-
-                type: "string",
-
-                format: "date-time",
-
-                nullable: true,
-
-            },
-
-            unreadCount: {
-
-                type: "integer",
-
-            },
-
-        },
-
+      unreadCount: {
+        type: "integer",
+      },
     },
-
+  },
 };

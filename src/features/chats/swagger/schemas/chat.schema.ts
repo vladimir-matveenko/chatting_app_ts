@@ -1,67 +1,87 @@
 export const ChatSchema = {
+  Chat: {
+    type: "object",
 
-    Chat: {
+    properties: {
+      id: {
+        type: "string",
 
-        type: "object",
+        format: "uuid",
+      },
 
-        properties: {
+      type: {
+        type: "string",
+      },
 
-            id: {
+      title: {
+        type: "string",
 
-                type: "string",
+        nullable: true,
+      },
 
-                format: "uuid",
+      avatarUrl: {
+        type: "string",
 
-            },
+        nullable: true,
+      },
 
-            type: {
+      ownerId: {
+        type: "string",
 
-                type: "string",
+        format: "uuid",
+      },
 
-            },
+      createdAt: {
+        type: "string",
 
-            title: {
+        format: "date-time",
+      },
 
-                type: "string",
+      updatedAt: {
+        type: "string",
 
-                nullable: true,
-
-            },
-
-            avatarUrl: {
-
-                type: "string",
-
-                nullable: true,
-
-            },
-
-            ownerId: {
-
-                type: "string",
-
-                format: "uuid",
-
-            },
-
-            createdAt: {
-
-                type: "string",
-
-                format: "date-time",
-
-            },
-
-            updatedAt: {
-
-                type: "string",
-
-                format: "date-time",
-
-            },
-
-        },
-
+        format: "date-time",
+      },
     },
+  },
 
+  ChatMember: {
+    type: "object",
+
+    properties: {
+      chatId: {
+        type: "string",
+      },
+
+      userId: {
+        type: "string",
+      },
+
+      role: {
+        type: "string",
+
+        enum: ["owner", "admin", "member"],
+      },
+
+      joinedAt: {
+        type: "string",
+
+        format: "date-time",
+      },
+
+      lastReadMessageId: {
+        type: "string",
+
+        nullable: true,
+      },
+
+      isMuted: {
+        type: "boolean",
+      },
+
+      isArchived: {
+        type: "boolean",
+      },
+    },
+  },
 };

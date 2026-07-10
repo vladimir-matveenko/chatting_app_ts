@@ -1,126 +1,82 @@
-import { Database }
-    from "../../core/database/database.js";
+import type { JwtService } from "../../core/security/jwt/index.js";
 
-import type {
-    JwtService,
-} from "../../core/security/jwt/index.js";
+import type { UsersFeature } from "../users/index.js";
 
-import type {
-    UsersFeature,
-} from "../users/index.js";
+import type { AuthModule } from "./auth.module.interface.js";
 
-import type {
-    AuthModule,
-} from "./auth.module.interface.js";
+import { AuthController } from "./controllers/auth.controller.js";
 
-import { AuthController }
-    from "./controllers/auth.controller.js";
+import { AuthMappers } from "./mappers/auth.mappers.js";
 
-import { AuthMappers }
-    from "./mappers/auth.mappers.js";
+import { RefreshTokensRepository } from "./repositories/refresh-tokens.repository.js";
 
-import { RefreshTokenMapper }
-    from "./mappers/refresh-token.mapper.js";
+import { AuthService } from "./services/auth.service.js";
 
-import { RefreshTokensRepository }
-    from "./repositories/refresh-tokens.repository.js";
+import { createAuthRouter } from "./routes/auth.routes.js";
 
-import { AuthService }
-    from "./services/auth.service.js";
+import { AuthRequestValidators } from "./validators/auth-request.validators.js";
 
-import { createAuthRouter }
-    from "./routes/auth.routes.js";
+import { LoginRequestValidator } from "./validators/login-request.validator.js";
 
-import { AuthRequestValidators }
-    from "./validators/auth-request.validators.js";
+import { RegisterRequestValidator } from "./validators/register-request.validator.js";
 
-import { LoginRequestValidator }
-    from "./validators/login-request.validator.js";
-
-import { RegisterRequestValidator }
-    from "./validators/register-request.validator.js";
-
-import { RefreshTokenRequestValidator }
-    from "./validators/refresh-token-request.validator.js";
+import { RefreshTokenRequestValidator } from "./validators/refresh-token-request.validator.js";
 import { PasswordHasher } from "../../core/security/password/index.js";
 import { TokenHasher } from "../../core/security/index.js";
 import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
 
 export function createAuthModule(
+  users: UsersFeature,
 
-    users: UsersFeature,
+  passwordHasher: PasswordHasher,
 
-    passwordHasher: PasswordHasher,
+  tokenHasher: TokenHasher,
 
-    tokenHasher: TokenHasher,
+  jwtService: JwtService,
 
-    jwtService: JwtService,
+  jwtAuthMiddleware: JwtAuthMiddleware,
 
-    jwtAuthMiddleware: JwtAuthMiddleware,
-
-    refreshTokensRepository: RefreshTokensRepository,
-
+  refreshTokensRepository: RefreshTokensRepository,
 ): AuthModule {
+  const mappers = new AuthMappers(users.mappers.response);
 
-    const mappers =
-        new AuthMappers(
-            users.mappers.response,
-        );
+  const service = new AuthService(
+    users.repository,
 
-    const service =
-        new AuthService(
+    refreshTokensRepository,
 
-            users.repository,
+    users.service,
 
-            refreshTokensRepository,
+    passwordHasher,
 
-            users.service,
+    tokenHasher,
 
-            passwordHasher,
+    jwtService,
+  );
 
-            tokenHasher,
+  const validators = new AuthRequestValidators(
+    new LoginRequestValidator(),
 
-            jwtService,
+    new RegisterRequestValidator(),
 
-        );
+    new RefreshTokenRequestValidator(),
+  );
 
-    const validators =
-        new AuthRequestValidators(
+  const controller = new AuthController(
+    service,
 
-            new LoginRequestValidator(),
+    validators,
 
-            new RegisterRequestValidator(),
+    mappers,
+  );
 
-            new RefreshTokenRequestValidator(),
+  return {
+    router: createAuthRouter(controller, jwtAuthMiddleware),
 
-        );
+    service,
 
-    const controller =
-        new AuthController(
+    repository: refreshTokensRepository,
 
-            service,
-
-            validators,
-
-            mappers,
-
-        );
-
-    return {
-
-        router:
-            createAuthRouter(
-                controller,
-                jwtAuthMiddleware,
-            ),
-
-        service,
-
-        repository:
-            refreshTokensRepository,
-
-        mappers,
-
-    };
-
+    mappers,
+  };
 }

@@ -1,66 +1,41 @@
-import {
-    Router,
-} from "express";
+import { Router } from "express";
 
-import {
-    asyncHandler,
-} from "../../../core/middleware/async-handler.js";
+import { asyncHandler } from "../../../core/middleware/async-handler.js";
 
-import type {
-    JwtAuthMiddleware,
-} from "../../../core/middleware/jwt-auth.middleware.js";
+import type { JwtAuthMiddleware } from "../../../core/middleware/jwt-auth.middleware.js";
 
-import type {
-    ChatsController,
-} from "../controllers/chats.controller.js";
+import type { ChatsController } from "../controllers/chats.controller.js";
 
 export function createChatsRouter(
+  controller: ChatsController,
 
-    controller: ChatsController,
-
-    jwtAuthMiddleware: JwtAuthMiddleware,
-
+  jwtAuthMiddleware: JwtAuthMiddleware,
 ): Router {
+  const router = Router();
 
-    const router =
-        Router();
+  router.get(
+    "/",
 
-    router.get(
+    jwtAuthMiddleware.handler,
 
-        "/",
+    asyncHandler(controller.list.bind(controller)),
+  );
 
-        jwtAuthMiddleware.handler,
+  router.post(
+    "/",
 
-        asyncHandler(
+    jwtAuthMiddleware.handler,
 
-            controller.list.bind(
+    asyncHandler(controller.create.bind(controller)),
+  );
 
-                controller,
+  router.get(
+    "/:id/members",
 
-            ),
+    jwtAuthMiddleware.handler,
 
-        ),
+    controller.findMembers.bind(controller),
+  );
 
-    );
-
-    router.post(
-
-        "/",
-
-        jwtAuthMiddleware.handler,
-
-        asyncHandler(
-
-            controller.create.bind(
-
-                controller,
-
-            ),
-
-        ),
-
-    );
-
-    return router;
-
+  return router;
 }

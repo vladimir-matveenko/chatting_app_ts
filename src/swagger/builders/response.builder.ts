@@ -1,35 +1,21 @@
 export function jsonResponse(
+  description: string,
 
-    description: string,
+  schemaRef: string,
 
-    schemaRef: string,
-
-    example?: Record<string, unknown>,
-
+  example?: Record<string, unknown>,
 ) {
+  return {
+    description,
 
-    return {
-
-        description,
-
-        content: {
-
-            "application/json": {
-
-                schema: {
-
-                    $ref: schemaRef,
-
-                },
-
-                ...(example
-                    ? { example }
-                    : {}),
-
-            },
-
+    content: {
+      "application/json": {
+        schema: {
+          $ref: schemaRef,
         },
 
-    };
-
+        ...(example ? { example } : {}),
+      },
+    },
+  };
 }

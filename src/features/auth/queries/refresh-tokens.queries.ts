@@ -1,6 +1,5 @@
 export const RefreshTokensQueries = {
-
-    CREATE_REFRESH_TOKEN: `
+  CREATE_REFRESH_TOKEN: `
         INSERT INTO refresh_tokens (
             user_id,
             token_hash,
@@ -14,13 +13,13 @@ export const RefreshTokensQueries = {
         RETURNING *;
     `,
 
-    FIND_REFRESH_TOKEN: `
+  FIND_REFRESH_TOKEN: `
         SELECT *
         FROM refresh_tokens
         WHERE user_id = $1;
     `,
 
-    UPDATE_REFRESH_TOKEN: `
+  UPDATE_REFRESH_TOKEN: `
         UPDATE refresh_tokens
         SET
             token_hash = $2,
@@ -30,10 +29,9 @@ export const RefreshTokensQueries = {
         RETURNING *;
     `,
 
-    DELETE_REFRESH_TOKEN: `
+  DELETE_REFRESH_TOKEN: `
         DELETE
         FROM refresh_tokens
         WHERE user_id = $1;
     `,
-
 };

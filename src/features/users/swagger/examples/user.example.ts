@@ -1,17 +1,13 @@
 export const userExample = {
+  id: 1,
 
-    id: 1,
+  username: "john",
 
-    username: "john",
+  displayName: "John Smith",
 
-    displayName: "John Smith",
+  email: "john@example.com",
 
-    email: "john@example.com",
+  avatarUrl: "https://example.com/avatar.png",
 
-    avatarUrl:
-        "https://example.com/avatar.png",
-
-    createdAt:
-        "2026-07-07T10:00:00.000Z",
-
+  createdAt: "2026-07-07T10:00:00.000Z",
 };

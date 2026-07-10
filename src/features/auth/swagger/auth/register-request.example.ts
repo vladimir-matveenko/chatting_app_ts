@@ -1,9 +1,7 @@
 export const registerRequestExample = {
+  username: "john",
 
-    username: "john",
+  email: "john@example.com",
 
-    email: "john@example.com",
-
-    password: "Password123!",
-
+  password: "Password123!",
 };

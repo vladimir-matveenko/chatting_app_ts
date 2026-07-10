@@ -1,27 +1,13 @@
-import {
-    ChatSchema,
-} from "./chat.schema.js";
+import { ChatSchema } from "./chat.schema.js";
 
-import {
-    ChatDetailsSchema,
-} from "./chat-details.schema.js";
+import { ChatListItemSchema } from "./chat-list-item.schema.js";
 
-import {
-    ChatListItemSchema,
-} from "./chat-list-item.schema.js";
-
-import {
-    CreateChatRequestSchema,
-} from "./create-chat-request.schema.js";
+import { CreateChatRequestSchema } from "./create-chat-request.schema.js";
 
 export const chatsSchemas = {
+  ...ChatSchema,
 
-    ...ChatSchema,
+  ...ChatListItemSchema,
 
-    ...ChatDetailsSchema,
-
-    ...ChatListItemSchema,
-
-    ...CreateChatRequestSchema,
-
+  ...CreateChatRequestSchema,
 };

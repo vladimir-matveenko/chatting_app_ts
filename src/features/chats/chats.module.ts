@@ -1,171 +1,111 @@
-import type {
-    Database,
-} from "../../core/database/database.js";
+import type { Database } from "../../core/database/database.js";
 
-import type {
-    UsersRepository,
-} from "../users/repositories/users.repository.js";
+import type { UsersRepository } from "../users/repositories/users.repository.js";
 
-import {
-    ChatMapper,
-} from "./mappers/chats.mapper.js";
+import { ChatMapper } from "./mappers/chats.mapper.js";
 
-import {
-    ChatMembersMapper,
-} from "./mappers/chat-members.mapper.js";
+import { ChatMembersMapper } from "./mappers/chat-members.mapper.js";
 
-import {
-    CreateChatRequestMapper,
-} from "./mappers/create-chat-request.mapper.js";
+import { CreateChatRequestMapper } from "./mappers/create-chat-request.mapper.js";
 
-import {
-    ChatsRepository,
-} from "./repositories/chats.repository.js";
+import { ChatsRepository } from "./repositories/chats.repository.js";
 
-import {
-    ChatMembersRepository,
-} from "./repositories/chat-members.repository.js";
+import { ChatMembersRepository } from "./repositories/chat-members.repository.js";
 
-import {
-    ChatFingerprintService,
-} from "./services/chat-fingerprint.service.js";
+import { ChatFingerprintService } from "./services/chat-fingerprint.service.js";
 
-import {
-    ChatsService,
-} from "./services/chats.service.js";
+import { ChatsService } from "./services/chats.service.js";
 
-import {
-    ChatsController,
-} from "./controllers/chats.controller.js";
+import { ChatsController } from "./controllers/chats.controller.js";
 
-import {
-    createChatsRouter,
-} from "./routes/chats.routes.js";
+import { createChatsRouter } from "./routes/chats.routes.js";
 
-import {
-    CreateChatRequestValidator,
-} from "./validators/create-chat-request.validator.js";
+import { CreateChatRequestValidator } from "./validators/create-chat-request.validator.js";
 
-import type {
-    ChatsFeature,
-} from "./chats.module.interface.js";
+import type { ChatsFeature } from "./chats.module.interface.js";
 
 import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
 import { ChatListItemMapper } from "./mappers/chat-list-item.mapper.js";
 import { ChatListRepository } from "./repositories/chat-list.repository.js";
-import { ChatDetailsMapper } from "./mappers/chat-details.mapper.js";
 
 export function createChatsModule(
+  database: Database,
 
-    database: Database,
+  usersRepository: UsersRepository,
 
-    usersRepository: UsersRepository,
-
-    jwtAuthMiddleware: JwtAuthMiddleware,
-
+  jwtAuthMiddleware: JwtAuthMiddleware,
 ): ChatsFeature {
+  const chatMapper = new ChatMapper();
 
-    const chatMapper =
-        new ChatMapper();
+  const memberMapper = new ChatMembersMapper();
 
-    const memberMapper =
-        new ChatMembersMapper();
+  const chatsRepository = new ChatsRepository(
+    database,
 
-    const chatsRepository =
-        new ChatsRepository(
+    chatMapper,
+  );
 
-            database,
+  const chatMembersRepository = new ChatMembersRepository(
+    database,
 
-            chatMapper,
+    memberMapper,
+  );
 
-        );
+  const fingerprintService = new ChatFingerprintService();
 
-    const chatMembersRepository =
-        new ChatMembersRepository(
+  const chatListItemMapper = new ChatListItemMapper();
 
-            database,
+  const chatListRepository = new ChatListRepository(
+    database,
 
-            memberMapper,
+    chatListItemMapper,
+  );
 
-        );
+  const service = new ChatsService(
+    database,
 
-    const fingerprintService =
-        new ChatFingerprintService();
+    usersRepository,
 
-    const chatListItemMapper =
-        new ChatListItemMapper();
+    chatsRepository,
 
-    const chatListRepository =
-        new ChatListRepository(
+    chatListRepository,
 
-            database,
+    chatMembersRepository,
 
-            chatListItemMapper,
+    fingerprintService,
+  );
 
-        );
+  const validator = new CreateChatRequestValidator();
 
-    const chatDetailsMapper =
-        new ChatDetailsMapper();
+  const mapper = new CreateChatRequestMapper();
 
-    const service =
-        new ChatsService(
+  const controller = new ChatsController(
+    service,
 
-            database,
+    validator,
 
-            usersRepository,
+    mapper,
+  );
 
-            chatsRepository,
+  const router = createChatsRouter(
+    controller,
 
-            chatListRepository,
+    jwtAuthMiddleware,
+  );
 
-            chatMembersRepository,
+  return {
+    router,
 
-            fingerprintService,
+    controller,
 
-            chatDetailsMapper,
+    service,
 
-        );
+    repository: chatsRepository,
 
-    const validator =
-        new CreateChatRequestValidator();
+    chatListRepository,
 
-    const mapper =
-        new CreateChatRequestMapper();
+    chatMembersRepository,
 
-    const controller =
-        new ChatsController(
-
-            service,
-
-            validator,
-
-            mapper,
-
-        );
-
-    const router =
-        createChatsRouter(
-
-            controller,
-
-            jwtAuthMiddleware,
-
-        );
-
-    return {
-
-        router,
-
-        controller,
-
-        service,
-
-        repository: chatsRepository,
-
-        chatListRepository,
-
-        mapper: chatMapper,
-
-    };
-
+    mapper: chatMapper,
+  };
 }

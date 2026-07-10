@@ -1,3 +1,3 @@
 export interface GetUserByUsernameRequestDto {
-    username: string;
+  username: string;
 }

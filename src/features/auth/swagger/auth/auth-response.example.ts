@@ -1,31 +1,21 @@
 export const authResponseExample = {
+  user: {
+    id: 1,
 
-    user: {
+    username: "john",
 
-        id: 1,
+    displayName: "John Smith",
 
-        username: "john",
+    email: "john@example.com",
 
-        displayName: "John Smith",
+    avatarUrl: "https://example.com/avatar.png",
 
-        email: "john@example.com",
+    createdAt: "2026-07-05T10:00:00.000Z",
+  },
 
-        avatarUrl:
-            "https://example.com/avatar.png",
+  tokens: {
+    accessToken: "<access-token>",
 
-        createdAt:
-            "2026-07-05T10:00:00.000Z",
-
-    },
-
-    tokens: {
-
-        accessToken:
-            "<access-token>",
-
-        refreshToken:
-            "<refresh-token>",
-
-    },
-
+    refreshToken: "<refresh-token>",
+  },
 };

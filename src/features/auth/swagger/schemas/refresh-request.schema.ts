@@ -1,23 +1,13 @@
 export const RefreshRequest = {
+  type: "object",
 
-    type: "object",
+  required: ["refreshToken"],
 
-    required: [
+  properties: {
+    refreshToken: {
+      type: "string",
 
-        "refreshToken",
-
-    ],
-
-    properties: {
-
-        refreshToken: {
-
-            type: "string",
-
-            example: "<refresh-token>",
-
-        },
-
+      example: "<refresh-token>",
     },
-
+  },
 };

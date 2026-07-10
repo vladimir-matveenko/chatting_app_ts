@@ -1,35 +1,21 @@
 export function jsonRequest(
+  schemaRef: string,
 
-    schemaRef: string,
+  example?: unknown,
 
-    example?: unknown,
-
-    required = true,
-
+  required = true,
 ) {
+  return {
+    required,
 
-    return {
-
-        required,
-
-        content: {
-
-            "application/json": {
-
-                schema: {
-
-                    $ref: schemaRef,
-
-                },
-
-                ...(example
-                    ? { example }
-                    : {}),
-
-            },
-
+    content: {
+      "application/json": {
+        schema: {
+          $ref: schemaRef,
         },
 
-    };
-
+        ...(example ? { example } : {}),
+      },
+    },
+  };
 }

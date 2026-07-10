@@ -1,330 +1,179 @@
-import type {
-    CreateChatDto,
-} from "../dto/create-chat.dto.js";
+import type { CreateChatDto } from "../dto/create-chat.dto.js";
 
 import { IChatMembersRepository } from "../interfaces/chat-members.repository.interface.js";
 
-import type {
-    IChatsRepository,
-} from "../interfaces/chats.repository.interface.js";
+import type { IChatsRepository } from "../interfaces/chats.repository.interface.js";
 
 import { ChatFingerprintService } from "./chat-fingerprint.service.js";
 
-import {
-    ChatMemberRole,
-} from "../entities/chat-member-role.enum.js";
+import { ChatMemberRole } from "../enums/chat-member-role.enum.js";
 import { Database } from "../../../core/database/database.js";
 import { PoolClient } from "pg";
-import { ChatType } from "../entities/chat-type.enum.js";
-import { ValidationError } from "../../../core/errors/index.js";
-import type {
-    IUsersRepository,
-} from "../../users/interfaces/users.repository.interface.js";
+import { ChatType } from "../enums/chat-type.enum.js";
+import { ForbiddenError, ValidationError } from "../../../core/errors/index.js";
+import type { IUsersRepository } from "../../users/interfaces/users.repository.interface.js";
 import { Chat } from "../models/chat.model.js";
-import type {
-    IChatListRepository,
-} from "../interfaces/chat-list.repository.interface.js";
+import type { IChatListRepository } from "../interfaces/chat-list.repository.interface.js";
 import { ChatListItem } from "../models/chat-list-item.model.js";
-import { ChatDetailsMapper } from "../mappers/chat-details.mapper.js";
-import { ChatDetails } from "../models/chat-details.model.js";
+import { ChatMember } from "../models/chat-member.model.js";
 
 export class ChatsService {
+  constructor(
+    private readonly database: Database,
 
-    constructor(
+    private readonly usersRepository: IUsersRepository,
 
-        private readonly database: Database,
+    private readonly chatsRepository: IChatsRepository,
 
-        private readonly usersRepository: IUsersRepository,
+    private readonly chatListRepository: IChatListRepository,
 
-        private readonly chatsRepository: IChatsRepository,
+    private readonly chatMembersRepository: IChatMembersRepository,
 
-        private readonly chatListRepository: IChatListRepository,
+    private readonly fingerprintService: ChatFingerprintService,
+  ) {}
 
-        private readonly chatMembersRepository: IChatMembersRepository,
+  async create(dto: CreateChatDto): Promise<Chat> {
+    const memberIds = this.normalizeMembers(
+      dto.memberIds,
 
-        private readonly fingerprintService: ChatFingerprintService,
+      dto.ownerId,
+    );
 
-        private readonly chatDetailsMapper: ChatDetailsMapper,
+    await this.validateMembers(dto, memberIds);
 
-    ) { }
+    const normalizedDto: CreateChatDto = {
+      ...dto,
 
-    async create(
+      memberIds,
 
-        dto: CreateChatDto,
+      fingerprint: this.fingerprintService.build({
+        ...dto,
 
-    ): Promise<ChatDetails> {
+        memberIds,
+      }),
+    };
 
-        const memberIds =
+    return this.database.transaction(async (client: PoolClient) => {
+      const existing = await this.chatsRepository.findByFingerprintTx(
+        client,
+        normalizedDto.fingerprint,
+      );
 
-            this.normalizeMembers(
+      if (existing) {
+        return existing;
+      }
 
-                dto.memberIds,
+      const chat = await this.chatsRepository.createTx(client, normalizedDto);
 
-                dto.ownerId,
+      await this.createChatMembers(client, chat.id, normalizedDto);
 
-            );
+      return chat;
+    });
+  }
 
-        await this.validateMembers(
-            dto,
-            memberIds,
-        );
+  private normalizeMembers(
+    memberIds: string[],
 
-        const normalizedDto: CreateChatDto = {
+    ownerId: string,
+  ): string[] {
+    const normalized = [...new Set(memberIds)];
 
-            ...dto,
-
-            memberIds,
-
-            fingerprint:
-                this.fingerprintService.build({
-
-                    ...dto,
-
-                    memberIds,
-
-                }),
-
-        };
-
-        return this.database.transaction(
-
-            async (
-
-                client: PoolClient,
-
-            ) => {
-
-                const existing =
-                    await this.chatsRepository.findByFingerprintTx(
-
-                        client,
-
-                        normalizedDto.fingerprint,
-
-                    );
-
-                if (existing) {
-
-                    if (existing) {
-
-                        return this.chatDetailsMapper.map(
-
-                            existing,
-
-                        );
-
-                    }
-
-                }
-
-                const chat =
-                    await this.chatsRepository.createTx(
-
-                        client,
-
-                        normalizedDto,
-
-                    );
-
-                await this.createChatMembers(
-
-                    client,
-
-                    chat.id,
-
-                    normalizedDto,
-
-                );
-
-                return this.chatDetailsMapper.map(
-
-                    chat,
-
-                );
-
-            },
-
-        );
-
+    if (!normalized.includes(ownerId)) {
+      normalized.push(ownerId);
     }
 
-    private normalizeMembers(
+    return normalized;
+  }
 
-        memberIds: string[],
+  private async validateMembers(
+    dto: CreateChatDto,
 
-        ownerId: string,
+    memberIds: string[],
+  ): Promise<void> {
+    this.validateChatType(dto.type, memberIds);
 
-    ): string[] {
+    const users = await this.usersRepository.findByIds(memberIds);
 
-        const normalized =
+    if (users.length !== memberIds.length) {
+      throw new ValidationError("One or more users do not exist.");
+    }
+  }
 
-            [...new Set(memberIds)];
+  private validateChatType(
+    type: ChatType,
 
-        if (
-
-            !normalized.includes(ownerId)
-
-        ) {
-
-            normalized.push(ownerId);
-
-        }
-
-        return normalized;
-
+    memberIds: string[],
+  ): void {
+    if (type === ChatType.PRIVATE && memberIds.length !== 2) {
+      throw new ValidationError("Private chat must contain exactly two members.");
     }
 
-    private async validateMembers(
-
-        dto: CreateChatDto,
-
-        memberIds: string[],
-
-    ): Promise<void> {
-
-        this.validateChatType(
-            dto.type,
-            memberIds,
-        );
-
-        const users =
-            await this.usersRepository.findByIds(
-                memberIds,
-            );
-
-        if (
-
-            users.length !== memberIds.length
-
-        ) {
-
-            throw new ValidationError(
-
-                "One or more users do not exist.",
-
-            );
-
-        }
-
+    if (type === ChatType.GROUP && memberIds.length < 2) {
+      throw new ValidationError("Group chat must contain at least two members.");
     }
+  }
 
-    private validateChatType(
+  private async createChatMembers(
+    client: PoolClient,
 
-        type: ChatType,
+    chatId: string,
 
-        memberIds: string[],
+    dto: CreateChatDto,
+  ): Promise<void> {
+    for (const memberId of dto.memberIds) {
+      await this.chatMembersRepository.addTx(
+        client,
 
-    ): void {
+        {
+          chatId,
 
-        if (
+          userId: memberId,
 
-            type === ChatType.PRIVATE
-
-            &&
-
-            memberIds.length !== 2
-
-        ) {
-
-            throw new ValidationError(
-
-                "Private chat must contain exactly two members.",
-
-
-            );
-
-        }
-
-        if (
-
-            type === ChatType.GROUP
-
-            &&
-
-            memberIds.length < 2
-
-        ) {
-
-            throw new ValidationError(
-
-                "Group chat must contain at least two members.",
-
-            );
-
-        }
-
+          role: memberId === dto.ownerId ? ChatMemberRole.OWNER : ChatMemberRole.MEMBER,
+        },
+      );
     }
+  }
 
-    private async createChatMembers(
+  async findById(id: string): Promise<Chat | null> {
+    return this.chatsRepository.findById(id);
+  }
 
-        client: PoolClient,
+  async findByUser(userId: string): Promise<ChatListItem[]> {
+    return this.chatListRepository.findByUser(userId);
+  }
 
-        chatId: string,
+  async findMembers(
+    chatId: string,
 
-        dto: CreateChatDto,
+    userId: string,
+  ): Promise<ChatMember[]> {
+    await this.ensureMember(
+      chatId,
 
-    ): Promise<void> {
+      userId,
+    );
 
-        for (
+    return this.chatMembersRepository.findByChat(chatId);
+  }
 
-            const memberId
+  private async ensureMember(
+    chatId: string,
 
-            of dto.memberIds
+    userId: string,
+  ): Promise<void> {
+    const isMember = await this.chatMembersRepository.isMember(
+      chatId,
 
-        ) {
+      userId,
+    );
 
-            await this.chatMembersRepository.addTx(
+    if (!isMember) {
+      throw new ForbiddenError(
+        "You are not a member of this chat.",
 
-                client,
-
-                {
-
-                    chatId,
-
-                    userId: memberId,
-
-                    role:
-
-                        memberId === dto.ownerId
-
-                            ? ChatMemberRole.OWNER
-
-                            : ChatMemberRole.MEMBER,
-
-                },
-
-            );
-
-        }
-
+        "CHAT_ACCESS_DENIED",
+      );
     }
-
-    async findById(
-
-        id: string,
-
-    ): Promise<Chat | null> {
-
-        return this.chatsRepository.findById(
-
-            id,
-
-        );
-
-    }
-
-    async findByUser(
-
-        userId: string,
-
-    ): Promise<ChatListItem[]> {
-
-        return this.chatListRepository.findByUser(
-
-            userId,
-
-        );
-
-    }
-
+  }
 }

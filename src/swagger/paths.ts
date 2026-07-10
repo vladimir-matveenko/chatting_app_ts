@@ -1,21 +1,17 @@
-import {
-    authPaths,
-} from "../features/auth/swagger/index.js";
+import { authPaths } from "../features/auth/swagger/index.js";
 
-import {
-    usersPaths,
-} from "../features/users/swagger/index.js";
+import { usersPaths } from "../features/users/swagger/index.js";
 
-import {
-    chatsPaths,
-} from "../features/chats/swagger/index.js";
+import { chatsPaths } from "../features/chats/swagger/index.js";
+
+import { messagesPaths } from "../features/messages/swagger/index.js";
 
 export const paths = {
+  ...authPaths,
 
-    ...authPaths,
+  ...usersPaths,
 
-    ...usersPaths,
+  ...chatsPaths,
 
-    ...chatsPaths,
-
+  ...messagesPaths,
 };

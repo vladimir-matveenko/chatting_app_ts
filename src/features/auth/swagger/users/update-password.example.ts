@@ -1,9 +1,5 @@
 export const changePasswordExample = {
+  currentPassword: "Password123!",
 
-    currentPassword:
-        "Password123!",
-
-    newPassword:
-        "Password456!",
-
+  newPassword: "Password456!",
 };

@@ -1,7 +1,5 @@
 export interface HealthResponseDto {
+  status: "ok";
 
-    status: "ok";
-
-    version: string;
-
+  version: string;
 }

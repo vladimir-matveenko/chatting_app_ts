@@ -1,7 +1,5 @@
 export const loginRequestExample = {
+  email: "john@example.com",
 
-    email: "john@example.com",
-
-    password: "Password123!",
-
+  password: "Password123!",
 };

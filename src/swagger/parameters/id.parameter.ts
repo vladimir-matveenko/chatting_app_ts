@@ -1,20 +1,15 @@
 export const idParameter = {
+  name: "id",
 
-    name: "id",
+  in: "path",
 
-    in: "path",
+  required: true,
 
-    required: true,
+  schema: {
+    type: "integer",
+  },
 
-    schema: {
+  description: "Resource identifier",
 
-        type: "integer",
-
-    },
-
-    description:
-        "Resource identifier",
-
-    example: 1,
-
+  example: 1,
 };
