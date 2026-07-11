@@ -61,13 +61,14 @@ export const ChatsQueries = {
     FROM chats c
 
     INNER JOIN chat_members cm
-
         ON cm.chat_id = c.id
 
-    WHERE cm.user_id = $1 AND cm.is_archived = FALSE;
+    WHERE
+        cm.user_id = $1
+        AND cm.is_archived = FALSE
 
     ORDER BY c.updated_at DESC;
-    `,
+`,
 
   UPDATE_ACTIVITY: `
     UPDATE chats
