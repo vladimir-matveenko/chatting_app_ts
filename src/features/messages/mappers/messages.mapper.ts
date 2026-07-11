@@ -28,6 +28,16 @@ export class MessagesMapper implements Mapper<MessageEntity, Message> {
       updatedAt: entity.updated_at,
 
       isDeleted: entity.is_deleted,
+
+      reply: entity.reply_id
+        ? {
+            id: entity.reply_id,
+            senderId: entity.reply_sender_id!,
+            type: entity.reply_type!,
+            body: entity.reply_body,
+            deletedAt: entity.reply_deleted_at,
+          }
+        : null,
     };
   }
 }

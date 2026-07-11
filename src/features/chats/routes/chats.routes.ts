@@ -37,5 +37,14 @@ export function createChatsRouter(
     controller.findMembers.bind(controller),
   );
 
+  // mark message as read
+  router.post(
+    "/:id/read",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.markRead.bind(controller)),
+  );
+
   return router;
 }

@@ -72,9 +72,10 @@ export class MessagesController {
       throw new Error("Authenticated user is missing.");
     }
 
-    const limit = Number(request.query.limit ?? 50);
+    const before =
+      typeof request.query.before === "string" ? new Date(request.query.before) : undefined;
 
-    const before = typeof request.query.before === "string" ? request.query.before : undefined;
+    const limit = typeof request.query.limit === "string" ? Number(request.query.limit) : 30;
 
     const messages = await this.service.findByChat(
       id,

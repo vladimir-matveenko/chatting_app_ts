@@ -79,23 +79,13 @@ export class MessagesService {
 
     userId: string,
 
-    limit = 50,
+    limit = 30,
 
-    before?: string,
+    before?: Date,
   ): Promise<Message[]> {
-    await this.ensureMember(
-      chatId,
+    await this.ensureMember(chatId, userId);
 
-      userId,
-    );
-
-    return this.messagesRepository.findByChat(
-      chatId,
-
-      limit,
-
-      before,
-    );
+    return this.messagesRepository.findByChat(chatId, limit, before);
   }
 
   private async ensureChatExists(chatId: string): Promise<void> {

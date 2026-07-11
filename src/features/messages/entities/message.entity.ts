@@ -22,4 +22,14 @@ export interface MessageEntity {
   updated_at: Date;
 
   is_deleted: boolean;
+
+  reply_id: string | null;
+
+  reply_sender_id: string | null;
+
+  reply_body: string | null;
+
+  reply_type: string | null;
+
+  reply_deleted_at: Date | null;
 }

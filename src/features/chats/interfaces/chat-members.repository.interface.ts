@@ -6,8 +6,6 @@ import { ChatMember } from "../models/chat-member.model.js";
 export interface IChatMembersRepository {
   add(dto: CreateChatMemberDto): Promise<ChatMember>;
 
-  addMany(members: CreateChatMemberDto[]): Promise<void>;
-
   addTx(
     client: PoolClient,
 

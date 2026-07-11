@@ -20,7 +20,7 @@ export interface IMessagesRepository {
 
     limit: number,
 
-    before?: string,
+    before?: Date,
   ): Promise<Message[]>;
 
   update(dto: UpdateMessageDto): Promise<Message>;
