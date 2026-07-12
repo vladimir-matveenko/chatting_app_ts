@@ -30,6 +30,14 @@ export function createChatsRouter(
   );
 
   router.get(
+    "/:id",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.findById.bind(controller)),
+  );
+
+  router.get(
     "/:id/members",
 
     jwtAuthMiddleware.handler,

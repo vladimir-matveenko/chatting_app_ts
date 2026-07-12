@@ -55,6 +55,26 @@ export class ChatsController {
     response.json(chats);
   }
 
+  async findById(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    const id = request.params.id;
+
+    if (typeof id !== "string") {
+      throw new ValidationError("Chat id is required.");
+    }
+
+    const chat = await this.service.findById(
+      id,
+
+      request.user!.userId,
+    );
+
+    response.json(chat);
+  }
+
   async findMembers(
     request: Request,
 
