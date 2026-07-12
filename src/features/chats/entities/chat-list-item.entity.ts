@@ -1,13 +1,15 @@
+import { ChatType } from "../enums/chat-type.enum.js";
+
 export interface ChatListItemEntity {
   id: string;
 
-  type: string;
+  type: ChatType;
 
   title: string | null;
 
   avatar_url: string | null;
 
-  owner_id: string;
+  owner_id: string | null;
 
   created_at: Date;
 
