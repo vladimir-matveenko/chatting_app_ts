@@ -40,8 +40,18 @@ export class MessagesRepository
     );
   }
 
-  async createTx(client: PoolClient, dto: CreateMessageDto): Promise<Message> {
-    throw new Error("Not implemented.");
+  async createTx(
+    client: PoolClient,
+
+    dto: CreateMessageDto,
+  ): Promise<Message> {
+    return this.saveOneTx(
+      client,
+
+      MessagesQueries.CREATE,
+
+      [dto.chatId, dto.senderId, dto.type, dto.body, dto.replyToId],
+    );
   }
 
   async findById(id: string): Promise<Message | null> {
@@ -57,7 +67,7 @@ export class MessagesRepository
 
     limit: number,
 
-    before?: string,
+    before?: Date,
   ): Promise<Message[]> {
     return this.findMany(
       MessagesQueries.FIND_BY_CHAT,

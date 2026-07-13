@@ -13,8 +13,6 @@ export interface MessageEntity {
 
   reply_to_id: string | null;
 
-  edited_at: Date | null;
-
   deleted_at: Date | null;
 
   created_at: Date;
@@ -22,4 +20,14 @@ export interface MessageEntity {
   updated_at: Date;
 
   is_deleted: boolean;
+
+  reply_id: string | null;
+
+  reply_sender_id: string | null;
+
+  reply_body: string | null;
+
+  reply_type: MessageType | null;
+
+  reply_deleted_at: Date | null;
 }

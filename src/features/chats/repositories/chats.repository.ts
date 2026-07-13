@@ -96,11 +96,7 @@ export class ChatsRepository extends BaseRepository<ChatEntity, Chat> implements
   }
 
   async findById(id: string): Promise<Chat | null> {
-    return this.findOne(
-      ChatsQueries.FIND_BY_ID,
-
-      [id],
-    );
+    return this.findOne(ChatsQueries.FIND_BY_ID, [id]);
   }
 
   async updateActivityTx(

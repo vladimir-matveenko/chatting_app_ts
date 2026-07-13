@@ -20,7 +20,6 @@ CREATE TABLE chat_members (
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     role chat_member_role NOT NULL DEFAULT 'member',
     joined_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    last_read_message_id BIGINT,
     is_muted BOOLEAN NOT NULL DEFAULT FALSE,
     is_archived BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (chat_id, user_id)

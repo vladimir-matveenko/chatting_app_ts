@@ -30,11 +30,28 @@ export function createChatsRouter(
   );
 
   router.get(
+    "/:id",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.findById.bind(controller)),
+  );
+
+  router.get(
     "/:id/members",
 
     jwtAuthMiddleware.handler,
 
     controller.findMembers.bind(controller),
+  );
+
+  // mark message as read
+  router.post(
+    "/:id/read",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.markRead.bind(controller)),
   );
 
   return router;

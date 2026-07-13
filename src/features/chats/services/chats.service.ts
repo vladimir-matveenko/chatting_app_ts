@@ -10,7 +10,7 @@ import { ChatMemberRole } from "../enums/chat-member-role.enum.js";
 import { Database } from "../../../core/database/database.js";
 import { PoolClient } from "pg";
 import { ChatType } from "../enums/chat-type.enum.js";
-import { ForbiddenError, ValidationError } from "../../../core/errors/index.js";
+import { ForbiddenError, NotFoundError, ValidationError } from "../../../core/errors/index.js";
 import type { IUsersRepository } from "../../users/interfaces/users.repository.interface.js";
 import { Chat } from "../models/chat.model.js";
 import type { IChatListRepository } from "../interfaces/chat-list.repository.interface.js";
@@ -135,8 +135,28 @@ export class ChatsService {
     }
   }
 
-  async findById(id: string): Promise<Chat | null> {
-    return this.chatsRepository.findById(id);
+  async findById(
+    id: string,
+
+    userId: string,
+  ): Promise<Chat> {
+    const member = await this.chatMembersRepository.findByChatAndUser(
+      id,
+
+      userId,
+    );
+
+    if (!member) {
+      throw new NotFoundError("Chat not found.");
+    }
+
+    const chat = await this.chatsRepository.findById(id);
+
+    if (!chat) {
+      throw new NotFoundError("Chat not found.");
+    }
+
+    return chat;
   }
 
   async findByUser(userId: string): Promise<ChatListItem[]> {

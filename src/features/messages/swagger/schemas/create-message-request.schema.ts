@@ -8,7 +8,7 @@ export const CreateMessageRequestSchema = {
       type: {
         type: "string",
 
-        enum: ["TEXT", "IMAGE", "VIDEO", "FILE"],
+        enum: ["text", "image", "video", "audio", "file", "system"],
       },
 
       body: {

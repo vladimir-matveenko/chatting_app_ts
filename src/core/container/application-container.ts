@@ -11,6 +11,14 @@ import { RefreshTokenMapper } from "../../features/auth/mappers/refresh-token.ma
 import { RefreshTokensRepository } from "../../features/auth/repositories/refresh-tokens.repository.js";
 import { createHealthModule, type HealthFeature } from "../../features/health/index.js";
 import { ChatsFeature, createChatsModule } from "../../features/chats/index.js";
+import { ChatMapper } from "../../features/chats/mappers/chats.mapper.js";
+import { ChatsRepository } from "../../features/chats/repositories/chats.repository.js";
+import { ChatMembersMapper } from "../../features/chats/mappers/chat-members.mapper.js";
+import { ChatMembersRepository } from "../../features/chats/repositories/chat-members.repository.js";
+import { ChatListItemMapper } from "../../features/chats/mappers/chat-list-item.mapper.js";
+import { ChatListRepository } from "../../features/chats/repositories/chat-list.repository.js";
+import { ChatReadsRepository } from "../../features/messages/repositories/chat-reads.repository.js";
+import { createMessagesModule, type MessagesFeature } from "../../features/messages/index.js";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;
@@ -20,6 +28,8 @@ export class ApplicationContainer {
   readonly health: HealthFeature;
 
   readonly chats: ChatsFeature;
+
+  readonly messages: MessagesFeature;
 
   constructor(database: Database) {
     const passwordHasher = new BcryptPasswordHasher();
@@ -57,10 +67,44 @@ export class ApplicationContainer {
 
     this.health = createHealthModule();
 
+    const chatMapper = new ChatMapper();
+
+    const chatsRepository = new ChatsRepository(database, chatMapper);
+
+    const chatMembersMapper = new ChatMembersMapper();
+
+    const chatMembersRepository = new ChatMembersRepository(database, chatMembersMapper);
+
+    const chatListItemMapper = new ChatListItemMapper();
+
+    const chatListRepository = new ChatListRepository(database, chatListItemMapper);
+
+    const chatReadsRepository = new ChatReadsRepository(database);
+
+    this.messages = createMessagesModule(
+      database,
+
+      chatsRepository,
+
+      chatMembersRepository,
+
+      chatReadsRepository,
+
+      jwtAuthMiddleware,
+    );
+
     this.chats = createChatsModule(
       database,
 
       this.users.repository,
+
+      chatsRepository,
+
+      chatListRepository,
+
+      chatMembersRepository,
+
+      this.messages.messageReadService,
 
       jwtAuthMiddleware,
     );

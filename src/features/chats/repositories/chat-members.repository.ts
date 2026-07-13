@@ -52,10 +52,6 @@ export class ChatMembersRepository
     return this.map(entity);
   }
 
-  async addMany(_members: CreateChatMemberDto[]): Promise<void> {
-    throw new Error("Not implemented.");
-  }
-
   async addTx(
     client: PoolClient,
 

@@ -6,10 +6,13 @@ import { CreateChatRequestValidator } from "../validators/create-chat-request.va
 
 import { CreateChatRequestMapper } from "../mappers/create-chat-request.mapper.js";
 import { ValidationError } from "../../../core/errors/index.js";
+import { MessageReadService } from "../../messages/services/message-read.service.js";
 
 export class ChatsController {
   constructor(
     private readonly service: ChatsService,
+
+    private readonly messageReadService: MessageReadService,
 
     private readonly validator: CreateChatRequestValidator,
 
@@ -52,6 +55,26 @@ export class ChatsController {
     response.json(chats);
   }
 
+  async findById(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    const id = request.params.id;
+
+    if (typeof id !== "string") {
+      throw new ValidationError("Chat id is required.");
+    }
+
+    const chat = await this.service.findById(
+      id,
+
+      request.user!.userId,
+    );
+
+    response.json(chat);
+  }
+
   async findMembers(
     request: Request,
 
@@ -70,5 +93,35 @@ export class ChatsController {
     );
 
     response.json(members);
+  }
+
+  async markRead(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    const chatId = request.params.id;
+
+    if (typeof chatId !== "string") {
+      throw new ValidationError("Chat id is required.");
+    }
+
+    const { messageId } = request.body as {
+      messageId?: string;
+    };
+
+    if (!messageId) {
+      throw new ValidationError("Message id is required.");
+    }
+
+    await this.messageReadService.markRead(
+      chatId,
+
+      messageId,
+
+      request.user!.userId,
+    );
+
+    response.sendStatus(204);
   }
 }

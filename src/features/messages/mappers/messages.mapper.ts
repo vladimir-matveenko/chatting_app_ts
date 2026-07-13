@@ -19,8 +19,6 @@ export class MessagesMapper implements Mapper<MessageEntity, Message> {
 
       replyToId: entity.reply_to_id,
 
-      editedAt: entity.edited_at,
-
       deletedAt: entity.deleted_at,
 
       createdAt: entity.created_at,
@@ -28,6 +26,20 @@ export class MessagesMapper implements Mapper<MessageEntity, Message> {
       updatedAt: entity.updated_at,
 
       isDeleted: entity.is_deleted,
+
+      reply: entity.reply_id
+        ? {
+            id: entity.reply_id,
+
+            senderId: entity.reply_sender_id as string,
+
+            type: entity.reply_type as NonNullable<MessageEntity["reply_type"]>,
+
+            body: entity.reply_body,
+
+            deletedAt: entity.reply_deleted_at,
+          }
+        : null,
     };
   }
 }

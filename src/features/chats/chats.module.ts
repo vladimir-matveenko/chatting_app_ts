@@ -2,10 +2,6 @@ import type { Database } from "../../core/database/database.js";
 
 import type { UsersRepository } from "../users/repositories/users.repository.js";
 
-import { ChatMapper } from "./mappers/chats.mapper.js";
-
-import { ChatMembersMapper } from "./mappers/chat-members.mapper.js";
-
 import { CreateChatRequestMapper } from "./mappers/create-chat-request.mapper.js";
 
 import { ChatsRepository } from "./repositories/chats.repository.js";
@@ -25,41 +21,26 @@ import { CreateChatRequestValidator } from "./validators/create-chat-request.val
 import type { ChatsFeature } from "./chats.module.interface.js";
 
 import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js";
-import { ChatListItemMapper } from "./mappers/chat-list-item.mapper.js";
+
 import { ChatListRepository } from "./repositories/chat-list.repository.js";
+import { MessageReadService } from "../messages/services/message-read.service.js";
 
 export function createChatsModule(
   database: Database,
 
   usersRepository: UsersRepository,
 
+  chatsRepository: ChatsRepository,
+
+  chatListRepository: ChatListRepository,
+
+  chatMembersRepository: ChatMembersRepository,
+
+  messageReadService: MessageReadService,
+
   jwtAuthMiddleware: JwtAuthMiddleware,
 ): ChatsFeature {
-  const chatMapper = new ChatMapper();
-
-  const memberMapper = new ChatMembersMapper();
-
-  const chatsRepository = new ChatsRepository(
-    database,
-
-    chatMapper,
-  );
-
-  const chatMembersRepository = new ChatMembersRepository(
-    database,
-
-    memberMapper,
-  );
-
   const fingerprintService = new ChatFingerprintService();
-
-  const chatListItemMapper = new ChatListItemMapper();
-
-  const chatListRepository = new ChatListRepository(
-    database,
-
-    chatListItemMapper,
-  );
 
   const service = new ChatsService(
     database,
@@ -81,6 +62,8 @@ export function createChatsModule(
 
   const controller = new ChatsController(
     service,
+
+    messageReadService,
 
     validator,
 
@@ -105,7 +88,5 @@ export function createChatsModule(
     chatListRepository,
 
     chatMembersRepository,
-
-    mapper: chatMapper,
   };
 }

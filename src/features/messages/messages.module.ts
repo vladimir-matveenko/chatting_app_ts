@@ -27,6 +27,8 @@ import { createMessagesRouter } from "./routes/messages.routes.js";
 import { CreateMessageRequestValidator } from "./validators/create-message-request.validator.js";
 import { UpdateMessageRequestValidator } from "./validators/update-message-request.validator.js";
 import { AddReactionRequestValidator } from "./validators/add-reaction-request.validator.js";
+import { ChatReadsRepository } from "./repositories/chat-reads.repository.js";
+import { MessageReadService } from "./services/message-read.service.js";
 
 export function createMessagesModule(
   database: Database,
@@ -34,6 +36,8 @@ export function createMessagesModule(
   chatsRepository: ChatsRepository,
 
   chatMembersRepository: ChatMembersRepository,
+
+  chatReadsRepository: ChatReadsRepository,
 
   jwtAuthMiddleware: JwtAuthMiddleware,
 ): MessagesFeature {
@@ -50,8 +54,11 @@ export function createMessagesModule(
 
   const messagesService = new MessagesService(
     database,
+
     messagesRepository,
+
     chatsRepository,
+
     chatMembersRepository,
   );
 
@@ -93,6 +100,14 @@ export function createMessagesModule(
     jwtAuthMiddleware,
   );
 
+  const messageReadService = new MessageReadService(
+    messagesRepository,
+
+    chatMembersRepository,
+
+    chatReadsRepository,
+  );
+
   return {
     router,
 
@@ -106,6 +121,6 @@ export function createMessagesModule(
 
     messageReactionsRepository,
 
-    mapper: messagesMapper,
+    messageReadService,
   };
 }
