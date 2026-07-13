@@ -5,5 +5,9 @@ export enum MessageType {
 
   VIDEO = "VIDEO",
 
+  AUDIO = "AUDIO",
+
   FILE = "FILE",
+
+  SYSTEM = "SYSTEM",
 }

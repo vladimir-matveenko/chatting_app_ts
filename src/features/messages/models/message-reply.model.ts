@@ -1,3 +1,5 @@
+import type { MessageType } from "../enums/message-type.enum.js";
+
 export interface MessageReply {
   id: string;
 
@@ -5,7 +7,7 @@ export interface MessageReply {
 
   body: string | null;
 
-  type: string;
+  type: MessageType;
 
   deletedAt: Date | null;
 }

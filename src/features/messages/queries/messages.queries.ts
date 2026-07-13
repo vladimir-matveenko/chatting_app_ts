@@ -30,6 +30,7 @@ export const MessagesQueries = {
     m.created_at,
     m.edited_at,
     m.deleted_at,
+    m.is_deleted,
 
     rm.id           AS reply_id,
     rm.sender_id    AS reply_sender_id,
@@ -56,6 +57,7 @@ export const MessagesQueries = {
     m.created_at,
     m.edited_at,
     m.deleted_at,
+    m.is_deleted,
 
     rm.id           AS reply_id,
     rm.sender_id    AS reply_sender_id,

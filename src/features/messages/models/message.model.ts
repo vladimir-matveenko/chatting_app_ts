@@ -1,5 +1,6 @@
 import type { MessageType } from "../enums/message-type.enum.js";
-import { MessageReply } from "./message-reply.model.js";
+
+import type { MessageReply } from "./message-reply.model.js";
 
 export interface Message {
   id: string;
@@ -14,8 +15,6 @@ export interface Message {
 
   replyToId: string | null;
 
-  editedAt: Date | null;
-
   deletedAt: Date | null;
 
   createdAt: Date;
@@ -24,5 +23,5 @@ export interface Message {
 
   isDeleted: boolean;
 
-  reply?: MessageReply | null;
+  reply: MessageReply | null;
 }
