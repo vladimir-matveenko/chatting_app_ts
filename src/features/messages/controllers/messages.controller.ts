@@ -28,7 +28,6 @@ export class MessagesController {
 
     response: Response,
   ): Promise<void> {
-    console.log(request.body);
     const dto = this.createRequestValidator.validate(request);
 
     if (!request.user) {
