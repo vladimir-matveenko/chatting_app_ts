@@ -28,7 +28,8 @@ export class MessagesController {
 
     response: Response,
   ): Promise<void> {
-    const dto = this.createRequestValidator.validate(request.body);
+    console.log(request.body);
+    const dto = this.createRequestValidator.validate(request);
 
     if (!request.user) {
       throw new Error("Authenticated user is missing.");

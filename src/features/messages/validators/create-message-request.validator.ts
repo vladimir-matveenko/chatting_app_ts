@@ -9,6 +9,7 @@ import { MessageType } from "../enums/message-type.enum.js";
 export class CreateMessageRequestValidator {
   validate(request: Request): CreateMessageRequestDto {
     const dto = request.body as CreateMessageRequestDto;
+    console.log(dto.body);
 
     if (!Object.values(MessageType).includes(dto.type)) {
       throw new ValidationError("Invalid message type.");

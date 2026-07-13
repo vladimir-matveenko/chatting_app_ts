@@ -1,13 +1,13 @@
 export enum MessageType {
-  TEXT = "TEXT",
+  TEXT = "text",
 
-  IMAGE = "IMAGE",
+  IMAGE = "image",
 
-  VIDEO = "VIDEO",
+  VIDEO = "video",
 
-  AUDIO = "AUDIO",
+  AUDIO = "audio",
 
-  FILE = "FILE",
+  FILE = "file",
 
-  SYSTEM = "SYSTEM",
+  SYSTEM = "system",
 }

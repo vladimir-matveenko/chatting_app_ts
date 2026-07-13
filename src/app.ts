@@ -26,6 +26,8 @@ export function createApp(container: ApplicationContainer) {
     container.chats.router,
   );
 
+  app.use("/messages", container.messages.router);
+
   app.use(errorHandler);
 
   app.use(

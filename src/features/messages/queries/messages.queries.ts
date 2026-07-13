@@ -28,7 +28,7 @@ export const MessagesQueries = {
     m.body,
     m.reply_to_id,
     m.created_at,
-    m.edited_at,
+    m.updated_at,
     m.deleted_at,
     m.is_deleted,
 
@@ -55,7 +55,7 @@ export const MessagesQueries = {
     m.body,
     m.reply_to_id,
     m.created_at,
-    m.edited_at,
+    m.updated_at,
     m.deleted_at,
     m.is_deleted,
 
@@ -86,7 +86,7 @@ export const MessagesQueries = {
         UPDATE messages
     SET
         body = $2,
-        edited_at = NOW(),
+        updated_at = NOW(),
         updated_at = NOW()
     WHERE
         id = $1
