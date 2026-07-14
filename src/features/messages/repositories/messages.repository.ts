@@ -65,6 +65,8 @@ export class MessagesRepository
   async findByChat(
     chatId: string,
 
+    userId: string,
+
     limit: number,
 
     before?: Date,
@@ -72,7 +74,7 @@ export class MessagesRepository
     return this.findMany(
       MessagesQueries.FIND_BY_CHAT,
 
-      [chatId, before ?? null, limit],
+      [chatId, userId, before ?? null, limit],
     );
   }
 

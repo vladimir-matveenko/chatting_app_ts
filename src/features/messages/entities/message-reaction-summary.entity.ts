@@ -4,6 +4,4 @@ export interface MessageReactionSummaryEntity {
   type: ReactionType;
 
   count: number;
-
-  reacted: boolean;
 }

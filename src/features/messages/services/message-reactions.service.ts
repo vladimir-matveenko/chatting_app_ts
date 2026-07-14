@@ -42,19 +42,23 @@ export class MessageReactionsService {
       dto.userId,
     );
 
+    let reaction: MessageReaction;
+
     if (!existing) {
-      return this.reactionsRepository.add(dto);
-    }
-
-    if (existing.type === dto.type) {
+      reaction = await this.reactionsRepository.add(dto);
+    } else if (existing.type === dto.type) {
       return existing;
+    } else {
+      reaction = await this.reactionsRepository.update(
+        existing.id,
+
+        dto.type,
+      );
     }
 
-    return this.reactionsRepository.update(
-      existing.id,
+    await this.reactionsRepository.refreshMessageReactions(dto.messageId);
 
-      dto.type,
-    );
+    return reaction;
   }
 
   async remove(
@@ -73,5 +77,7 @@ export class MessageReactionsService {
     }
 
     await this.reactionsRepository.delete(reaction.id);
+
+    await this.reactionsRepository.refreshMessageReactions(messageId);
   }
 }

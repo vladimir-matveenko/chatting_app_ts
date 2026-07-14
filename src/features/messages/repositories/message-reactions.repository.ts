@@ -71,4 +71,8 @@ export class MessageReactionsRepository
       [reactionId],
     );
   }
+
+  async refreshMessageReactions(messageId: string): Promise<void> {
+    await this.db.query(MessageReactionsQueries.UPDATE_MESSAGE_REACTIONS_CACHE, [messageId]);
+  }
 }

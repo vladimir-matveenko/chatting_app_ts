@@ -42,6 +42,8 @@ export class MessagesMapper implements Mapper<MessageEntity, Message> {
         : null,
 
       reactions: entity.reactions ?? [],
+
+      currentUserReaction: entity.current_user_reaction,
     };
   }
 }

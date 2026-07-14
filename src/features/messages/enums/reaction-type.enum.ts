@@ -1,5 +1,5 @@
 export enum ReactionType {
-  LIKE = "LIKE",
+  LIKE = "like",
 
-  DISLIKE = "DISLIKE",
+  DISLIKE = "dislike",
 }
