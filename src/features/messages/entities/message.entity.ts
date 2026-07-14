@@ -1,4 +1,5 @@
 import type { MessageType } from "../enums/message-type.enum.js";
+import { MessageReactionSummary } from "../models/message-reaction-summary.model.js";
 
 export interface MessageEntity {
   id: string;
@@ -30,4 +31,6 @@ export interface MessageEntity {
   reply_type: MessageType | null;
 
   reply_deleted_at: Date | null;
+
+  reactions: MessageReactionSummary[];
 }
