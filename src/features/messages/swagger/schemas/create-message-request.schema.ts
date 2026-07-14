@@ -6,9 +6,7 @@ export const CreateMessageRequestSchema = {
 
     properties: {
       type: {
-        type: "string",
-
-        enum: ["text", "image", "video", "audio", "file", "system"],
+        $ref: "#/components/schemas/MessageType",
       },
 
       body: {
@@ -18,9 +16,7 @@ export const CreateMessageRequestSchema = {
       },
 
       replyToId: {
-        type: "string",
-
-        nullable: true,
+        $ref: "#/components/schemas/Id",
       },
     },
   },

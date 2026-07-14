@@ -85,7 +85,7 @@ export class MessagesService {
   ): Promise<Message[]> {
     await this.ensureMember(chatId, userId);
 
-    return this.messagesRepository.findByChat(chatId, limit, before);
+    return this.messagesRepository.findByChat(chatId, userId, limit, before);
   }
 
   private async ensureChatExists(chatId: string): Promise<void> {

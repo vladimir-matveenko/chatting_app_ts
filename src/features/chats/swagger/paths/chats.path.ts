@@ -1,3 +1,5 @@
+import { createdResponse } from "../../../../swagger/builders/created-response.js";
+import { okResponse } from "../../../../swagger/builders/ok-response.js";
 import {
   badRequestResponse,
   conflictResponse,
@@ -20,21 +22,7 @@ export const ChatsPath = {
       ],
 
       responses: {
-        200: {
-          description: "User chats.",
-
-          content: {
-            "application/json": {
-              schema: {
-                type: "array",
-
-                items: {
-                  $ref: "#/components/schemas/ChatListItem",
-                },
-              },
-            },
-          },
-        },
+        200: okResponse("User chats.", "#/components/schemas/ChatListItem"),
 
         401: unauthorizedResponse,
       },
@@ -66,17 +54,7 @@ export const ChatsPath = {
       },
 
       responses: {
-        201: {
-          description: "Chat created successfully.",
-
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/Chat",
-              },
-            },
-          },
-        },
+        201: createdResponse("Chat created successfully.", "#/components/schemas/Chat"),
 
         400: badRequestResponse,
 

@@ -18,7 +18,7 @@ export const loginPath = {
       ),
 
       responses: {
-        "200": jsonResponse(
+        200: jsonResponse(
           "Authenticated.",
 
           "#/components/schemas/AuthResponse",
@@ -26,7 +26,7 @@ export const loginPath = {
           authResponseExample,
         ),
 
-        "401": unauthorizedResponse,
+        401: unauthorizedResponse,
       },
     },
   },

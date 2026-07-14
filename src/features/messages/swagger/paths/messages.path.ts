@@ -1,3 +1,5 @@
+import { createdResponse } from "../../../../swagger/builders/created-response.js";
+import { okResponse } from "../../../../swagger/builders/ok-response.js";
 import {
   badRequestResponse,
   forbiddenResponse,
@@ -47,17 +49,7 @@ export const MessagesPaths = {
       },
 
       responses: {
-        201: {
-          description: "Message created successfully.",
-
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/Message",
-              },
-            },
-          },
-        },
+        201: createdResponse("Message created successfully.", "#/components/schemas/Message"),
 
         400: badRequestResponse,
 
@@ -117,21 +109,7 @@ export const MessagesPaths = {
       ],
 
       responses: {
-        200: {
-          description: "Messages.",
-
-          content: {
-            "application/json": {
-              schema: {
-                type: "array",
-
-                items: {
-                  $ref: "#/components/schemas/Message",
-                },
-              },
-            },
-          },
-        },
+        200: okResponse("Messages.", "#/components/schemas/Message"),
 
         401: unauthorizedResponse,
 
@@ -169,17 +147,7 @@ export const MessagesPaths = {
       ],
 
       responses: {
-        200: {
-          description: "Message.",
-
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/Message",
-              },
-            },
-          },
-        },
+        200: okResponse("Message.", "#/components/schemas/Message"),
 
         401: unauthorizedResponse,
 
@@ -214,17 +182,7 @@ export const MessagesPaths = {
       ],
 
       responses: {
-        200: {
-          description: "Deleted message.",
-
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/Message",
-              },
-            },
-          },
-        },
+        200: okResponse("Deleted message.", "#/components/schemas/Message"),
 
         401: unauthorizedResponse,
 

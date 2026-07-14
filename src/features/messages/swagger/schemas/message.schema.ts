@@ -2,55 +2,83 @@ export const MessageSchema = {
   Message: {
     type: "object",
 
-    required: ["id", "chatId", "senderId", "type", "createdAt", "isDeleted"],
+    required: ["id", "chatId", "senderId", "type", "createdAt", "isDeleted", "reactions"],
 
     properties: {
       id: {
-        type: "string",
+        $ref: "#/components/schemas/Id",
       },
 
       chatId: {
-        type: "string",
+        $ref: "#/components/schemas/Id",
       },
 
       senderId: {
-        type: "string",
+        $ref: "#/components/schemas/Id",
       },
 
       type: {
-        type: "string",
-        enum: ["TEXT", "IMAGE", "VIDEO", "FILE"],
+        $ref: "#/components/schemas/MessageType",
       },
 
       body: {
         type: "string",
+
         nullable: true,
       },
 
       replyToId: {
-        type: "string",
-        nullable: true,
+        $ref: "#/components/schemas/Id",
       },
 
       createdAt: {
         type: "string",
+
         format: "date-time",
       },
 
-      editedAt: {
+      updatedAt: {
         type: "string",
+
         format: "date-time",
-        nullable: true,
       },
 
       deletedAt: {
         type: "string",
+
         format: "date-time",
+
         nullable: true,
       },
 
       isDeleted: {
         type: "boolean",
+      },
+
+      reply: {
+        allOf: [
+          {
+            $ref: "#/components/schemas/MessageReply",
+          },
+        ],
+      },
+
+      reactions: {
+        type: "array",
+
+        items: {
+          $ref: "#/components/schemas/MessageReactionSummary",
+        },
+      },
+
+      currentUserReaction: {
+        allOf: [
+          {
+            $ref: "#/components/schemas/ReactionType",
+          },
+        ],
+
+        nullable: true,
       },
     },
   },

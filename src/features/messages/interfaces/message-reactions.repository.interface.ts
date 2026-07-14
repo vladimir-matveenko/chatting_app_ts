@@ -20,4 +20,6 @@ export interface IMessageReactionsRepository {
   ): Promise<MessageReaction>;
 
   delete(reactionId: string): Promise<void>;
+
+  refreshMessageReactions(messageId: string): Promise<void>;
 }

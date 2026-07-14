@@ -26,6 +26,10 @@ export class ChatListItemMapper implements Mapper<ChatListItemEntity, ChatListIt
       lastMessageAt: entity.last_message_at,
 
       unreadCount: entity.unread_count,
+
+      participants: entity.participants,
+
+      participantsCount: entity.participants_count,
     };
   }
 }

@@ -6,6 +6,13 @@ export const notFoundResponse = {
       schema: {
         $ref: "#/components/schemas/ErrorResponse",
       },
+      example: {
+        status: 404,
+
+        code: "NOT_FOUND",
+
+        message: "Not found.",
+      },
     },
   },
 };

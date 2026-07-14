@@ -1,4 +1,6 @@
 import type { MessageType } from "../enums/message-type.enum.js";
+import { ReactionType } from "../enums/reaction-type.enum.js";
+import { MessageReactionSummary } from "./message-reaction-summary.model.js";
 
 import type { MessageReply } from "./message-reply.model.js";
 
@@ -24,4 +26,8 @@ export interface Message {
   isDeleted: boolean;
 
   reply: MessageReply | null;
+
+  reactions: MessageReactionSummary[];
+
+  currentUserReaction: ReactionType | null;
 }

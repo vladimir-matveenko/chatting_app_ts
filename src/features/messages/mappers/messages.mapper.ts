@@ -40,6 +40,10 @@ export class MessagesMapper implements Mapper<MessageEntity, Message> {
             deletedAt: entity.reply_deleted_at,
           }
         : null,
+
+      reactions: entity.reactions ?? [],
+
+      currentUserReaction: entity.current_user_reaction,
     };
   }
 }

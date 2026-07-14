@@ -1,4 +1,5 @@
 import { ChatType } from "../enums/chat-type.enum.js";
+import { ChatListParticipant } from "../models/chat-list-participant.model.js";
 
 export interface ChatListItemEntity {
   id: string;
@@ -20,4 +21,8 @@ export interface ChatListItemEntity {
   last_message_at: Date | null;
 
   unread_count: number;
+
+  participants: ChatListParticipant[];
+
+  participants_count: number;
 }

@@ -1,3 +1,5 @@
+import { createdResponse } from "../../../../swagger/builders/index.js";
+
 export const registerPath = {
   "/auth/register": {
     post: {
@@ -22,17 +24,7 @@ export const registerPath = {
       },
 
       responses: {
-        "201": {
-          description: "User created.",
-
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/AuthResponse",
-              },
-            },
-          },
-        },
+        201: createdResponse("User created.", "#/components/schemas/AuthResponse"),
       },
     },
   },

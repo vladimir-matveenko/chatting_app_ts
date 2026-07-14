@@ -13,7 +13,8 @@ CREATE TABLE messages (
     sender_id BIGINT NOT NULL REFERENCES users(id),
     type message_type NOT NULL,
     body TEXT,
-    reply_to_id BIGINT REFERENCES messages(id) ON DELETE
+    reply_to_id BIGINT REFERENCES messages(id) ON DELETE,
+    reactions JSONB NOT NULL DEFAULT '[]' :: jsonb,
     SET
         NULL,
         created_at TIMESTAMPTZ NOT NULL DEFAULT now(),

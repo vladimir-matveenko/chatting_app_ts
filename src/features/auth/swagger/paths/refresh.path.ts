@@ -1,3 +1,5 @@
+import { okResponse } from "../../../../swagger/builders/index.js";
+
 export const refreshPath = {
   "/auth/refresh": {
     post: {
@@ -28,17 +30,7 @@ export const refreshPath = {
       },
 
       responses: {
-        "200": {
-          description: "Tokens refreshed.",
-
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/AuthResponse",
-              },
-            },
-          },
-        },
+        200: okResponse("Tokens refreshed.", "#/components/schemas/AuthResponse"),
       },
     },
   },

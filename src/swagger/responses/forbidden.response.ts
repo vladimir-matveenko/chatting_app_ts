@@ -6,6 +6,13 @@ export const forbiddenResponse = {
       schema: {
         $ref: "#/components/schemas/ErrorResponse",
       },
+      example: {
+        status: 403,
+
+        code: "FORBIDDEN",
+
+        message: "Forbidden.",
+      },
     },
   },
 };

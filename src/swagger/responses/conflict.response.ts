@@ -6,6 +6,13 @@ export const conflictResponse = {
       schema: {
         $ref: "#/components/schemas/ErrorResponse",
       },
+      example: {
+        status: 409,
+
+        code: "CONFLICT",
+
+        message: "Conflict.",
+      },
     },
   },
 };

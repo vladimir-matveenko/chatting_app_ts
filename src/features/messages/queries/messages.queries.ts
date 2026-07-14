@@ -47,7 +47,7 @@ export const MessagesQueries = {
     `,
 
   FIND_BY_CHAT: `
-    SELECT
+SELECT
     m.id,
     m.chat_id,
     m.sender_id,
@@ -59,28 +59,36 @@ export const MessagesQueries = {
     m.deleted_at,
     m.is_deleted,
 
-    rm.id           AS reply_id,
-    rm.sender_id    AS reply_sender_id,
-    rm.type         AS reply_type,
-    rm.body         AS reply_body,
-    rm.deleted_at   AS reply_deleted_at
+    m.reactions,
 
-    FROM messages m
+    ur.type AS current_user_reaction,
 
-    LEFT JOIN messages rm
-      ON rm.id = m.reply_to_id
+    rm.id         AS reply_id,
+    rm.sender_id  AS reply_sender_id,
+    rm.type       AS reply_type,
+    rm.body       AS reply_body,
+    rm.deleted_at AS reply_deleted_at
 
-    WHERE
-      m.chat_id = $1
-    AND (
-        $2::timestamptz IS NULL
-        OR m.created_at < $2
-    )
+FROM messages m
 
-    ORDER BY m.created_at DESC
+LEFT JOIN messages rm
+    ON rm.id = m.reply_to_id
 
-    LIMIT $3;
-  `,
+LEFT JOIN message_reactions ur
+    ON ur.message_id = m.id
+   AND ur.user_id = $2
+
+WHERE
+    m.chat_id = $1
+AND (
+    $3::timestamptz IS NULL
+    OR m.created_at < $3
+)
+
+ORDER BY m.created_at DESC
+
+LIMIT $4;
+`,
 
   UPDATE: `
         UPDATE messages
