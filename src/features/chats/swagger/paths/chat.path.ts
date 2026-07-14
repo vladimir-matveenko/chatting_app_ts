@@ -1,3 +1,4 @@
+import { okResponse } from "../../../../swagger/builders/ok-response.js";
 import {
   badRequestResponse,
   forbiddenResponse,
@@ -35,17 +36,7 @@ export const ChatPath = {
       ],
 
       responses: {
-        200: {
-          description: "Chat.",
-
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/Chat",
-              },
-            },
-          },
-        },
+        200: okResponse("Chat.", "#/components/schemas/Chat"),
 
         400: badRequestResponse,
 

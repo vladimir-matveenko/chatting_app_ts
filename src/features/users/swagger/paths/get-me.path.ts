@@ -1,4 +1,4 @@
-import { jsonResponse } from "../../../../swagger/builders/index.js";
+import { okResponse } from "../../../../swagger/builders/index.js";
 
 export const getMePath = {
   "/users/me": {
@@ -8,7 +8,7 @@ export const getMePath = {
       summary: "Get current user",
 
       responses: {
-        "200": jsonResponse(
+        200: okResponse(
           "Current user.",
 
           "#/components/schemas/User",

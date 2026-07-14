@@ -1,3 +1,5 @@
+import { noContentResponse } from "../../../../swagger/builders/no-content-response.js";
+import { okResponse } from "../../../../swagger/builders/ok-response.js";
 import {
   unauthorizedResponse,
   forbiddenResponse,
@@ -45,17 +47,7 @@ export const MessageReactionsPath = {
       },
 
       responses: {
-        200: {
-          description: "Reaction added.",
-
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/MessageReaction",
-              },
-            },
-          },
-        },
+        200: okResponse("Reaction added.", "#/components/schemas/MessageReaction"),
 
         400: badRequestResponse,
 
@@ -93,9 +85,7 @@ export const MessageReactionsPath = {
       ],
 
       responses: {
-        204: {
-          description: "Reaction removed.",
-        },
+        204: noContentResponse("Reaction removed."),
 
         401: unauthorizedResponse,
 

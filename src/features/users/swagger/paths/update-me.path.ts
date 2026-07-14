@@ -1,4 +1,4 @@
-import { jsonRequest, jsonResponse } from "../../../../swagger/builders/index.js";
+import { jsonRequest, okResponse } from "../../../../swagger/builders/index.js";
 
 import { updateUserExample } from "../examples/index.js";
 
@@ -16,7 +16,7 @@ export const updateMePath = {
       ),
 
       responses: {
-        "200": jsonResponse(
+        200: okResponse(
           "Updated user.",
 
           "#/components/schemas/User",

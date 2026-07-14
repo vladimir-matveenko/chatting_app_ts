@@ -1,4 +1,4 @@
-import { jsonRequest } from "../../../../swagger/builders/index.js";
+import { jsonRequest, noContentResponse } from "../../../../swagger/builders/index.js";
 
 import { updatePasswordExample } from "../examples/index.js";
 
@@ -16,9 +16,7 @@ export const updateMePasswordPath = {
       ),
 
       responses: {
-        "204": {
-          description: "Password updated.",
-        },
+        204: noContentResponse("Password updated."),
       },
     },
   },

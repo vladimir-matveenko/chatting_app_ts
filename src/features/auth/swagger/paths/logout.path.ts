@@ -1,3 +1,5 @@
+import { noContentResponse } from "../../../../swagger/builders/index.js";
+
 export const logoutPath = {
   "/auth/logout": {
     post: {
@@ -12,9 +14,7 @@ export const logoutPath = {
       ],
 
       responses: {
-        "204": {
-          description: "Logged out.",
-        },
+        204: noContentResponse("Logged out."),
       },
     },
   },
