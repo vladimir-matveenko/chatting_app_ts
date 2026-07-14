@@ -6,8 +6,7 @@ export const AddReactionRequestSchema = {
 
     properties: {
       type: {
-        type: "string",
-        enum: ["LIKE", "DISLIKE"],
+        $ref: "#/components/schemas/ReactionType",
       },
     },
   },

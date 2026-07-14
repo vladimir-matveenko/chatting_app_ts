@@ -7,6 +7,10 @@ import { UpdateMessageRequestSchema } from "./update-message-request.schema.js";
 import { MessageReactionSchema } from "./message-reaction.schema.js";
 
 import { AddReactionRequestSchema } from "./add-reaction-request.schema.js";
+import { MessageReplySchema } from "./message-reply.schema.js";
+import { MessageReactionSummarySchema } from "./message-reaction-summary.schema.js";
+import { ReactionTypeSchema } from "./reaction-type.schema.js";
+import { MessageTypeSchema } from "./message-type.schema.js";
 
 export const messagesSchemas = {
   ...MessageSchema,
@@ -18,4 +22,14 @@ export const messagesSchemas = {
   ...MessageReactionSchema,
 
   ...AddReactionRequestSchema,
+
+  ...MessageReactionSchema,
+
+  ...MessageReplySchema,
+
+  ...MessageReactionSummarySchema,
+
+  ...ReactionTypeSchema,
+
+  ...MessageTypeSchema,
 };

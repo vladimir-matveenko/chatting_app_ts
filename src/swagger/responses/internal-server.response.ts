@@ -6,6 +6,13 @@ export const internalServerResponse = {
       schema: {
         $ref: "#/components/schemas/ErrorResponse",
       },
+      example: {
+        status: 500,
+
+        code: "INTERNAL_SERVER_ERROR",
+
+        message: "Internal Server Error",
+      },
     },
   },
 };

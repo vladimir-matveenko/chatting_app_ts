@@ -4,13 +4,11 @@ export const ChatSchema = {
 
     properties: {
       id: {
-        type: "string",
-
-        format: "uuid",
+        $ref: "#/components/schemas/Id",
       },
 
       type: {
-        type: "string",
+        $ref: "#/components/schemas/ChatType",
       },
 
       title: {
@@ -26,9 +24,7 @@ export const ChatSchema = {
       },
 
       ownerId: {
-        type: "string",
-
-        format: "uuid",
+        $ref: "#/components/schemas/Id",
       },
 
       createdAt: {
@@ -41,46 +37,6 @@ export const ChatSchema = {
         type: "string",
 
         format: "date-time",
-      },
-    },
-  },
-
-  ChatMember: {
-    type: "object",
-
-    properties: {
-      chatId: {
-        type: "string",
-      },
-
-      userId: {
-        type: "string",
-      },
-
-      role: {
-        type: "string",
-
-        enum: ["owner", "admin", "member"],
-      },
-
-      joinedAt: {
-        type: "string",
-
-        format: "date-time",
-      },
-
-      lastReadMessageId: {
-        type: "string",
-
-        nullable: true,
-      },
-
-      isMuted: {
-        type: "boolean",
-      },
-
-      isArchived: {
-        type: "boolean",
       },
     },
   },

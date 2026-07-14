@@ -6,20 +6,19 @@ export const MessageReactionSchema = {
 
     properties: {
       id: {
-        type: "string",
+        $ref: "#/components/schemas/Id",
       },
 
       messageId: {
-        type: "string",
+        $ref: "#/components/schemas/Id",
       },
 
       userId: {
-        type: "string",
+        $ref: "#/components/schemas/Id",
       },
 
       type: {
-        type: "string",
-        enum: ["LIKE", "DISLIKE"],
+        $ref: "#/components/schemas/ReactionType",
       },
 
       createdAt: {

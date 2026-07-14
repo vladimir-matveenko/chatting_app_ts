@@ -6,6 +6,13 @@ export const badRequestResponse = {
       schema: {
         $ref: "#/components/schemas/ErrorResponse",
       },
+      example: {
+        status: 400,
+
+        code: "BAD_REQUEST",
+
+        message: "Bad Request.",
+      },
     },
   },
 };

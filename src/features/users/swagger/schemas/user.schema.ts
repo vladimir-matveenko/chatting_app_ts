@@ -3,9 +3,7 @@ export const User = {
 
   properties: {
     id: {
-      type: "integer",
-
-      example: 1,
+      $ref: "#/components/schemas/Id",
     },
 
     username: {

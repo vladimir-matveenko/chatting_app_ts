@@ -6,9 +6,7 @@ export const CreateChatRequestSchema = {
 
     properties: {
       type: {
-        type: "string",
-
-        enum: ["PRIVATE", "GROUP"],
+        $ref: "#/components/schemas/ChatType",
       },
 
       title: {
@@ -29,9 +27,7 @@ export const CreateChatRequestSchema = {
         type: "array",
 
         items: {
-          type: "string",
-
-          format: "uuid",
+          $ref: "#/components/schemas/Id",
         },
       },
     },

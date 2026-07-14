@@ -4,11 +4,11 @@ export const ChatListItemSchema = {
 
     properties: {
       id: {
-        type: "string",
+        $ref: "#/components/schemas/Id",
       },
 
       type: {
-        type: "string",
+        $ref: "#/components/schemas/ChatType",
       },
 
       title: {
@@ -24,7 +24,7 @@ export const ChatListItemSchema = {
       },
 
       ownerId: {
-        type: "string",
+        $ref: "#/components/schemas/Id",
       },
 
       createdAt: {

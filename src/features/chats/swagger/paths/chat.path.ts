@@ -1,5 +1,6 @@
 import {
   badRequestResponse,
+  forbiddenResponse,
   notFoundResponse,
   unauthorizedResponse,
 } from "../../../../swagger/responses/index.js";
@@ -49,6 +50,8 @@ export const ChatPath = {
         400: badRequestResponse,
 
         401: unauthorizedResponse,
+
+        403: forbiddenResponse,
 
         404: notFoundResponse,
       },
