@@ -2,6 +2,8 @@ export const ChatSchema = {
   Chat: {
     type: "object",
 
+    required: ["id", "type", "ownerId", "createdAt", "updatedAt"],
+
     properties: {
       id: {
         $ref: "#/components/schemas/Id",

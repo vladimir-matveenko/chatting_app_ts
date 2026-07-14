@@ -2,6 +2,17 @@ export const ChatListItemSchema = {
   ChatListItem: {
     type: "object",
 
+    required: [
+      "id",
+      "type",
+      "ownerId",
+      "createdAt",
+      "updatedAt",
+      "unreadCount",
+      "participants",
+      "participantsCount",
+    ],
+
     properties: {
       id: {
         $ref: "#/components/schemas/Id",
@@ -54,6 +65,17 @@ export const ChatListItemSchema = {
       },
 
       unreadCount: {
+        type: "integer",
+      },
+
+      participants: {
+        type: "array",
+        items: {
+          $ref: "#/components/schemas/ChatListParticipant",
+        },
+      },
+
+      participantsCount: {
         type: "integer",
       },
     },
