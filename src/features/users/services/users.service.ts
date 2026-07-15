@@ -217,7 +217,7 @@ export class UsersService {
     return user;
   }
 
-  async search(dto: FindUsersDto): Promise<UserListItem[]> {
-    return this.usersRepository.search(dto);
+  async search(currentUserId: string, dto: FindUsersDto): Promise<UserListItem[]> {
+    return this.usersRepository.search(currentUserId, dto);
   }
 }

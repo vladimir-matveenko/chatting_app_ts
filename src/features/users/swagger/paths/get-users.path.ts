@@ -20,7 +20,7 @@ export const getUsersPath = {
 
       parameters: [
         {
-          name: "q",
+          name: "query",
 
           in: "query",
 

@@ -24,5 +24,5 @@ export interface IUsersRepository {
 
   findByIds(ids: string[]): Promise<User[]>;
 
-  search(dto: FindUsersDto): Promise<UserListItem[]>;
+  search(currentUserId: string, dto: FindUsersDto): Promise<UserListItem[]>;
 }

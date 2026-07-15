@@ -72,17 +72,16 @@ export const UsersQueries = {
         avatar_url
     FROM users
     WHERE
-    (
-        $1::text IS NULL
-        OR
-        user_name ILIKE '%' || $1 || '%'
-        OR
-        display_name ILIKE '%' || $1 || '%'
+        id <> $1
+    AND (
+        $2::text IS NULL
+        OR LOWER(user_name) LIKE LOWER('%' || $2 || '%')
+        OR LOWER(display_name) LIKE LOWER('%' || $2 || '%')
     )
     ORDER BY
         display_name NULLS LAST,
         user_name
-    LIMIT $2
-    OFFSET $3;
+    LIMIT $3
+    OFFSET $4;
     `,
 };

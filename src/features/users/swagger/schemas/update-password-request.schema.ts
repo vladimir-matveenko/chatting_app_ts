@@ -1,19 +1,21 @@
 export const UpdatePasswordRequest = {
-  type: "object",
+  UpdatePasswordRequest: {
+    type: "object",
 
-  required: ["currentPassword", "newPassword"],
+    required: ["currentPassword", "newPassword"],
 
-  properties: {
-    currentPassword: {
-      type: "string",
+    properties: {
+      currentPassword: {
+        type: "string",
 
-      example: "Password123!",
-    },
+        example: "Password123!",
+      },
 
-    newPassword: {
-      type: "string",
+      newPassword: {
+        type: "string",
 
-      example: "Password456!",
+        example: "Password456!",
+      },
     },
   },
 };

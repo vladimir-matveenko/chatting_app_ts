@@ -1,31 +1,33 @@
-export const UpdateUserRequest = {
-  type: "object",
+export const UpdateUserRequestSchema = {
+  UpdateUserRequest: {
+    type: "object",
 
-  properties: {
-    username: {
-      type: "string",
+    properties: {
+      username: {
+        type: "string",
 
-      example: "john_new",
-    },
+        example: "john_new",
+      },
 
-    displayName: {
-      type: "string",
+      displayName: {
+        type: "string",
 
-      example: "John Smith",
-    },
+        example: "John Smith",
+      },
 
-    avatarUrl: {
-      type: "string",
+      avatarUrl: {
+        type: "string",
 
-      example: "https://example.com/avatar.png",
-    },
+        example: "https://example.com/avatar.png",
+      },
 
-    email: {
-      type: "string",
+      email: {
+        type: "string",
 
-      format: "email",
+        format: "email",
 
-      example: "john@example.com",
+        example: "john@example.com",
+      },
     },
   },
 };

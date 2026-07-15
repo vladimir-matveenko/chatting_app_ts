@@ -94,11 +94,12 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
     );
   }
 
-  async search(dto: FindUsersDto): Promise<UserListItem[]> {
-    return this.findMany(
-      UsersQueries.SEARCH,
-
-      [dto.query ?? null, dto.limit ?? 20, dto.offset ?? 0],
-    );
+  async search(currentUserId: string, dto: FindUsersDto): Promise<UserListItem[]> {
+    return this.findMany(UsersQueries.SEARCH, [
+      currentUserId,
+      dto.query ?? null,
+      dto.limit,
+      dto.offset,
+    ]);
   }
 }
