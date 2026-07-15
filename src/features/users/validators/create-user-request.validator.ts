@@ -5,7 +5,7 @@ import type { RequestValidator } from "../../../core/http/request-validator.js";
 import {
   requireEmail,
   requirePassword,
-  requireUsername,
+  requireUserName,
 } from "../../../core/http/validators/index.js";
 
 import type { CreateUserRequestDto } from "../dto/request/create-user.request.dto.js";
@@ -13,7 +13,7 @@ import type { CreateUserRequestDto } from "../dto/request/create-user.request.dt
 export class CreateUserRequestValidator implements RequestValidator<CreateUserRequestDto> {
   validate(request: Request): CreateUserRequestDto {
     return {
-      username: requireUsername(request.body.username),
+      userName: requireUserName(request.body.userName),
 
       email: requireEmail(request.body.email, "email"),
 

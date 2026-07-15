@@ -1,7 +1,7 @@
 export interface UserListItem {
   id: string;
 
-  username: string;
+  userName: string;
 
   displayName: string | null;
 

@@ -24,7 +24,7 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
 
   async create(dto: CreateUserDto): Promise<User> {
     const entity = await this.queryOne(UsersQueries.CREATE, [
-      dto.username,
+      dto.userName,
       dto.email,
       dto.passwordHash,
     ]);
@@ -44,8 +44,8 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
     return this.findOne(UsersQueries.FIND_BY_EMAIL, [email]);
   }
 
-  async findByUsername(username: string): Promise<User | null> {
-    return this.findOne(UsersQueries.FIND_BY_USERNAME, [username]);
+  async findByUsername(userName: string): Promise<User | null> {
+    return this.findOne(UsersQueries.FIND_BY_USERNAME, [userName]);
   }
 
   async findCredentialsByEmail(email: string): Promise<UserCredentials | null> {
@@ -70,7 +70,7 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
     return this.saveOne(
       UsersQueries.UPDATE_USER,
 
-      [id, dto.email ?? null, dto.username ?? null, dto.displayName ?? null, dto.avatarUrl ?? null],
+      [id, dto.email ?? null, dto.userName ?? null, dto.displayName ?? null, dto.avatarUrl ?? null],
     );
   }
 

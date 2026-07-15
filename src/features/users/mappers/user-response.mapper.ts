@@ -7,7 +7,7 @@ export class UserResponseMapper implements Mapper<User, UserResponseDto> {
   map(source: User): UserResponseDto {
     return {
       id: source.id,
-      username: source.username,
+      userName: source.userName,
       displayName: source.displayName,
       avatarUrl: source.avatarUrl,
       email: source.email,

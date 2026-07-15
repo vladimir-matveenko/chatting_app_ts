@@ -3,7 +3,7 @@ export const ChatListParticipantSchema = {
     type: "object",
 
     properties: {
-      username: {
+      userName: {
         type: "string",
       },
 

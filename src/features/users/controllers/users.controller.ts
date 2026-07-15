@@ -56,7 +56,7 @@ export class UsersController extends BaseController {
   async getByUsername(req: Request, res: Response<UserResponseDto>): Promise<void> {
     const dto = this.validators.getByUsername.validate(req);
 
-    const user = await this.usersService.getByUsername(dto.username);
+    const user = await this.usersService.getByUsername(dto.userName);
 
     this.ok(res, this.mappers.response.map(user));
   }

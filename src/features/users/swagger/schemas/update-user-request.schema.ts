@@ -3,7 +3,7 @@ export const UpdateUserRequestSchema = {
     type: "object",
 
     properties: {
-      username: {
+      userName: {
         type: "string",
 
         example: "john_new",

@@ -101,7 +101,7 @@ SELECT
                 SELECT
                     jsonb_build_object(
                         'id', u.id,
-                        'username', u.user_name,
+                        'userName', u.user_name,
                         'displayName', u.display_name,
                         'avatarUrl', u.avatar_url
                     ) AS participant

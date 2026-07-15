@@ -2,7 +2,7 @@ export const authResponseExample = {
   user: {
     id: 1,
 
-    username: "john",
+    userName: "john",
 
     displayName: "John Smith",
 

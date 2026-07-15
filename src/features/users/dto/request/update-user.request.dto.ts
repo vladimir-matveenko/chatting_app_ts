@@ -1,7 +1,7 @@
 export interface UpdateUserRequestDto {
   email?: string;
 
-  username?: string;
+  userName?: string;
 
   displayName?: string;
 

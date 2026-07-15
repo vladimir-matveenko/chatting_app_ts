@@ -6,7 +6,7 @@ export const userListExample = [
   {
     id: "27",
 
-    username: "kate",
+    userName: "kate",
 
     displayName: "Kate",
 

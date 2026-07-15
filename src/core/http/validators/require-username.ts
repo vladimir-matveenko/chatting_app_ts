@@ -4,24 +4,24 @@ import { ValidationConstants } from "../../validation/index.js";
 
 import { requireString } from "./string.validator.js";
 
-export function requireUsername(value: unknown, field = "username"): string {
-  const username = requireString(value, field);
+export function requireUserName(value: unknown, field = "userName"): string {
+  const userName = requireString(value, field);
 
-  if (username.length < ValidationConstants.User.Username.MinLength) {
+  if (userName.length < ValidationConstants.User.UserName.MinLength) {
     throw new ValidationError(
-      `${field} must contain at least ${ValidationConstants.User.Username.MinLength} characters.`,
+      `${field} must contain at least ${ValidationConstants.User.UserName.MinLength} characters.`,
     );
   }
 
-  if (username.length > ValidationConstants.User.Username.MaxLength) {
+  if (userName.length > ValidationConstants.User.UserName.MaxLength) {
     throw new ValidationError(
-      `${field} must not exceed ${ValidationConstants.User.Username.MaxLength} characters.`,
+      `${field} must not exceed ${ValidationConstants.User.UserName.MaxLength} characters.`,
     );
   }
 
-  if (!ValidationConstants.User.Username.Regex.test(username)) {
+  if (!ValidationConstants.User.UserName.Regex.test(userName)) {
     throw new ValidationError(`${field} contains invalid characters.`);
   }
 
-  return username;
+  return userName;
 }

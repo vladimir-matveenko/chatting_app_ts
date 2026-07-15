@@ -2,14 +2,14 @@ export const UserListItemSchema = {
   UserListItem: {
     type: "object",
 
-    required: ["id", "username"],
+    required: ["id", "userName"],
 
     properties: {
       id: {
         $ref: "#/components/schemas/Id",
       },
 
-      username: {
+      userName: {
         type: "string",
       },
 

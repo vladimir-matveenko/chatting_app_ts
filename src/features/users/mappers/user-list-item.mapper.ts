@@ -9,7 +9,7 @@ export class UserListItemMapper implements Mapper<UserListItemEntity, UserListIt
     return {
       id: entity.id,
 
-      username: entity.user_name,
+      userName: entity.user_name,
 
       displayName: entity.display_name,
 

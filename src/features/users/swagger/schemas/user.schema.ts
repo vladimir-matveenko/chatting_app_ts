@@ -7,7 +7,7 @@ export const UserSchema = {
         $ref: "#/components/schemas/Id",
       },
 
-      username: {
+      userName: {
         type: "string",
 
         example: "john",

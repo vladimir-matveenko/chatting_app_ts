@@ -1,7 +1,7 @@
 export const userListItemExample = {
   id: "15",
 
-  username: "john_doe",
+  userName: "john_doe",
 
   displayName: "John Doe",
 

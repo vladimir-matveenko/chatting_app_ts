@@ -1,7 +1,7 @@
 export interface ChatListParticipant {
   id: string;
 
-  username: string;
+  userName: string;
 
   displayName: string | null;
 

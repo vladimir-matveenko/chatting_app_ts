@@ -1,5 +1,5 @@
 export const updateUserExample = {
-  username: "john_new",
+  userName: "john_new",
 
   displayName: "John Smith",
 
