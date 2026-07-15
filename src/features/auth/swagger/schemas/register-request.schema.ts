@@ -1,10 +1,10 @@
 export const RegisterRequest = {
   type: "object",
 
-  required: ["username", "email", "password"],
+  required: ["userName", "email", "password"],
 
   properties: {
-    username: {
+    userName: {
       type: "string",
 
       example: "john",

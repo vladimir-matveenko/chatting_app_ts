@@ -8,7 +8,7 @@ import type { GetUserByUsernameRequestDto } from "../dto/request/get-user-by-use
 export class GetUserByUsernameRequestValidator implements RequestValidator<GetUserByUsernameRequestDto> {
   validate(request: Request): GetUserByUsernameRequestDto {
     return {
-      username: requireString(request.params.username, "username"),
+      userName: requireString(request.params.userName, "userName"),
     };
   }
 }

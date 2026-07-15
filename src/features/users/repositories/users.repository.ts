@@ -2,12 +2,14 @@ import { BaseRepository } from "../../../core/database/base.repository.js";
 import { Database } from "../../../core/database/database.js";
 import { InternalServerError } from "../../../core/errors/index.js";
 import type { CreateUserDto } from "../dto/create-user.dto.js";
+import { FindUsersDto } from "../dto/find-users.dto.js";
 import { UpdateUserDto } from "../dto/update-user.dto.js";
 import type { UserEntity } from "../entities/user.entity.js";
 import type { IUsersRepository } from "../interfaces/users.repository.interface.js";
 import { UserCredentialsMapper } from "../mappers/user-credentials.mapper.js";
 import { UsersMappers } from "../mappers/users.mappers.js";
 import type { UserCredentials } from "../models/user-credentials.model.js";
+import { UserListItem } from "../models/user-list-item.model.js";
 import type { User } from "../models/user.model.js";
 import { UsersQueries } from "../users.queries.js";
 
@@ -22,7 +24,7 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
 
   async create(dto: CreateUserDto): Promise<User> {
     const entity = await this.queryOne(UsersQueries.CREATE, [
-      dto.username,
+      dto.userName,
       dto.email,
       dto.passwordHash,
     ]);
@@ -42,8 +44,8 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
     return this.findOne(UsersQueries.FIND_BY_EMAIL, [email]);
   }
 
-  async findByUsername(username: string): Promise<User | null> {
-    return this.findOne(UsersQueries.FIND_BY_USERNAME, [username]);
+  async findByUsername(userName: string): Promise<User | null> {
+    return this.findOne(UsersQueries.FIND_BY_USERNAME, [userName]);
   }
 
   async findCredentialsByEmail(email: string): Promise<UserCredentials | null> {
@@ -68,7 +70,7 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
     return this.saveOne(
       UsersQueries.UPDATE_USER,
 
-      [id, dto.email ?? null, dto.username ?? null, dto.displayName ?? null, dto.avatarUrl ?? null],
+      [id, dto.email ?? null, dto.userName ?? null, dto.displayName ?? null, dto.avatarUrl ?? null],
     );
   }
 
@@ -90,5 +92,14 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
 
       [ids],
     );
+  }
+
+  async search(currentUserId: string, dto: FindUsersDto): Promise<UserListItem[]> {
+    return this.findMany(UsersQueries.SEARCH, [
+      currentUserId,
+      dto.query ?? null,
+      dto.limit,
+      dto.offset,
+    ]);
   }
 }

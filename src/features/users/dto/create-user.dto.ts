@@ -1,5 +1,5 @@
 export type CreateUserDto = {
-  username: string;
+  userName: string;
   email: string;
   passwordHash: string;
 };

@@ -1,6 +1,6 @@
 export interface UserEntity {
   id: string;
-  username: string;
+  user_name: string;
   display_name: string | null;
   avatar_url: string | null;
   email: string;

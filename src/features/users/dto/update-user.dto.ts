@@ -1,6 +1,6 @@
 export interface UpdateUserDto {
   email?: string;
-  username?: string;
+  userName?: string;
   displayName?: string;
   avatarUrl?: string;
 }

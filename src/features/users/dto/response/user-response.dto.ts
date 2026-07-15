@@ -1,6 +1,6 @@
 export type UserResponseDto = {
   id: string;
-  username: string;
+  userName: string;
   displayName: string | null;
   avatarUrl: string | null;
   email: string;

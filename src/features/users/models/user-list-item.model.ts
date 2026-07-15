@@ -1,4 +1,4 @@
-export interface ChatListParticipant {
+export interface UserListItem {
   id: string;
 
   userName: string;

@@ -1,47 +1,49 @@
-export const User = {
-  type: "object",
+export const UserSchema = {
+  User: {
+    type: "object",
 
-  properties: {
-    id: {
-      $ref: "#/components/schemas/Id",
-    },
+    properties: {
+      id: {
+        $ref: "#/components/schemas/Id",
+      },
 
-    username: {
-      type: "string",
+      userName: {
+        type: "string",
 
-      example: "john",
-    },
+        example: "john",
+      },
 
-    displayName: {
-      type: "string",
+      displayName: {
+        type: "string",
 
-      nullable: true,
+        nullable: true,
 
-      example: "John Smith",
-    },
+        example: "John Smith",
+      },
 
-    email: {
-      type: "string",
+      email: {
+        type: "string",
 
-      format: "email",
+        format: "email",
 
-      example: "john@example.com",
-    },
+        example: "john@example.com",
+      },
 
-    avatarUrl: {
-      type: "string",
+      avatarUrl: {
+        type: "string",
 
-      nullable: true,
+        nullable: true,
 
-      example: "https://example.com/avatar.png",
-    },
+        example: "https://example.com/avatar.png",
+      },
 
-    createdAt: {
-      type: "string",
+      createdAt: {
+        type: "string",
 
-      format: "date-time",
+        format: "date-time",
 
-      example: "2026-07-07T10:00:00.000Z",
+        example: "2026-07-07T10:00:00.000Z",
+      },
     },
   },
 };

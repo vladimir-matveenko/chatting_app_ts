@@ -1,6 +1,6 @@
 export const ValidationConstants = {
   User: {
-    Username: {
+    UserName: {
       MinLength: 3,
       MaxLength: 30,
       Regex: /^[a-zA-Z0-9_]+$/,

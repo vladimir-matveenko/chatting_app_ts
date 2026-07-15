@@ -1,5 +1,5 @@
 export const registerRequestExample = {
-  username: "john",
+  userName: "john",
 
   email: "john@example.com",
 

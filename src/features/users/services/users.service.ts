@@ -16,6 +16,8 @@ import { PasswordHasher } from "../../../core/security/password/index.js";
 import { UpdateUserDto } from "../dto/update-user.dto.js";
 import { UpdatePasswordDto } from "../dto/update-password.dto.js";
 import { IRefreshTokensRepository } from "../../auth/interfaces/refresh-tokens.repository.interface.js";
+import { FindUsersDto } from "../dto/find-users.dto.js";
+import { UserListItem } from "../models/user-list-item.model.js";
 
 export class UsersService {
   constructor(
@@ -29,12 +31,12 @@ export class UsersService {
   async createUser(dto: CreateUserRequestDto): Promise<User> {
     await this.ensureEmailIsUnique(dto.email);
 
-    await this.ensureUsernameIsUnique(dto.username);
+    await this.ensureUsernameIsUnique(dto.userName);
 
     const passwordHash = await this.passwordHasher.hash(dto.password);
 
     const createDto: CreateUserDto = {
-      username: dto.username,
+      userName: dto.userName,
 
       email: dto.email,
 
@@ -68,8 +70,8 @@ export class UsersService {
     return user;
   }
 
-  async getByUsername(username: string): Promise<User> {
-    const user = await this.usersRepository.findByUsername(username);
+  async getByUsername(userName: string): Promise<User> {
+    const user = await this.usersRepository.findByUsername(userName);
 
     if (!user) {
       throw new NotFoundError("User not found.", "USER_NOT_FOUND");
@@ -86,8 +88,8 @@ export class UsersService {
     }
   }
 
-  private async ensureUsernameIsUnique(username: string): Promise<void> {
-    const exists = await this.usersRepository.findByUsername(username);
+  private async ensureUsernameIsUnique(userName: string): Promise<void> {
+    const exists = await this.usersRepository.findByUsername(userName);
 
     if (exists) {
       throw new ConflictError("Username already exists.", "USERNAME_ALREADY_EXISTS");
@@ -108,9 +110,9 @@ export class UsersService {
     );
 
     await this.ensureUsernameIsAvailable(
-      dto.username,
+      dto.userName,
 
-      user.username,
+      user.userName,
     );
 
     return this.usersRepository.update(
@@ -213,5 +215,9 @@ export class UsersService {
     await this.refreshTokensRepository.delete(id);
 
     return user;
+  }
+
+  async search(currentUserId: string, dto: FindUsersDto): Promise<UserListItem[]> {
+    return this.usersRepository.search(currentUserId, dto);
   }
 }

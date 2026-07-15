@@ -6,7 +6,7 @@ import type { UpdateUserRequestDto } from "../dto/request/update-user.request.dt
 import {
   requireEmail,
   requireString,
-  requireUsername,
+  requireUserName,
 } from "../../../core/http/validators/index.js";
 import { ValidationError } from "../../../core/errors/index.js";
 
@@ -18,8 +18,8 @@ export class UpdateUserRequestValidator implements RequestValidator<UpdateUserRe
       dto.email = requireEmail(request.body.email, "email");
     }
 
-    if (request.body.username !== undefined) {
-      dto.username = requireUsername(request.body.username);
+    if (request.body.userName !== undefined) {
+      dto.userName = requireUserName(request.body.userName);
     }
 
     if (request.body.displayName !== undefined) {
@@ -32,7 +32,7 @@ export class UpdateUserRequestValidator implements RequestValidator<UpdateUserRe
 
     if (
       dto.email === undefined &&
-      dto.username === undefined &&
+      dto.userName === undefined &&
       dto.avatarUrl === undefined &&
       dto.displayName === undefined
     ) {

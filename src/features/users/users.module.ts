@@ -18,6 +18,7 @@ import { PasswordHasher } from "../../core/security/password/index.js";
 import { UpdateUserRequestValidator } from "./validators/update-user-request.validator.js";
 import { UpdatePasswordRequestValidator } from "./validators/update-password-request.validator.js";
 import { RefreshTokensRepository } from "../auth/repositories/refresh-tokens.repository.js";
+import { FindUsersRequestValidator } from "./validators/find-users.request.validator.js";
 
 export function createUsersModule(
   database: Database,
@@ -38,6 +39,7 @@ export function createUsersModule(
     new GetUserByUsernameRequestValidator(),
     new UpdateUserRequestValidator(),
     new UpdatePasswordRequestValidator(),
+    new FindUsersRequestValidator(),
   );
 
   const controller = new UsersController(service, validators, mappers);

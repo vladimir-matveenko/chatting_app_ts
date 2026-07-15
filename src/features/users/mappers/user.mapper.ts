@@ -7,7 +7,7 @@ export class UserMapper implements Mapper<UserEntity, User> {
   map(entity: UserEntity): User {
     return {
       id: entity.id,
-      username: entity.username,
+      userName: entity.user_name,
       displayName: entity.display_name,
       avatarUrl: entity.avatar_url,
       email: entity.email,

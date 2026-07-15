@@ -1,4 +1,5 @@
 import { CreateUserRequestValidator } from "./create-user-request.validator.js";
+import { FindUsersRequestValidator } from "./find-users.request.validator.js";
 import { GetUserByEmailRequestValidator } from "./get-user-by-email-request.validator.js";
 import { GetUserByIdRequestValidator } from "./get-user-by-id-request.validator.js";
 import { GetUserByUsernameRequestValidator } from "./get-user-by-username-request.validator.js";
@@ -13,5 +14,6 @@ export class UsersRequestValidators {
     public readonly getByUsername: GetUserByUsernameRequestValidator,
     public readonly update: UpdateUserRequestValidator,
     public readonly updatePassword: UpdatePasswordRequestValidator,
+    public readonly findUsers: FindUsersRequestValidator,
   ) {}
 }

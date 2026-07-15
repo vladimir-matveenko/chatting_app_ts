@@ -3,7 +3,7 @@ export function jsonResponse(
 
   schemaRef: string,
 
-  example?: Record<string, unknown>,
+  example?: unknown,
 ) {
   return {
     description,
@@ -14,7 +14,7 @@ export function jsonResponse(
           $ref: schemaRef,
         },
 
-        ...(example ? { example } : {}),
+        ...(example !== undefined ? { example } : {}),
       },
     },
   };

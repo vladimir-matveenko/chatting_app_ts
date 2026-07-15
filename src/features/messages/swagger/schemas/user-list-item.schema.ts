@@ -1,8 +1,14 @@
-export const ChatListParticipantSchema = {
-  ChatListParticipant: {
+export const UserListItemSchema = {
+  UserListItem: {
     type: "object",
 
+    required: ["id", "userName"],
+
     properties: {
+      id: {
+        $ref: "#/components/schemas/Id",
+      },
+
       userName: {
         type: "string",
       },

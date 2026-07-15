@@ -8,6 +8,7 @@ import { UsersMappers } from "../mappers/users.mappers.js";
 import { UsersService } from "../services/users.service.js";
 import { UsersRequestValidators } from "../validators/users-request.validators.js";
 import { UnauthorizedError } from "../../../core/errors/index.js";
+import { UserListItem } from "../models/user-list-item.model.js";
 
 export class UsersController extends BaseController {
   constructor(
@@ -55,7 +56,7 @@ export class UsersController extends BaseController {
   async getByUsername(req: Request, res: Response<UserResponseDto>): Promise<void> {
     const dto = this.validators.getByUsername.validate(req);
 
-    const user = await this.usersService.getByUsername(dto.username);
+    const user = await this.usersService.getByUsername(dto.userName);
 
     this.ok(res, this.mappers.response.map(user));
   }
@@ -110,5 +111,33 @@ export class UsersController extends BaseController {
     );
 
     this.noContent(res);
+  }
+
+  async search(
+    request: Request,
+
+    response: Response<UserListItem[]>,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const dto = this.validators.findUsers.validate(request.query);
+
+    const users = await this.usersService.search(
+      request.user.userId,
+
+      dto,
+    );
+
+    this.ok(
+      response,
+
+      users,
+    );
   }
 }
