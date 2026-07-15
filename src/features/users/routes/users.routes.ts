@@ -61,5 +61,13 @@ export function createUsersRouter(
     asyncHandler(controller.updatePassword.bind(controller)),
   );
 
+  router.get(
+    "/",
+
+    jwtAuthMiddleware.handler,
+
+    controller.search.bind(controller),
+  );
+
   return router;
 }

@@ -2,12 +2,14 @@ import { BaseRepository } from "../../../core/database/base.repository.js";
 import { Database } from "../../../core/database/database.js";
 import { InternalServerError } from "../../../core/errors/index.js";
 import type { CreateUserDto } from "../dto/create-user.dto.js";
+import { FindUsersDto } from "../dto/find-users.dto.js";
 import { UpdateUserDto } from "../dto/update-user.dto.js";
 import type { UserEntity } from "../entities/user.entity.js";
 import type { IUsersRepository } from "../interfaces/users.repository.interface.js";
 import { UserCredentialsMapper } from "../mappers/user-credentials.mapper.js";
 import { UsersMappers } from "../mappers/users.mappers.js";
 import type { UserCredentials } from "../models/user-credentials.model.js";
+import { UserListItem } from "../models/user-list-item.model.js";
 import type { User } from "../models/user.model.js";
 import { UsersQueries } from "../users.queries.js";
 
@@ -89,6 +91,14 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
       UsersQueries.FIND_BY_IDS,
 
       [ids],
+    );
+  }
+
+  async search(dto: FindUsersDto): Promise<UserListItem[]> {
+    return this.findMany(
+      UsersQueries.SEARCH,
+
+      [dto.query ?? null, dto.limit ?? 20, dto.offset ?? 0],
     );
   }
 }

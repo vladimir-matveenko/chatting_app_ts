@@ -63,4 +63,26 @@ export const UsersQueries = {
     FROM users
     WHERE id = ANY($1::bigint[])
     `,
+
+  SEARCH: `
+    SELECT
+        id,
+        user_name,
+        display_name,
+        avatar_url
+    FROM users
+    WHERE
+    (
+        $1::text IS NULL
+        OR
+        user_name ILIKE '%' || $1 || '%'
+        OR
+        display_name ILIKE '%' || $1 || '%'
+    )
+    ORDER BY
+        display_name NULLS LAST,
+        user_name
+    LIMIT $2
+    OFFSET $3;
+    `,
 };

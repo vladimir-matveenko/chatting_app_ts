@@ -8,6 +8,7 @@ import { UsersMappers } from "../mappers/users.mappers.js";
 import { UsersService } from "../services/users.service.js";
 import { UsersRequestValidators } from "../validators/users-request.validators.js";
 import { UnauthorizedError } from "../../../core/errors/index.js";
+import { UserListItem } from "../models/user-list-item.model.js";
 
 export class UsersController extends BaseController {
   constructor(
@@ -110,5 +111,21 @@ export class UsersController extends BaseController {
     );
 
     this.noContent(res);
+  }
+
+  async search(
+    request: Request,
+
+    response: Response<UserListItem[]>,
+  ): Promise<void> {
+    const dto = this.validators.findUsers.validate(request.query);
+
+    const users = await this.usersService.search(dto);
+
+    this.ok(
+      response,
+
+      users,
+    );
   }
 }

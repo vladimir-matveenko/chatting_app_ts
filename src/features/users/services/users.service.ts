@@ -16,6 +16,8 @@ import { PasswordHasher } from "../../../core/security/password/index.js";
 import { UpdateUserDto } from "../dto/update-user.dto.js";
 import { UpdatePasswordDto } from "../dto/update-password.dto.js";
 import { IRefreshTokensRepository } from "../../auth/interfaces/refresh-tokens.repository.interface.js";
+import { FindUsersDto } from "../dto/find-users.dto.js";
+import { UserListItem } from "../models/user-list-item.model.js";
 
 export class UsersService {
   constructor(
@@ -213,5 +215,9 @@ export class UsersService {
     await this.refreshTokensRepository.delete(id);
 
     return user;
+  }
+
+  async search(dto: FindUsersDto): Promise<UserListItem[]> {
+    return this.usersRepository.search(dto);
   }
 }
