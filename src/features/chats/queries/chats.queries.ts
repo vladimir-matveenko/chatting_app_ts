@@ -54,16 +54,15 @@ SELECT
     c.updated_at,
 
     lm.body AS last_message,
+    lm.type AS last_message_type,
     lm.created_at AS last_message_at,
 
     (
         SELECT COUNT(*)
         FROM messages m
-
         LEFT JOIN chat_reads cr
             ON cr.chat_id = c.id
            AND cr.user_id = $1
-
         WHERE
             m.chat_id = c.id
         AND
@@ -78,16 +77,14 @@ SELECT
     COALESCE(
         (
             SELECT jsonb_agg(participant)
-
             FROM (
                 SELECT
                     jsonb_build_object(
                         'id', u.id,
-                        'user_name', u.user_name,
-                        'display_name', u.display_name,
-                        'avatar_url', u.avatar_url
+                        'userName', u.user_name,
+                        'displayName', u.display_name,
+                        'avatarUrl', u.avatar_url
                     ) AS participant
-
                 FROM chat_members cm2
 
                 INNER JOIN users u
@@ -110,11 +107,8 @@ SELECT
 
     (
         SELECT COUNT(*)
-
         FROM chat_members cm2
-
-        WHERE
-            cm2.chat_id = c.id
+        WHERE cm2.chat_id = c.id
     )::integer AS participants_count
 
 FROM chats c
@@ -124,19 +118,16 @@ INNER JOIN chat_members cm
 
 LEFT JOIN LATERAL (
     SELECT
-        body,
-        created_at
-
-    FROM messages
-
+        m.body,
+        m.type,
+        m.created_at
+    FROM messages m
     WHERE
-        chat_id = c.id
+        m.chat_id = c.id
     AND
-        is_deleted = FALSE
-
+        m.is_deleted = FALSE
     ORDER BY
-        created_at DESC
-
+        m.created_at DESC
     LIMIT 1
 ) lm ON TRUE
 
@@ -151,12 +142,4 @@ ORDER BY
         c.updated_at
     ) DESC;
 `,
-
-  UPDATE_ACTIVITY: `
-    UPDATE chats
-
-    SET updated_at = NOW()
-
-    WHERE id = $1;
-    `,
 };

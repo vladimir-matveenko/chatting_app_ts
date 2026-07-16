@@ -16,7 +16,7 @@ export interface ChatListItem {
 
   updatedAt: Date;
 
-  lastMessage: string | null;
+  lastMessagePreview: string | null;
 
   lastMessageAt: Date | null;
 

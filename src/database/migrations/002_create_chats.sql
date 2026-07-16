@@ -5,7 +5,7 @@ CREATE TYPE chat_member_role AS ENUM ('owner', 'admin', 'member');
 CREATE TABLE chats (
     id BIGSERIAL PRIMARY KEY,
     type chat_type NOT NULL,
-    fingerprint VARCHAR(64) NOT NULL UNIQUE,
+    fingerprint VARCHAR(64) NOT NULL,
     title VARCHAR(100),
     avatar_url TEXT,
     owner_id BIGINT REFERENCES users(id) ON DELETE
@@ -26,6 +26,4 @@ CREATE TABLE chat_members (
     PRIMARY KEY (chat_id, user_id)
 );
 
-CREATE INDEX idx_chat_members_user ON chat_members (user_id);
-
-CREATE INDEX idx_chat_members_chat ON chat_members (chat_id);
+CREATE INDEX idx_chat_members_user_archived ON chat_members(user_id, is_archived);
