@@ -43,7 +43,7 @@ export const ChatsQueries = {
     WHERE id = $1;
     `,
 
-  FFIND_ALL_BY_USER: `
+  FIND_ALL_BY_USER: `
 SELECT
     c.id,
     c.type,
