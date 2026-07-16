@@ -33,4 +33,10 @@ export interface IChatMembersRepository {
 
     isMuted: boolean,
   ): Promise<void>;
+
+  leave(
+    chatId: string,
+
+    userId: string,
+  ): Promise<void>;
 }

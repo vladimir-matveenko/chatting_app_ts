@@ -91,4 +91,12 @@ export const ChatMembersQueries = {
     AND
         user_id = $2;
     `,
+
+  LEAVE_CHAT: `
+    DELETE FROM chat_members
+    WHERE
+        chat_id = $1
+    AND
+        user_id = $2;
+    `,
 };

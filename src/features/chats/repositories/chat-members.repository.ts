@@ -113,4 +113,16 @@ export class ChatMembersRepository
       [chatId, userId, isMuted],
     );
   }
+
+  async leave(
+    chatId: string,
+
+    userId: string,
+  ): Promise<void> {
+    await this.query(
+      ChatMembersQueries.LEAVE_CHAT,
+
+      [chatId, userId],
+    );
+  }
 }

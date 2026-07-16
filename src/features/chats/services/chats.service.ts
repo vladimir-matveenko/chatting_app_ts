@@ -274,4 +274,32 @@ export class ChatsService {
       dto.isMuted,
     );
   }
+
+  async leave(
+    chatId: string,
+
+    userId: string,
+  ): Promise<void> {
+    await this.ensureMember(
+      chatId,
+
+      userId,
+    );
+
+    const chat = await this.chatsRepository.findById(chatId);
+
+    if (!chat) {
+      throw new NotFoundError("Chat not found.");
+    }
+
+    if (chat.type === ChatType.PRIVATE) {
+      throw new ValidationError("Cannot leave private chat.");
+    }
+
+    await this.chatMembersRepository.leave(
+      chatId,
+
+      userId,
+    );
+  }
 }

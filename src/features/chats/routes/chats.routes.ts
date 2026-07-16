@@ -76,5 +76,14 @@ export function createChatsRouter(
     asyncHandler(controller.mute.bind(controller)),
   );
 
+  // remove member from chat
+  router.delete(
+    "/:id/members/me",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.leave.bind(controller)),
+  );
+
   return router;
 }

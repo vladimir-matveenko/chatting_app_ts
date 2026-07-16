@@ -201,4 +201,32 @@ export class ChatsController {
 
     response.sendStatus(204);
   }
+
+  async leave(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const chatId = requireId(
+      request.params.id,
+
+      "chatId",
+    );
+
+    await this.service.leave(
+      chatId,
+
+      request.user.userId,
+    );
+
+    response.sendStatus(204);
+  }
 }
