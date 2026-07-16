@@ -68,4 +68,60 @@ export const ChatMembersPath = {
       },
     },
   },
+
+  "/chats/{id}/members/": {
+    post: {
+      tags: ["Chats"],
+
+      summary: "Add member to chat",
+
+      description: "Add member to chat",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      requestBody: {
+        required: true,
+
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/AddChatMemberRequest",
+            },
+          },
+        },
+      },
+
+      responses: {
+        204: noContentResponse,
+
+        401: unauthorizedResponse,
+      },
+    },
+  },
+
+  "/chats/{id}/members//{userId}": {
+    delete: {
+      tags: ["Chats"],
+
+      summary: "Delete member from chat",
+
+      description: "Delete member from chat",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      responses: {
+        204: noContentResponse,
+
+        401: unauthorizedResponse,
+      },
+    },
+  },
 };

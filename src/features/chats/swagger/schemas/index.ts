@@ -9,6 +9,7 @@ import { ChatMemberSchema } from "./chat-member.schema.js";
 import { ChatListParticipantSchema } from "./chat-list-participant.schema.js";
 import { ArchiveChatRequestSchema } from "./archive-chat-request.schema.js";
 import { MuteChatRequestSchema } from "./mute-chat-request.schema.js";
+import { AddChatMemberRequestSchema } from "./add-chat-member-request.schema.js";
 
 export const chatsSchemas = {
   ...ChatSchema,
@@ -20,6 +21,8 @@ export const chatsSchemas = {
   ...CreateChatRequestSchema,
 
   ...ArchiveChatRequestSchema,
+
+  ...AddChatMemberRequestSchema,
 
   ...ChatTypeSchema,
 
