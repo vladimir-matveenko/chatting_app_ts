@@ -1,3 +1,4 @@
+import { noContentResponse } from "../../../../swagger/builders/index.js";
 import { okResponse } from "../../../../swagger/builders/ok-response.js";
 import {
   badRequestResponse,
@@ -42,6 +43,28 @@ export const ChatMembersPath = {
         401: unauthorizedResponse,
 
         404: notFoundResponse,
+      },
+    },
+  },
+
+  "/chats/{id}/members/me": {
+    delete: {
+      tags: ["Chats"],
+
+      summary: "Remove user from chat",
+
+      description: "Remove current user from chat",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      responses: {
+        204: noContentResponse,
+
+        401: unauthorizedResponse,
       },
     },
   },
