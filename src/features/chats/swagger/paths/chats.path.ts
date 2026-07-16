@@ -93,7 +93,7 @@ export const ChatsPath = {
       },
 
       responses: {
-        204: noContentResponse,
+        204: noContentResponse("Chat archived."),
 
         401: unauthorizedResponse,
       },
@@ -127,7 +127,7 @@ export const ChatsPath = {
       },
 
       responses: {
-        204: noContentResponse,
+        204: noContentResponse("Chat muted."),
 
         401: unauthorizedResponse,
       },

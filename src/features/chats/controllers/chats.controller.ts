@@ -9,6 +9,7 @@ import { UnauthorizedError, ValidationError } from "../../../core/errors/index.j
 import { MessageReadService } from "../../messages/services/message-read.service.js";
 import { requireBoolean, requireId } from "../../../core/http/validators/index.js";
 import { AddChatMembersRequestValidator } from "../validators/add-chat-members-request.validator.js";
+import { ChangeMemberRoleRequestValidator } from "../validators/change-member-role-request.validator.js";
 
 export class ChatsController {
   constructor(
@@ -19,6 +20,8 @@ export class ChatsController {
     private readonly validator: CreateChatRequestValidator,
 
     private readonly addMemberValidator: AddChatMembersRequestValidator,
+
+    private readonly memberRoleValidator: ChangeMemberRoleRequestValidator,
 
     private readonly mapper: CreateChatRequestMapper,
   ) {}
@@ -296,6 +299,46 @@ export class ChatsController {
       request.user.userId,
 
       memberId,
+    );
+
+    response.sendStatus(204);
+  }
+
+  async changeMemberRole(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const chatId = requireId(
+      request.params.id,
+
+      "chatId",
+    );
+
+    const memberId = requireId(
+      request.params.userId,
+
+      "userId",
+    );
+
+    const dto = this.memberRoleValidator.validate(request);
+
+    await this.service.changeMemberRole(
+      chatId,
+
+      request.user.userId,
+
+      memberId,
+
+      dto,
     );
 
     response.sendStatus(204);

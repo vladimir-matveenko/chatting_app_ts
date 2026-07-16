@@ -21,6 +21,7 @@ import { ArchiveChatDto } from "../dto/archive-chat.dto.js";
 import { MuteChatDto } from "../dto/mute-chat.dto.js";
 import { AddChatMembersDto } from "../dto/add-chat-members.dto.js";
 import { ManageMembersPermissions } from "../constants/chat-member-permissions.js";
+import { ChangeMemberRoleDto } from "../dto/request/change-member-role.dto.js";
 
 export class ChatsService {
   constructor(
@@ -407,5 +408,31 @@ export class ChatsService {
         "INSUFFICIENT_PERMISSIONS",
       );
     }
+  }
+
+  async changeMemberRole(
+    chatId: string,
+
+    actorId: string,
+
+    memberId: string,
+
+    dto: ChangeMemberRoleDto,
+  ): Promise<void> {
+    await this.ensureCanManageMembers(
+      chatId,
+
+      actorId,
+
+      memberId,
+    );
+
+    await this.chatMembersRepository.updateRole(
+      chatId,
+
+      memberId,
+
+      dto.role,
+    );
   }
 }

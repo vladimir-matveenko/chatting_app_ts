@@ -25,6 +25,7 @@ import { JwtAuthMiddleware } from "../../core/middleware/jwt-auth.middleware.js"
 import { ChatListRepository } from "./repositories/chat-list.repository.js";
 import { MessageReadService } from "../messages/services/message-read.service.js";
 import { AddChatMembersRequestValidator } from "./validators/add-chat-members-request.validator.js";
+import { ChangeMemberRoleRequestValidator } from "./validators/change-member-role-request.validator.js";
 
 export function createChatsModule(
   database: Database,
@@ -61,6 +62,8 @@ export function createChatsModule(
 
   const addMemberValidator = new AddChatMembersRequestValidator();
 
+  const memberRoleValidator = new ChangeMemberRoleRequestValidator();
+
   const mapper = new CreateChatRequestMapper();
 
   const controller = new ChatsController(
@@ -71,6 +74,8 @@ export function createChatsModule(
     validator,
 
     addMemberValidator,
+
+    memberRoleValidator,
 
     mapper,
   );

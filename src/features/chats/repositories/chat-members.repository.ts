@@ -17,6 +17,7 @@ import type { CreateChatMemberDto } from "../dto/create-chat-member.dto.js";
 import type { IChatMembersRepository } from "../interfaces/chat-members.repository.interface.js";
 
 import type { PoolClient } from "pg";
+import { ChatMemberRole } from "../enums/chat-member-role.enum.js";
 
 export class ChatMembersRepository
   extends BaseRepository<ChatMemberEntity, ChatMember>
@@ -147,6 +148,20 @@ export class ChatMembersRepository
       ChatMembersQueries.REMOVE_MEMBER,
 
       [chatId, userId],
+    );
+  }
+
+  async updateRole(
+    chatId: string,
+
+    userId: string,
+
+    role: ChatMemberRole,
+  ): Promise<void> {
+    await this.query(
+      ChatMembersQueries.UPDATE_ROLE,
+
+      [chatId, userId, role],
     );
   }
 }

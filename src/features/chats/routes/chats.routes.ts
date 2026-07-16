@@ -103,5 +103,14 @@ export function createChatsRouter(
     asyncHandler(controller.removeMember.bind(controller)),
   );
 
+  // change member role
+  router.patch(
+    "/:id/members/:userId/role",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.changeMemberRole.bind(controller)),
+  );
+
   return router;
 }

@@ -62,7 +62,7 @@ export const ChatMembersPath = {
       ],
 
       responses: {
-        204: noContentResponse,
+        204: noContentResponse("You left chat."),
 
         401: unauthorizedResponse,
       },
@@ -96,14 +96,14 @@ export const ChatMembersPath = {
       },
 
       responses: {
-        204: noContentResponse,
+        204: noContentResponse("Members added."),
 
         401: unauthorizedResponse,
       },
     },
   },
 
-  "/chats/{id}/members//{userId}": {
+  "/chats/{id}/members/{userId}": {
     delete: {
       tags: ["Chats"],
 
@@ -118,7 +118,41 @@ export const ChatMembersPath = {
       ],
 
       responses: {
-        204: noContentResponse,
+        204: noContentResponse("Member deleted."),
+
+        401: unauthorizedResponse,
+      },
+    },
+  },
+
+  "/chats/{id}/members/{userId}/role": {
+    patch: {
+      tags: ["Chats"],
+
+      summary: "Change member role",
+
+      description: "Change member role",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      requestBody: {
+        required: true,
+
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/ChangeMemberRoleRequest",
+            },
+          },
+        },
+      },
+
+      responses: {
+        204: noContentResponse("Role updated."),
 
         401: unauthorizedResponse,
       },
