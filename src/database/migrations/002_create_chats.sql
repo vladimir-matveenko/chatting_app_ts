@@ -12,7 +12,8 @@ CREATE TABLE chats (
     SET
         NULL,
         created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+        CONSTRAINT uq_chats_fingerprint UNIQUE (fingerprint)
 );
 
 CREATE TABLE chat_members (

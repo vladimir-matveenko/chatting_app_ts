@@ -16,6 +16,7 @@ import { Chat } from "../models/chat.model.js";
 import type { IChatListRepository } from "../interfaces/chat-list.repository.interface.js";
 import { ChatListItem } from "../models/chat-list-item.model.js";
 import { ChatMember } from "../models/chat-member.model.js";
+import { isUniqueViolation } from "../../../core/database/is-unique-violation.js";
 
 export class ChatsService {
   constructor(
@@ -39,7 +40,11 @@ export class ChatsService {
       dto.ownerId,
     );
 
-    await this.validateMembers(dto, memberIds);
+    await this.validateMembers(
+      dto,
+
+      memberIds,
+    );
 
     const normalizedDto: CreateChatDto = {
       ...dto,
@@ -56,6 +61,7 @@ export class ChatsService {
     return this.database.transaction(async (client: PoolClient) => {
       const existing = await this.chatsRepository.findByFingerprintTx(
         client,
+
         normalizedDto.fingerprint,
       );
 
@@ -63,11 +69,37 @@ export class ChatsService {
         return existing;
       }
 
-      const chat = await this.chatsRepository.createTx(client, normalizedDto);
+      try {
+        const chat = await this.chatsRepository.createTx(
+          client,
 
-      await this.createChatMembers(client, chat.id, normalizedDto);
+          normalizedDto,
+        );
 
-      return chat;
+        await this.createChatMembers(
+          client,
+
+          chat.id,
+
+          normalizedDto,
+        );
+
+        return chat;
+      } catch (error) {
+        if (isUniqueViolation(error)) {
+          const existing = await this.chatsRepository.findByFingerprintTx(
+            client,
+
+            normalizedDto.fingerprint,
+          );
+
+          if (existing) {
+            return existing;
+          }
+        }
+
+        throw error;
+      }
     });
   }
 

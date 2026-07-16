@@ -43,7 +43,7 @@ export const ChatsQueries = {
     WHERE id = $1;
     `,
 
-  FIND_ALL_BY_USER: `
+  FFIND_ALL_BY_USER: `
 SELECT
     c.id,
     c.type,
@@ -53,36 +53,17 @@ SELECT
     c.created_at,
     c.updated_at,
 
-    (
-        SELECT m.body
-        FROM messages m
-        WHERE
-            m.chat_id = c.id
-        AND
-            m.is_deleted = FALSE
-        ORDER BY
-            m.created_at DESC
-        LIMIT 1
-    ) AS last_message,
-
-    (
-        SELECT m.created_at
-        FROM messages m
-        WHERE
-            m.chat_id = c.id
-        AND
-            m.is_deleted = FALSE
-        ORDER BY
-            m.created_at DESC
-        LIMIT 1
-    ) AS last_message_at,
+    lm.body AS last_message,
+    lm.created_at AS last_message_at,
 
     (
         SELECT COUNT(*)
         FROM messages m
+
         LEFT JOIN chat_reads cr
             ON cr.chat_id = c.id
            AND cr.user_id = $1
+
         WHERE
             m.chat_id = c.id
         AND
@@ -97,14 +78,16 @@ SELECT
     COALESCE(
         (
             SELECT jsonb_agg(participant)
+
             FROM (
                 SELECT
                     jsonb_build_object(
                         'id', u.id,
-                        'userName', u.user_name,
-                        'displayName', u.display_name,
-                        'avatarUrl', u.avatar_url
+                        'user_name', u.user_name,
+                        'display_name', u.display_name,
+                        'avatar_url', u.avatar_url
                     ) AS participant
+
                 FROM chat_members cm2
 
                 INNER JOIN users u
@@ -127,14 +110,35 @@ SELECT
 
     (
         SELECT COUNT(*)
+
         FROM chat_members cm2
-        WHERE cm2.chat_id = c.id
+
+        WHERE
+            cm2.chat_id = c.id
     )::integer AS participants_count
 
 FROM chats c
 
 INNER JOIN chat_members cm
     ON cm.chat_id = c.id
+
+LEFT JOIN LATERAL (
+    SELECT
+        body,
+        created_at
+
+    FROM messages
+
+    WHERE
+        chat_id = c.id
+    AND
+        is_deleted = FALSE
+
+    ORDER BY
+        created_at DESC
+
+    LIMIT 1
+) lm ON TRUE
 
 WHERE
     cm.user_id = $1
@@ -143,17 +147,7 @@ AND
 
 ORDER BY
     COALESCE(
-        (
-            SELECT m.created_at
-            FROM messages m
-            WHERE
-                m.chat_id = c.id
-            AND
-                m.is_deleted = FALSE
-            ORDER BY
-                m.created_at DESC
-            LIMIT 1
-        ),
+        lm.created_at,
         c.updated_at
     ) DESC;
 `,
