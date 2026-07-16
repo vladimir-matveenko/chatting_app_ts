@@ -18,10 +18,13 @@ import { UpdatePasswordDto } from "../dto/update-password.dto.js";
 import { IRefreshTokensRepository } from "../../auth/interfaces/refresh-tokens.repository.interface.js";
 import { FindUsersDto } from "../dto/find-users.dto.js";
 import { UserListItem } from "../models/user-list-item.model.js";
+import { IUserListRepository } from "../interfaces/user-list.repository.interface.js";
 
 export class UsersService {
   constructor(
     private readonly usersRepository: IUsersRepository,
+
+    private readonly userListRepository: IUserListRepository,
 
     private readonly refreshTokensRepository: IRefreshTokensRepository,
 
@@ -218,6 +221,6 @@ export class UsersService {
   }
 
   async search(currentUserId: string, dto: FindUsersDto): Promise<UserListItem[]> {
-    return this.usersRepository.search(currentUserId, dto);
+    return this.userListRepository.search(currentUserId, dto);
   }
 }

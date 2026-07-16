@@ -118,7 +118,9 @@ export class UsersController extends BaseController {
 
     response: Response<UserListItem[]>,
   ): Promise<void> {
-    if (!request.user) {
+    const user = request.user;
+
+    if (!user) {
       throw new UnauthorizedError(
         "Unauthorized.",
 
@@ -129,7 +131,7 @@ export class UsersController extends BaseController {
     const dto = this.validators.findUsers.validate(request.query);
 
     const users = await this.usersService.search(
-      request.user.userId,
+      user.userId,
 
       dto,
     );

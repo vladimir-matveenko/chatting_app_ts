@@ -4,12 +4,14 @@ export const userListExample = [
   userListItemExample,
 
   {
-    id: "27",
+    id: "15",
 
-    userName: "kate",
+    userName: "vasya",
 
-    displayName: "Kate",
+    displayName: "Vasya",
 
     avatarUrl: null,
+
+    privateChatId: "27",
   },
 ];

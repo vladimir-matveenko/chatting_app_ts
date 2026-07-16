@@ -14,6 +14,8 @@ export class UserListItemMapper implements Mapper<UserListItemEntity, UserListIt
       displayName: entity.display_name,
 
       avatarUrl: entity.avatar_url,
+
+      privateChatId: entity.private_chat_id,
     };
   }
 }

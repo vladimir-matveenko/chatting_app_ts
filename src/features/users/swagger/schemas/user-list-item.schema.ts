@@ -24,6 +24,16 @@ export const UserListItemSchema = {
 
         nullable: true,
       },
+
+      privateChatId: {
+        allOf: [
+          {
+            $ref: "#/components/schemas/Id",
+          },
+        ],
+
+        nullable: true,
+      },
     },
   },
 };

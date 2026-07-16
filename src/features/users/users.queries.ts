@@ -66,22 +66,45 @@ export const UsersQueries = {
 
   SEARCH: `
     SELECT
-        id,
-        user_name,
-        display_name,
-        avatar_url
-    FROM users
+        u.id,
+        u.user_name,
+        u.display_name,
+        u.avatar_url,
+        (
+            SELECT c.id
+            FROM chats c
+            INNER JOIN chat_members me
+                ON me.chat_id = c.id
+            INNER JOIN chat_members other
+                ON other.chat_id = c.id
+            WHERE
+                c.type = 'private'
+            AND
+                me.user_id = $1
+            AND
+                other.user_id = u.id
+            LIMIT 1
+        ) AS private_chat_id
+
+    FROM users u
     WHERE
-        id <> $1
-    AND (
+    u.id <> $1
+
+    AND
+    (
         $2::text IS NULL
-        OR LOWER(user_name) LIKE LOWER('%' || $2 || '%')
-        OR LOWER(display_name) LIKE LOWER('%' || $2 || '%')
+        OR
+        u.user_name ILIKE '%' || $2 || '%'
+        OR
+        u.display_name ILIKE '%' || $2 || '%'
     )
+
     ORDER BY
-        display_name NULLS LAST,
-        user_name
+        u.display_name NULLS LAST,
+        u.user_name
+
     LIMIT $3
+
     OFFSET $4;
     `,
 };
