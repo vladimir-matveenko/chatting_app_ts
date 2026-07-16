@@ -85,6 +85,15 @@ export function createChatsRouter(
     asyncHandler(controller.leave.bind(controller)),
   );
 
+  // add members to chat
+  router.post(
+    "/:id/members",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.addMembers.bind(controller)),
+  );
+
   // remove member from chat
   router.delete(
     "/:id/members/:userId",

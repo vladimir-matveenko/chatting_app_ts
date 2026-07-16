@@ -8,6 +8,7 @@ import { CreateChatRequestMapper } from "../mappers/create-chat-request.mapper.j
 import { UnauthorizedError, ValidationError } from "../../../core/errors/index.js";
 import { MessageReadService } from "../../messages/services/message-read.service.js";
 import { requireBoolean, requireId } from "../../../core/http/validators/index.js";
+import { AddChatMembersRequestValidator } from "../validators/add-chat-members-request.validator.js";
 
 export class ChatsController {
   constructor(
@@ -16,6 +17,8 @@ export class ChatsController {
     private readonly messageReadService: MessageReadService,
 
     private readonly validator: CreateChatRequestValidator,
+
+    private readonly addMemberValidator: AddChatMembersRequestValidator,
 
     private readonly mapper: CreateChatRequestMapper,
   ) {}
@@ -225,6 +228,38 @@ export class ChatsController {
       chatId,
 
       request.user.userId,
+    );
+
+    response.sendStatus(204);
+  }
+
+  async addMembers(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const chatId = requireId(
+      request.params.id,
+
+      "chatId",
+    );
+
+    const dto = this.addMemberValidator.validate(request);
+
+    await this.service.addMembers(
+      chatId,
+
+      request.user.userId,
+
+      dto,
     );
 
     response.sendStatus(204);
