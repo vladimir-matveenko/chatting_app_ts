@@ -124,4 +124,13 @@ export const ChatMembersQueries = {
     AND
         user_id = $2;
     `,
+
+  UPDATE_MEMBER_ROLE: `
+    UPDATE chat_members
+    SET role = $3
+    WHERE
+        chat_id = $1
+    AND
+        user_id = $2;
+    `,
 };

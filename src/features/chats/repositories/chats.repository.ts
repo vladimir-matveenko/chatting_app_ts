@@ -126,4 +126,20 @@ export class ChatsRepository extends BaseRepository<ChatEntity, Chat> implements
       [chatId, userId, isArchived],
     );
   }
+
+  async updateOwnerTx(
+    client: PoolClient,
+
+    chatId: string,
+
+    ownerId: string,
+  ): Promise<void> {
+    await this.queryTx(
+      client,
+
+      ChatsQueries.UPDATE_CHAT_OWNER,
+
+      [chatId, ownerId],
+    );
+  }
 }

@@ -36,4 +36,12 @@ export interface IChatsRepository {
 
     isArchived: boolean,
   ): Promise<void>;
+
+  updateOwnerTx(
+    client: PoolClient,
+
+    chatId: string,
+
+    ownerId: string,
+  ): Promise<void>;
 }

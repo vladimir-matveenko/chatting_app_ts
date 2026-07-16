@@ -146,4 +146,10 @@ ORDER BY
     AND
         user_id = $2;
     `,
+
+  UPDATE_CHAT_OWNER: `
+    UPDATE chats
+    SET owner_id = $2
+    WHERE id = $1;
+    `,
 };

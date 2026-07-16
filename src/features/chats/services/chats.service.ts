@@ -22,6 +22,9 @@ import { MuteChatDto } from "../dto/mute-chat.dto.js";
 import { AddChatMembersDto } from "../dto/add-chat-members.dto.js";
 import { ManageMembersPermissions } from "../constants/chat-member-permissions.js";
 import { ChangeMemberRoleDto } from "../dto/request/change-member-role.dto.js";
+import { TransferOwnershipDto } from "../dto/transfer-ownership.dto.js";
+
+const PREVIOUS_OWNER_ROLE = ChatMemberRole.ADMIN;
 
 export class ChatsService {
   constructor(
@@ -434,5 +437,93 @@ export class ChatsService {
 
       dto.role,
     );
+  }
+
+  async transferOwnership(
+    chatId: string,
+
+    actorId: string,
+
+    dto: TransferOwnershipDto,
+  ): Promise<void> {
+    if (dto.userId === actorId) {
+      throw new ValidationError("You are already the owner.");
+    }
+
+    const chat = await this.chatsRepository.findById(chatId);
+
+    if (!chat) {
+      throw new NotFoundError("Chat not found.");
+    }
+
+    if (chat.type !== ChatType.GROUP) {
+      throw new ValidationError("Ownership can only be transferred in group chats.");
+    }
+
+    const actor = await this.chatMembersRepository.findByChatAndUser(
+      chatId,
+
+      actorId,
+    );
+
+    if (!actor) {
+      throw new ForbiddenError(
+        "You are not a member of this chat.",
+
+        "CHAT_ACCESS_DENIED",
+      );
+    }
+
+    if (actor.role !== ChatMemberRole.OWNER) {
+      throw new ForbiddenError(
+        "Only the owner can transfer ownership.",
+
+        "INSUFFICIENT_PERMISSIONS",
+      );
+    }
+
+    const target = await this.chatMembersRepository.findByChatAndUser(
+      chatId,
+
+      dto.userId,
+    );
+
+    if (!target) {
+      throw new NotFoundError("Member not found.");
+    }
+
+    if (target.role === ChatMemberRole.OWNER) {
+      throw new ValidationError("User is already the owner.");
+    }
+
+    await this.database.transaction(async (client: PoolClient) => {
+      await this.chatMembersRepository.updateRoleTx(
+        client,
+
+        chatId,
+
+        actorId,
+
+        PREVIOUS_OWNER_ROLE,
+      );
+
+      await this.chatMembersRepository.updateRoleTx(
+        client,
+
+        chatId,
+
+        dto.userId,
+
+        ChatMemberRole.OWNER,
+      );
+
+      await this.chatsRepository.updateOwnerTx(
+        client,
+
+        chatId,
+
+        dto.userId,
+      );
+    });
   }
 }

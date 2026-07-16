@@ -11,6 +11,7 @@ import { ArchiveChatRequestSchema } from "./archive-chat-request.schema.js";
 import { MuteChatRequestSchema } from "./mute-chat-request.schema.js";
 import { AddChatMemberRequestSchema } from "./add-chat-member-request.schema.js";
 import { ChangeMemberRoleRequestSchema } from "./change-member-role-request.schema.js";
+import { TransferOwnershipRequestSchema } from "./transfer-ownership-request.schema.js";
 
 export const chatsSchemas = {
   ...ChatSchema,
@@ -26,6 +27,8 @@ export const chatsSchemas = {
   ...AddChatMemberRequestSchema,
 
   ...ChangeMemberRoleRequestSchema,
+
+  ...TransferOwnershipRequestSchema,
 
   ...ChatTypeSchema,
 

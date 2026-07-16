@@ -164,4 +164,22 @@ export class ChatMembersRepository
       [chatId, userId, role],
     );
   }
+
+  async updateRoleTx(
+    client: PoolClient,
+
+    chatId: string,
+
+    userId: string,
+
+    role: ChatMemberRole,
+  ): Promise<void> {
+    await this.queryTx(
+      client,
+
+      ChatMembersQueries.UPDATE_ROLE,
+
+      [chatId, userId, role],
+    );
+  }
 }

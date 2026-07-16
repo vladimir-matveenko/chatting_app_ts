@@ -60,4 +60,14 @@ export interface IChatMembersRepository {
 
     role: ChatMemberRole,
   ): Promise<void>;
+
+  updateRoleTx(
+    client: PoolClient,
+
+    chatId: string,
+
+    userId: string,
+
+    role: ChatMemberRole,
+  ): Promise<void>;
 }

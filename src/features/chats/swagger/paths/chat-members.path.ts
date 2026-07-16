@@ -61,6 +61,20 @@ export const ChatMembersPath = {
         },
       ],
 
+      parameters: [
+        {
+          name: "id",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
       responses: {
         204: noContentResponse("You left chat."),
 
@@ -80,6 +94,20 @@ export const ChatMembersPath = {
       security: [
         {
           bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "id",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
         },
       ],
 
@@ -117,6 +145,31 @@ export const ChatMembersPath = {
         },
       ],
 
+      parameters: [
+        {
+          name: "id",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "userId",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
       responses: {
         204: noContentResponse("Member deleted."),
 
@@ -136,6 +189,31 @@ export const ChatMembersPath = {
       security: [
         {
           bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "id",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "userId",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
         },
       ],
 

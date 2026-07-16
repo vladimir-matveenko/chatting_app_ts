@@ -10,6 +10,7 @@ import { MessageReadService } from "../../messages/services/message-read.service
 import { requireBoolean, requireId } from "../../../core/http/validators/index.js";
 import { AddChatMembersRequestValidator } from "../validators/add-chat-members-request.validator.js";
 import { ChangeMemberRoleRequestValidator } from "../validators/change-member-role-request.validator.js";
+import { TransferOwnershipRequestValidator } from "../dto/transfer-ownership-request.validator.js";
 
 export class ChatsController {
   constructor(
@@ -22,6 +23,8 @@ export class ChatsController {
     private readonly addMemberValidator: AddChatMembersRequestValidator,
 
     private readonly memberRoleValidator: ChangeMemberRoleRequestValidator,
+
+    private readonly transferOwnershipValidator: TransferOwnershipRequestValidator,
 
     private readonly mapper: CreateChatRequestMapper,
   ) {}
@@ -337,6 +340,38 @@ export class ChatsController {
       request.user.userId,
 
       memberId,
+
+      dto,
+    );
+
+    response.sendStatus(204);
+  }
+
+  async transferOwnership(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const chatId = requireId(
+      request.params.id,
+
+      "chatId",
+    );
+
+    const dto = this.transferOwnershipValidator.validate(request);
+
+    await this.service.transferOwnership(
+      chatId,
+
+      request.user.userId,
 
       dto,
     );

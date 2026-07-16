@@ -26,6 +26,7 @@ import { ChatListRepository } from "./repositories/chat-list.repository.js";
 import { MessageReadService } from "../messages/services/message-read.service.js";
 import { AddChatMembersRequestValidator } from "./validators/add-chat-members-request.validator.js";
 import { ChangeMemberRoleRequestValidator } from "./validators/change-member-role-request.validator.js";
+import { TransferOwnershipRequestValidator } from "./dto/transfer-ownership-request.validator.js";
 
 export function createChatsModule(
   database: Database,
@@ -64,6 +65,8 @@ export function createChatsModule(
 
   const memberRoleValidator = new ChangeMemberRoleRequestValidator();
 
+  const transferOwnershipValidator = new TransferOwnershipRequestValidator();
+
   const mapper = new CreateChatRequestMapper();
 
   const controller = new ChatsController(
@@ -76,6 +79,8 @@ export function createChatsModule(
     addMemberValidator,
 
     memberRoleValidator,
+
+    transferOwnershipValidator,
 
     mapper,
   );

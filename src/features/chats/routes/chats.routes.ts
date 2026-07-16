@@ -112,5 +112,14 @@ export function createChatsRouter(
     asyncHandler(controller.changeMemberRole.bind(controller)),
   );
 
+  // change owner of the chat
+  router.patch(
+    "/:id/owner",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.transferOwnership.bind(controller)),
+  );
+
   return router;
 }

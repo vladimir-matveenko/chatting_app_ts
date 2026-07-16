@@ -1,5 +1,4 @@
 import { createdResponse } from "../../../../swagger/builders/created-response.js";
-import { noContentResponse } from "../../../../swagger/builders/no-content-response.js";
 import { okResponse } from "../../../../swagger/builders/ok-response.js";
 import {
   badRequestResponse,
@@ -62,74 +61,6 @@ export const ChatsPath = {
         401: unauthorizedResponse,
 
         409: conflictResponse,
-      },
-    },
-  },
-
-  "/chats/{id}/archive": {
-    patch: {
-      tags: ["Chats"],
-
-      summary: "Archive chat",
-
-      description: "Archive chat by id",
-
-      security: [
-        {
-          bearerAuth: [],
-        },
-      ],
-
-      requestBody: {
-        required: true,
-
-        content: {
-          "application/json": {
-            schema: {
-              $ref: "#/components/schemas/ArchiveChatRequest",
-            },
-          },
-        },
-      },
-
-      responses: {
-        204: noContentResponse("Chat archived."),
-
-        401: unauthorizedResponse,
-      },
-    },
-  },
-
-  "/chats/{id}/mute": {
-    patch: {
-      tags: ["Chats"],
-
-      summary: "Mute chat",
-
-      description: "Mute chat for user with id",
-
-      security: [
-        {
-          bearerAuth: [],
-        },
-      ],
-
-      requestBody: {
-        required: true,
-
-        content: {
-          "application/json": {
-            schema: {
-              $ref: "#/components/schemas/MuteChatRequest",
-            },
-          },
-        },
-      },
-
-      responses: {
-        204: noContentResponse("Chat muted."),
-
-        401: unauthorizedResponse,
       },
     },
   },
