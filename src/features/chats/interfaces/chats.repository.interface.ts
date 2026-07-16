@@ -28,4 +28,12 @@ export interface IChatsRepository {
 
     chatId: string,
   ): Promise<void>;
+
+  archive(
+    chatId: string,
+
+    userId: string,
+
+    isArchived: boolean,
+  ): Promise<void>;
 }

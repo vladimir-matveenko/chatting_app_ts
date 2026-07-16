@@ -10,3 +10,4 @@ export * from "./nullable-url.validator.js";
 export * from "./url.validator.js";
 export * from "./require-path-id.js";
 export * from "./require-email.js";
+export * from "./require-boolean.validator.js";

@@ -99,4 +99,18 @@ export class ChatMembersRepository
 
     return entity !== null;
   }
+
+  async mute(
+    chatId: string,
+
+    userId: string,
+
+    isMuted: boolean,
+  ): Promise<void> {
+    await this.query(
+      ChatMembersQueries.MUTE_CHAT,
+
+      [chatId, userId, isMuted],
+    );
+  }
 }

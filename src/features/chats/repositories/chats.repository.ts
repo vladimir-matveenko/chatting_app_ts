@@ -112,4 +112,18 @@ export class ChatsRepository extends BaseRepository<ChatEntity, Chat> implements
       [chatId],
     );
   }
+
+  async archive(
+    chatId: string,
+
+    userId: string,
+
+    isArchived: boolean,
+  ): Promise<void> {
+    await this.query(
+      ChatsQueries.ARCHIVE,
+
+      [chatId, userId, isArchived],
+    );
+  }
 }

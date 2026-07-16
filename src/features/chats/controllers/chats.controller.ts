@@ -5,8 +5,9 @@ import type { ChatsService } from "../services/chats.service.js";
 import { CreateChatRequestValidator } from "../validators/create-chat-request.validator.js";
 
 import { CreateChatRequestMapper } from "../mappers/create-chat-request.mapper.js";
-import { ValidationError } from "../../../core/errors/index.js";
+import { UnauthorizedError, ValidationError } from "../../../core/errors/index.js";
 import { MessageReadService } from "../../messages/services/message-read.service.js";
+import { requireBoolean, requireId } from "../../../core/http/validators/index.js";
 
 export class ChatsController {
   constructor(
@@ -120,6 +121,82 @@ export class ChatsController {
       messageId,
 
       request.user!.userId,
+    );
+
+    response.sendStatus(204);
+  }
+
+  async archive(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const chatId = requireId(
+      request.params.id,
+
+      "chatId",
+    );
+
+    const isArchived = requireBoolean(
+      request.body.isArchived,
+
+      "isArchived",
+    );
+
+    await this.service.archive(
+      chatId,
+
+      request.user.userId,
+
+      {
+        isArchived,
+      },
+    );
+
+    response.sendStatus(204);
+  }
+
+  async mute(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const chatId = requireId(
+      request.params.id,
+
+      "chatId",
+    );
+
+    const isMuted = requireBoolean(
+      request.body.isMuted,
+
+      "isMuted",
+    );
+
+    await this.service.mute(
+      chatId,
+
+      request.user.userId,
+
+      {
+        isMuted,
+      },
     );
 
     response.sendStatus(204);

@@ -17,6 +17,8 @@ import type { IChatListRepository } from "../interfaces/chat-list.repository.int
 import { ChatListItem } from "../models/chat-list-item.model.js";
 import { ChatMember } from "../models/chat-member.model.js";
 import { isUniqueViolation } from "../../../core/database/is-unique-violation.js";
+import { ArchiveChatDto } from "../dto/archive-chat.dto.js";
+import { MuteChatDto } from "../dto/mute-chat.dto.js";
 
 export class ChatsService {
   constructor(
@@ -227,5 +229,49 @@ export class ChatsService {
         "CHAT_ACCESS_DENIED",
       );
     }
+  }
+
+  async archive(
+    chatId: string,
+
+    userId: string,
+
+    dto: ArchiveChatDto,
+  ): Promise<void> {
+    await this.ensureMember(
+      chatId,
+
+      userId,
+    );
+
+    await this.chatsRepository.archive(
+      chatId,
+
+      userId,
+
+      dto.isArchived,
+    );
+  }
+
+  async mute(
+    chatId: string,
+
+    userId: string,
+
+    dto: MuteChatDto,
+  ): Promise<void> {
+    await this.ensureMember(
+      chatId,
+
+      userId,
+    );
+
+    await this.chatMembersRepository.mute(
+      chatId,
+
+      userId,
+
+      dto.isMuted,
+    );
   }
 }

@@ -1,31 +1,19 @@
 export const ChatsQueries = {
   CREATE_CHAT: `
         INSERT INTO chats (
-
             type,
-
             fingerprint,
-
             title,
-
             avatar_url,
-
             owner_id
-
         )
 
         VALUES (
-
             $1,
-
             $2,
-
             $3,
-
             $4,
-            
             $5
-
         )
 
         RETURNING *;
@@ -145,9 +133,17 @@ ORDER BY
 
   UPDATE_ACTIVITY: `
     UPDATE chats
-
     SET updated_at = NOW()
-
     WHERE id = $1;
+    `,
+
+  ARCHIVE: `
+    UPDATE chat_members
+    SET
+        is_archived = $3
+    WHERE
+        chat_id = $1
+    AND
+        user_id = $2;
     `,
 };

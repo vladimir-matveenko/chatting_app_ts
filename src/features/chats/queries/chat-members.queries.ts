@@ -81,4 +81,14 @@ export const ChatMembersQueries = {
 
         user_id = $2;
     `,
+
+  MUTE_CHAT: `
+    UPDATE chat_members
+    SET
+        is_muted = $3
+    WHERE
+        chat_id = $1
+    AND
+        user_id = $2;
+    `,
 };

@@ -25,4 +25,12 @@ export interface IChatMembersRepository {
 
     userId: string,
   ): Promise<ChatMember | null>;
+
+  mute(
+    chatId: string,
+
+    userId: string,
+
+    isMuted: boolean,
+  ): Promise<void>;
 }

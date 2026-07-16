@@ -13,6 +13,7 @@ export function createChatsRouter(
 ): Router {
   const router = Router();
 
+  // get chats list
   router.get(
     "/",
 
@@ -21,6 +22,7 @@ export function createChatsRouter(
     asyncHandler(controller.list.bind(controller)),
   );
 
+  // create chat
   router.post(
     "/",
 
@@ -29,6 +31,7 @@ export function createChatsRouter(
     asyncHandler(controller.create.bind(controller)),
   );
 
+  // get chat by id
   router.get(
     "/:id",
 
@@ -37,6 +40,7 @@ export function createChatsRouter(
     asyncHandler(controller.findById.bind(controller)),
   );
 
+  // get chat members
   router.get(
     "/:id/members",
 
@@ -52,6 +56,24 @@ export function createChatsRouter(
     jwtAuthMiddleware.handler,
 
     asyncHandler(controller.markRead.bind(controller)),
+  );
+
+  // archive chat
+  router.patch(
+    "/:id/archive",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.archive.bind(controller)),
+  );
+
+  // mute chat member
+  router.patch(
+    "/:id/mute",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.mute.bind(controller)),
   );
 
   return router;
