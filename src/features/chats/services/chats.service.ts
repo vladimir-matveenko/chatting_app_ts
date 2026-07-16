@@ -19,6 +19,8 @@ import { ChatMember } from "../models/chat-member.model.js";
 import { isUniqueViolation } from "../../../core/database/is-unique-violation.js";
 import { ArchiveChatDto } from "../dto/archive-chat.dto.js";
 import { MuteChatDto } from "../dto/mute-chat.dto.js";
+import { AddChatMembersDto } from "../dto/add-chat-members.dto.js";
+import { ManageMembersPermissions } from "../constants/chat-member-permissions.js";
 
 export class ChatsService {
   constructor(
@@ -301,5 +303,109 @@ export class ChatsService {
 
       userId,
     );
+  }
+
+  async addMembers(
+    chatId: string,
+
+    actorId: string,
+
+    dto: AddChatMembersDto,
+  ): Promise<void> {
+    await this.ensureMember(
+      chatId,
+
+      actorId,
+    );
+
+    const chat = await this.chatsRepository.findById(chatId);
+
+    if (!chat) {
+      throw new NotFoundError("Chat not found.");
+    }
+
+    if (chat.type !== ChatType.GROUP) {
+      throw new ValidationError("Members can only be added to group chats.");
+    }
+
+    const users = await this.usersRepository.findByIds(dto.memberIds);
+
+    if (users.length !== dto.memberIds.length) {
+      throw new ValidationError("One or more users do not exist.");
+    }
+
+    await this.chatMembersRepository.addMembers(
+      chatId,
+
+      dto.memberIds,
+    );
+  }
+
+  async removeMember(
+    chatId: string,
+
+    actorId: string,
+
+    memberId: string,
+  ): Promise<void> {
+    await this.ensureCanManageMembers(
+      chatId,
+
+      actorId,
+
+      memberId,
+    );
+
+    await this.chatMembersRepository.removeMember(
+      chatId,
+
+      memberId,
+    );
+  }
+
+  private async ensureCanManageMembers(
+    chatId: string,
+
+    actorId: string,
+
+    targetId: string,
+  ): Promise<void> {
+    if (actorId === targetId) {
+      throw new ValidationError("Use leave() to leave the chat.");
+    }
+
+    const actor = await this.chatMembersRepository.findByChatAndUser(
+      chatId,
+
+      actorId,
+    );
+
+    if (!actor) {
+      throw new ForbiddenError(
+        "You are not a member of this chat.",
+
+        "CHAT_ACCESS_DENIED",
+      );
+    }
+
+    const target = await this.chatMembersRepository.findByChatAndUser(
+      chatId,
+
+      targetId,
+    );
+
+    if (!target) {
+      throw new NotFoundError("Member not found.");
+    }
+
+    const allowedRoles = ManageMembersPermissions[actor.role];
+
+    if (!allowedRoles.includes(target.role)) {
+      throw new ForbiddenError(
+        "Insufficient permissions.",
+
+        "INSUFFICIENT_PERMISSIONS",
+      );
+    }
   }
 }

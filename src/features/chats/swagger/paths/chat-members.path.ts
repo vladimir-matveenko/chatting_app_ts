@@ -51,7 +51,7 @@ export const ChatMembersPath = {
     delete: {
       tags: ["Chats"],
 
-      summary: "Remove user from chat",
+      summary: "Remove current user from chat",
 
       description: "Remove current user from chat",
 

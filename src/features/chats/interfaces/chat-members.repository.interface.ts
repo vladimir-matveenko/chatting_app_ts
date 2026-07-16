@@ -1,7 +1,7 @@
 import type { CreateChatMemberDto } from "../dto/create-chat-member.dto.js";
-
 import type { PoolClient } from "pg";
 import { ChatMember } from "../models/chat-member.model.js";
+import { AddChatMembersDto } from "../dto/add-chat-members.dto.js";
 
 export interface IChatMembersRepository {
   add(dto: CreateChatMemberDto): Promise<ChatMember>;
@@ -35,6 +35,18 @@ export interface IChatMembersRepository {
   ): Promise<void>;
 
   leave(
+    chatId: string,
+
+    userId: string,
+  ): Promise<void>;
+
+  addMembers(
+    chatId: string,
+
+    memberIds: string[],
+  ): Promise<void>;
+
+  removeMember(
     chatId: string,
 
     userId: string,

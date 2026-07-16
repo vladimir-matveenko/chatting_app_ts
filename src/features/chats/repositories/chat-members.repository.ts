@@ -125,4 +125,28 @@ export class ChatMembersRepository
       [chatId, userId],
     );
   }
+
+  async addMembers(
+    chatId: string,
+
+    memberIds: string[],
+  ): Promise<void> {
+    await this.query(
+      ChatMembersQueries.ADD_MEMBERS,
+
+      [chatId, memberIds],
+    );
+  }
+
+  async removeMember(
+    chatId: string,
+
+    userId: string,
+  ): Promise<void> {
+    await this.query(
+      ChatMembersQueries.REMOVE_MEMBER,
+
+      [chatId, userId],
+    );
+  }
 }

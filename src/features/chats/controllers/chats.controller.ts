@@ -229,4 +229,40 @@ export class ChatsController {
 
     response.sendStatus(204);
   }
+
+  async removeMember(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const chatId = requireId(
+      request.params.id,
+
+      "chatId",
+    );
+
+    const memberId = requireId(
+      request.params.userId,
+
+      "userId",
+    );
+
+    await this.service.removeMember(
+      chatId,
+
+      request.user.userId,
+
+      memberId,
+    );
+
+    response.sendStatus(204);
+  }
 }
