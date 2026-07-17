@@ -1,25 +1,25 @@
-import { ValidationError } from "../../../core/errors/index.js";
+import type { Request } from "express";
+
+import type { RequestValidator } from "../../../core/http/request-validator.js";
+
+import { requireString } from "../../../core/http/validators/index.js";
+
+import { ValidationConstants } from "../../../core/validation/validation.constants.js";
 
 import type { UpdateMessageRequestDto } from "../dto/request/update-message.request.dto.js";
 
-export class UpdateMessageRequestValidator {
-  validate(body: unknown): UpdateMessageRequestDto {
-    if (typeof body !== "object" || body === null) {
-      throw new ValidationError("Request body is required.");
-    }
-
-    const dto = body as UpdateMessageRequestDto;
-
-    if (typeof dto.body !== "string") {
-      throw new ValidationError("Body is required.");
-    }
-
-    if (dto.body.trim().length === 0) {
-      throw new ValidationError("Message body cannot be empty.");
-    }
-
+export class UpdateMessageRequestValidator implements RequestValidator<UpdateMessageRequestDto> {
+  validate(request: Request): UpdateMessageRequestDto {
     return {
-      body: dto.body.trim(),
+      body: requireString(
+        request.body.body,
+
+        "body",
+
+        {
+          maxLength: ValidationConstants.Message.Text.MaxLength,
+        },
+      ),
     };
   }
 }

@@ -156,6 +156,55 @@ export const MessagesPaths = {
         404: notFoundResponse,
       },
     },
+
+    patch: {
+      tags: ["Messages"],
+
+      summary: "Update message",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "id",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      requestBody: {
+        required: true,
+
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/UpdateMessageRequest",
+            },
+          },
+        },
+      },
+
+      responses: {
+        200: okResponse("Message.", "#/components/schemas/Message"),
+
+        401: unauthorizedResponse,
+
+        403: forbiddenResponse,
+
+        404: notFoundResponse,
+      },
+    },
+
     delete: {
       tags: ["Messages"],
 
