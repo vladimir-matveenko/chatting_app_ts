@@ -48,6 +48,52 @@ export const ChatPath = {
         404: notFoundResponse,
       },
     },
+
+    patch: {
+      tags: ["Chats"],
+
+      summary: "Update chat",
+
+      description: "Update chat.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "id",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      requestBody: {
+        required: true,
+
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/UpdateChatRequest",
+            },
+          },
+        },
+      },
+
+      responses: {
+        200: okResponse("Chat.", "#/components/schemas/Chat"),
+
+        401: unauthorizedResponse,
+      },
+    },
   },
 
   "/chats/{id}/archive": {

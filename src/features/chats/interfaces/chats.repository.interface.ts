@@ -3,6 +3,7 @@ import type { CreateChatDto } from "../dto/create-chat.dto.js";
 import type { PoolClient } from "pg";
 
 import { Chat } from "../models/chat.model.js";
+import { UpdateChatDto } from "../dto/update-chat.dto.js";
 
 export interface IChatsRepository {
   create(dto: CreateChatDto): Promise<Chat>;
@@ -44,4 +45,10 @@ export interface IChatsRepository {
 
     ownerId: string,
   ): Promise<void>;
+
+  update(
+    id: string,
+
+    dto: UpdateChatDto,
+  ): Promise<Chat>;
 }

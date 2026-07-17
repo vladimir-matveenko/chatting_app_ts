@@ -23,6 +23,8 @@ import { AddChatMembersDto } from "../dto/add-chat-members.dto.js";
 import { ManageMembersPermissions } from "../constants/chat-member-permissions.js";
 import { ChangeMemberRoleDto } from "../dto/request/change-member-role.dto.js";
 import { TransferOwnershipDto } from "../dto/transfer-ownership.dto.js";
+import { UpdateChatDto } from "../dto/update-chat.dto.js";
+import { EditChatPermissions } from "../constants/edit-chat-permissions.js";
 
 const PREVIOUS_OWNER_ROLE = ChatMemberRole.ADMIN;
 
@@ -525,5 +527,41 @@ export class ChatsService {
         dto.userId,
       );
     });
+  }
+
+  async update(
+    chatId: string,
+
+    userId: string,
+
+    dto: UpdateChatDto,
+  ): Promise<Chat> {
+    const member = await this.chatMembersRepository.findByChatAndUser(
+      chatId,
+
+      userId,
+    );
+
+    if (!member) {
+      throw new ForbiddenError(
+        "You are not a member of this chat.",
+
+        "CHAT_ACCESS_DENIED",
+      );
+    }
+
+    if (!EditChatPermissions.has(member.role)) {
+      throw new ForbiddenError(
+        "Insufficient permissions.",
+
+        "INSUFFICIENT_PERMISSIONS",
+      );
+    }
+
+    return this.chatsRepository.update(
+      chatId,
+
+      dto,
+    );
   }
 }

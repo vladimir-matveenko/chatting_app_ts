@@ -121,5 +121,14 @@ export function createChatsRouter(
     asyncHandler(controller.transferOwnership.bind(controller)),
   );
 
+  // update chat
+  router.patch(
+    "/:id",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.update.bind(controller)),
+  );
+
   return router;
 }

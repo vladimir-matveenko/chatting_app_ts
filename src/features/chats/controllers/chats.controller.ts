@@ -11,6 +11,7 @@ import { requireBoolean, requireId } from "../../../core/http/validators/index.j
 import { AddChatMembersRequestValidator } from "../validators/add-chat-members-request.validator.js";
 import { ChangeMemberRoleRequestValidator } from "../validators/change-member-role-request.validator.js";
 import { TransferOwnershipRequestValidator } from "../dto/transfer-ownership-request.validator.js";
+import { UpdateChatRequestValidator } from "../validators/update-chat-request.validator.js";
 
 export class ChatsController {
   constructor(
@@ -25,6 +26,8 @@ export class ChatsController {
     private readonly memberRoleValidator: ChangeMemberRoleRequestValidator,
 
     private readonly transferOwnershipValidator: TransferOwnershipRequestValidator,
+
+    private readonly updateChatValidator: UpdateChatRequestValidator,
 
     private readonly mapper: CreateChatRequestMapper,
   ) {}
@@ -377,5 +380,37 @@ export class ChatsController {
     );
 
     response.sendStatus(204);
+  }
+
+  async update(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const chatId = requireId(
+      request.params.id,
+
+      "chatId",
+    );
+
+    const dto = this.updateChatValidator.validate(request);
+
+    const chat = await this.service.update(
+      chatId,
+
+      request.user.userId,
+
+      dto,
+    );
+
+    response.json(chat);
   }
 }

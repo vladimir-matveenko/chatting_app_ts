@@ -152,4 +152,15 @@ ORDER BY
     SET owner_id = $2
     WHERE id = $1;
     `,
+
+  UPDATE_CHAT: `
+    UPDATE chats
+    SET
+        title = COALESCE($2, title),
+        avatar_url = $3,
+        updated_at = NOW()
+    WHERE
+        id = $1
+    RETURNING *;
+    `,
 };

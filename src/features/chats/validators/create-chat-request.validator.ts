@@ -13,6 +13,7 @@ import {
 import type { CreateChatRequestDto } from "../dto/request/create-chat.request.dto.js";
 
 import { ChatType } from "../enums/chat-type.enum.js";
+import { ValidationConstants } from "../../../core/validation/validation.constants.js";
 
 export class CreateChatRequestValidator implements RequestValidator<CreateChatRequestDto> {
   validate(request: Request): CreateChatRequestDto {
@@ -29,6 +30,12 @@ export class CreateChatRequestValidator implements RequestValidator<CreateChatRe
         request.body.title,
 
         "title",
+
+        {
+          minLength: ValidationConstants.Chat.Name.MinLength,
+
+          maxLength: ValidationConstants.Chat.Name.MaxLength,
+        },
       ),
 
       avatarUrl: requireNullableUrl(
