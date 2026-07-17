@@ -1,31 +1,19 @@
 export const ChatsQueries = {
   CREATE_CHAT: `
         INSERT INTO chats (
-
             type,
-
             fingerprint,
-
             title,
-
             avatar_url,
-
             owner_id
-
         )
 
         VALUES (
-
             $1,
-
             $2,
-
             $3,
-
             $4,
-            
             $5
-
         )
 
         RETURNING *;
@@ -53,29 +41,9 @@ SELECT
     c.created_at,
     c.updated_at,
 
-    (
-        SELECT m.body
-        FROM messages m
-        WHERE
-            m.chat_id = c.id
-        AND
-            m.is_deleted = FALSE
-        ORDER BY
-            m.created_at DESC
-        LIMIT 1
-    ) AS last_message,
-
-    (
-        SELECT m.created_at
-        FROM messages m
-        WHERE
-            m.chat_id = c.id
-        AND
-            m.is_deleted = FALSE
-        ORDER BY
-            m.created_at DESC
-        LIMIT 1
-    ) AS last_message_at,
+    lm.body AS last_message,
+    lm.type AS last_message_type,
+    lm.created_at AS last_message_at,
 
     (
         SELECT COUNT(*)
@@ -136,6 +104,21 @@ FROM chats c
 INNER JOIN chat_members cm
     ON cm.chat_id = c.id
 
+LEFT JOIN LATERAL (
+    SELECT
+        m.body,
+        m.type,
+        m.created_at
+    FROM messages m
+    WHERE
+        m.chat_id = c.id
+    AND
+        m.is_deleted = FALSE
+    ORDER BY
+        m.created_at DESC
+    LIMIT 1
+) lm ON TRUE
+
 WHERE
     cm.user_id = $1
 AND
@@ -143,26 +126,41 @@ AND
 
 ORDER BY
     COALESCE(
-        (
-            SELECT m.created_at
-            FROM messages m
-            WHERE
-                m.chat_id = c.id
-            AND
-                m.is_deleted = FALSE
-            ORDER BY
-                m.created_at DESC
-            LIMIT 1
-        ),
+        lm.created_at,
         c.updated_at
     ) DESC;
 `,
 
   UPDATE_ACTIVITY: `
     UPDATE chats
-
     SET updated_at = NOW()
-
     WHERE id = $1;
+    `,
+
+  ARCHIVE: `
+    UPDATE chat_members
+    SET
+        is_archived = $3
+    WHERE
+        chat_id = $1
+    AND
+        user_id = $2;
+    `,
+
+  UPDATE_CHAT_OWNER: `
+    UPDATE chats
+    SET owner_id = $2
+    WHERE id = $1;
+    `,
+
+  UPDATE_CHAT: `
+    UPDATE chats
+    SET
+        title = COALESCE($2, title),
+        avatar_url = $3,
+        updated_at = NOW()
+    WHERE
+        id = $1
+    RETURNING *;
     `,
 };

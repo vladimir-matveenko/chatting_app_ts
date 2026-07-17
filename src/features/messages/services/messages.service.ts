@@ -13,7 +13,8 @@ import type { IChatsRepository } from "../../chats/interfaces/chats.repository.i
 import type { IChatMembersRepository } from "../../chats/interfaces/chat-members.repository.interface.js";
 
 import type { Message } from "../models/message.model.js";
-import { UpdateMessageDto } from "../dto/update-message.dto.js";
+
+import { UpdateMessageRequestDto } from "../dto/request/update-message.request.dto.js";
 
 export class MessagesService {
   constructor(
@@ -144,18 +145,24 @@ export class MessagesService {
     }
   }
 
-  async update(dto: UpdateMessageDto): Promise<Message> {
-    const message = await this.messagesRepository.findById(dto.id);
+  async update(
+    messageId: string,
+
+    userId: string,
+
+    dto: UpdateMessageRequestDto,
+  ): Promise<Message> {
+    const message = await this.messagesRepository.findById(messageId);
 
     if (!message) {
       throw new NotFoundError("Message not found.");
     }
 
-    if (message.senderId !== dto.userId) {
+    if (message.senderId !== userId) {
       throw new ForbiddenError(
-        "You can edit only your own messages.",
+        "Only the author can edit the message.",
 
-        "MESSAGE_EDIT_DENIED",
+        "MESSAGE_EDIT_FORBIDDEN",
       );
     }
 
@@ -163,7 +170,11 @@ export class MessagesService {
       throw new ValidationError("Deleted message cannot be edited.");
     }
 
-    return this.messagesRepository.update(dto);
+    return this.messagesRepository.update(
+      messageId,
+
+      dto.body,
+    );
   }
 
   async delete(

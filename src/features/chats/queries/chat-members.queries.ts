@@ -1,20 +1,14 @@
 export const ChatMembersQueries = {
   ADD: `
         INSERT INTO chat_members (
-
             chat_id,
-
             user_id,
-
             role
 
         )
         VALUES (
-
             $1,
-
             $2,
-
             $3
 
         )
@@ -23,22 +17,14 @@ export const ChatMembersQueries = {
 
   ADD_MANY: `
         INSERT INTO chat_members (
-
             chat_id,
-
             user_id,
-
             role
-
         )
         VALUES (
-
             $1,
-
             $2,
-
             $3
-
         );
     `,
 
@@ -68,17 +54,83 @@ export const ChatMembersQueries = {
     LIMIT 1;
     `,
 
+  MUTE_CHAT: `
+    UPDATE chat_members
+    SET
+        is_muted = $3
+    WHERE
+        chat_id = $1
+    AND
+        user_id = $2;
+    `,
+
+  LEAVE_CHAT: `
+    DELETE FROM chat_members
+    WHERE
+        chat_id = $1
+    AND
+        user_id = $2;
+    `,
+
+  ADD_MEMBERS: `
+    INSERT INTO chat_members (
+        chat_id,
+        user_id,
+        role
+    )
+
+    SELECT
+        $1,
+        UNNEST($2::bigint[]),
+        'member'::chat_member_role
+
+    ON CONFLICT (chat_id, user_id)
+    DO NOTHING;
+    `,
+
+  REMOVE_MEMBER: `
+    DELETE FROM chat_members
+
+    WHERE
+        chat_id = $1
+
+    AND
+        user_id = $2;
+    `,
+
   FIND_BY_CHAT_AND_USER: `
-    SELECT *
+    SELECT
+        chat_id,
+        user_id,
+        role,
+        joined_at,
+        is_muted,
+        is_archived
 
     FROM chat_members
 
     WHERE
-
         chat_id = $1
 
     AND
+        user_id = $2;
+    `,
 
+  UPDATE_ROLE: `
+    UPDATE chat_members
+    SET role = $3
+    WHERE
+        chat_id = $1
+    AND
+        user_id = $2;
+    `,
+
+  UPDATE_MEMBER_ROLE: `
+    UPDATE chat_members
+    SET role = $3
+    WHERE
+        chat_id = $1
+    AND
         user_id = $2;
     `,
 };

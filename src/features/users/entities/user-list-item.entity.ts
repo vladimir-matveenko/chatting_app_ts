@@ -6,4 +6,6 @@ export interface UserListItemEntity {
   display_name: string | null;
 
   avatar_url: string | null;
+
+  private_chat_id: string | null;
 }

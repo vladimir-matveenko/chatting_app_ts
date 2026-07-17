@@ -6,4 +6,6 @@ export interface UserListItem {
   displayName: string | null;
 
   avatarUrl: string | null;
+
+  privateChatId: string | null;
 }

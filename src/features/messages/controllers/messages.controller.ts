@@ -1,14 +1,16 @@
 import type { Request, Response } from "express";
 
-import { ValidationError } from "../../../core/errors/index.js";
+import { UnauthorizedError, ValidationError } from "../../../core/errors/index.js";
 
 import type { MessagesService } from "../services/messages.service.js";
 
 import { CreateMessageRequestMapper } from "../mappers/create-message-request.mapper.js";
 
 import { CreateMessageRequestValidator } from "../validators/create-message-request.validator.js";
+
 import { UpdateMessageRequestValidator } from "../validators/update-message-request.validator.js";
-import { UpdateMessageRequestMapper } from "../mappers/update-message-request.mapper.js";
+
+import { requireId } from "../../../core/http/validators/index.js";
 
 export class MessagesController {
   constructor(
@@ -19,8 +21,6 @@ export class MessagesController {
     private readonly createRequestMapper: CreateMessageRequestMapper,
 
     private readonly updateRequestValidator: UpdateMessageRequestValidator,
-
-    private readonly updateRequestMapper: UpdateMessageRequestMapper,
   ) {}
 
   async create(
@@ -119,26 +119,28 @@ export class MessagesController {
 
     response: Response,
   ): Promise<void> {
-    const id = request.params.id;
-
-    if (typeof id !== "string") {
-      throw new ValidationError("Message id is required.");
-    }
-
     if (!request.user) {
-      throw new Error("Authenticated user is missing.");
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
     }
 
-    const dto = this.updateRequestValidator.validate(request.body);
+    const id = requireId(
+      request.params.id,
+
+      "messageId",
+    );
+
+    const dto = this.updateRequestValidator.validate(request);
 
     const message = await this.service.update(
-      this.updateRequestMapper.map(
-        dto,
+      id,
 
-        id,
+      request.user.userId,
 
-        request.user.userId,
-      ),
+      dto,
     );
 
     response.json(message);

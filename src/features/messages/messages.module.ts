@@ -13,7 +13,7 @@ import { MessageReactionsController } from "./controllers/message-reactions.cont
 import { MessagesMapper } from "./mappers/messages.mapper.js";
 import { MessageReactionMapper } from "./mappers/message-reaction.mapper.js";
 import { CreateMessageRequestMapper } from "./mappers/create-message-request.mapper.js";
-import { UpdateMessageRequestMapper } from "./mappers/update-message-request.mapper.js";
+
 import { AddReactionRequestMapper } from "./mappers/add-reaction-request.mapper.js";
 
 import { MessagesRepository } from "./repositories/messages.repository.js";
@@ -74,8 +74,6 @@ export function createMessagesModule(
 
   const updateMessageRequestValidator = new UpdateMessageRequestValidator();
 
-  const updateMessageRequestMapper = new UpdateMessageRequestMapper();
-
   const addReactionRequestValidator = new AddReactionRequestValidator();
 
   const addReactionRequestMapper = new AddReactionRequestMapper();
@@ -85,7 +83,6 @@ export function createMessagesModule(
     createMessageRequestValidator,
     createMessageRequestMapper,
     updateMessageRequestValidator,
-    updateMessageRequestMapper,
   );
 
   const messageReactionsController = new MessageReactionsController(

@@ -5,6 +5,7 @@ import { Database } from "../../../core/database/database.js";
 import { InternalServerError } from "../../../core/errors/index.js";
 
 import type { CreateChatDto } from "../dto/create-chat.dto.js";
+import { UpdateChatDto } from "../dto/update-chat.dto.js";
 
 import type { ChatEntity } from "../entities/chat.entity.js";
 
@@ -110,6 +111,48 @@ export class ChatsRepository extends BaseRepository<ChatEntity, Chat> implements
       ChatsQueries.UPDATE_ACTIVITY,
 
       [chatId],
+    );
+  }
+
+  async archive(
+    chatId: string,
+
+    userId: string,
+
+    isArchived: boolean,
+  ): Promise<void> {
+    await this.query(
+      ChatsQueries.ARCHIVE,
+
+      [chatId, userId, isArchived],
+    );
+  }
+
+  async updateOwnerTx(
+    client: PoolClient,
+
+    chatId: string,
+
+    ownerId: string,
+  ): Promise<void> {
+    await this.queryTx(
+      client,
+
+      ChatsQueries.UPDATE_CHAT_OWNER,
+
+      [chatId, ownerId],
+    );
+  }
+
+  async update(
+    id: string,
+
+    dto: UpdateChatDto,
+  ): Promise<Chat> {
+    return this.saveOne(
+      ChatsQueries.UPDATE_CHAT,
+
+      [id, dto.title ?? null, dto.avatarUrl ?? null],
     );
   }
 }

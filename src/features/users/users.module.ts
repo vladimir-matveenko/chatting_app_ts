@@ -19,6 +19,7 @@ import { UpdateUserRequestValidator } from "./validators/update-user-request.val
 import { UpdatePasswordRequestValidator } from "./validators/update-password-request.validator.js";
 import { RefreshTokensRepository } from "../auth/repositories/refresh-tokens.repository.js";
 import { FindUsersRequestValidator } from "./validators/find-users.request.validator.js";
+import { UserListRepository } from "./repositories/user-list.repository.js";
 
 export function createUsersModule(
   database: Database,
@@ -30,7 +31,14 @@ export function createUsersModule(
 
   const repository = new UsersRepository(database, mappers);
 
-  const service = new UsersService(repository, refreshTokensRepository, passwordHasher);
+  const userListRepository = new UserListRepository(database, mappers);
+
+  const service = new UsersService(
+    repository,
+    userListRepository,
+    refreshTokensRepository,
+    passwordHasher,
+  );
 
   const validators = new UsersRequestValidators(
     new CreateUserRequestValidator(),
