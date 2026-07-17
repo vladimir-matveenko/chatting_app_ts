@@ -94,7 +94,6 @@ LIMIT $4;
         UPDATE messages
     SET
         body = $2,
-        updated_at = NOW(),
         updated_at = NOW()
     WHERE
         id = $1
