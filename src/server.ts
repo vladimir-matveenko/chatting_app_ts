@@ -11,6 +11,7 @@ import { db } from "./core/config/database.js";
 import { ApplicationContainer } from "./core/container/application-container.js";
 
 import { SocketServer } from "./core/websocket/index.js";
+import { logger } from "./core/logger/logger.js";
 
 const database = new Database(db);
 
@@ -25,5 +26,5 @@ const socketServer = new SocketServer(server);
 socketServer.register(container.socketAuthMiddleware, container.socketGateway);
 
 server.listen(env.port, () => {
-  console.log(`Server started on port ${env.port}`);
+  logger.info(`Server started on port ${env.port}`);
 });

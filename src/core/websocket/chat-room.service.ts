@@ -38,4 +38,24 @@ export class ChatRoomService {
   ): Promise<void> {
     socket.leave(SocketRoomBuilder.chat(chatId));
   }
+
+  async ensureMember(
+    userId: string,
+
+    chatId: string,
+  ): Promise<void> {
+    const isMember = await this.chatMembersRepository.isMember(
+      chatId,
+
+      userId,
+    );
+
+    if (!isMember) {
+      throw new ForbiddenError(
+        "You are not a member of this chat.",
+
+        "CHAT_ACCESS_DENIED",
+      );
+    }
+  }
 }

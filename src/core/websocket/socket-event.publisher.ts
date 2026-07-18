@@ -4,6 +4,7 @@ import { SocketRoomBuilder } from "./socket-room.builder.js";
 import { SocketEvents } from "./socket.events.js";
 
 import type { Message } from "../../features/messages/models/message.model.js";
+import { logger } from "../logger/logger.js";
 
 export class SocketEventPublisher {
   private io?: Server;
@@ -40,8 +41,10 @@ export class SocketEventPublisher {
     );
   }
 
+  // feature events
+
   messageCreated(message: Message): void {
-    console.log(
+    logger.info(
       "Publishing message.created",
 
       message.chatId,
@@ -92,6 +95,42 @@ export class SocketEventPublisher {
       SocketEvents.MessageUnpinned,
 
       message,
+    );
+  }
+
+  typingStarted(
+    chatId: string,
+
+    userId: string,
+  ): void {
+    this.emitToChat(
+      chatId,
+
+      SocketEvents.TypingStart,
+
+      {
+        chatId,
+
+        userId,
+      },
+    );
+  }
+
+  typingStopped(
+    chatId: string,
+
+    userId: string,
+  ): void {
+    this.emitToChat(
+      chatId,
+
+      SocketEvents.TypingStop,
+
+      {
+        chatId,
+
+        userId,
+      },
     );
   }
 }

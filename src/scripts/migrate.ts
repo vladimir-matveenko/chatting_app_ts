@@ -2,6 +2,7 @@ import { Client } from "pg";
 import fs from "fs/promises";
 import path from "path";
 import { env } from "../core/config/env.js";
+import { logger } from "../core/logger/logger.js";
 
 const client = new Client({
   connectionString: env.databaseUrl,
@@ -27,11 +28,11 @@ async function migrate() {
     const exists = await client.query("SELECT 1 FROM migrations WHERE filename = $1", [file]);
 
     if (exists.rowCount) {
-      console.log(`✓ ${file} already executed`);
+      logger.info(`✓ ${file} already executed`);
       continue;
     }
 
-    console.log(`Running ${file}`);
+    logger.info(`Running ${file}`);
 
     const sql = await fs.readFile(path.join(migrationsDir, file), "utf8");
 
@@ -44,7 +45,7 @@ async function migrate() {
 
       await client.query("COMMIT");
 
-      console.log(`✓ ${file}`);
+      logger.info(`✓ ${file}`);
     } catch (e) {
       await client.query("ROLLBACK");
 
@@ -54,7 +55,7 @@ async function migrate() {
 
   await client.end();
 
-  console.log("Done.");
+  logger.info("Done.");
 }
 
 migrate().catch(async (err) => {
