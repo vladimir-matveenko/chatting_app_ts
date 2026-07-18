@@ -1,12 +1,14 @@
 import { createdResponse } from "../../../../swagger/builders/created-response.js";
-import { noContentResponse } from "../../../../swagger/builders/no-content-response.js";
 import { okResponse } from "../../../../swagger/builders/ok-response.js";
+import { jsonResponse } from "../../../../swagger/builders/response.builder.js";
 import {
   badRequestResponse,
   forbiddenResponse,
   notFoundResponse,
   unauthorizedResponse,
 } from "../../../../swagger/responses/index.js";
+import { messageExample } from "../examples/message.example.js";
+import { messagesListExample } from "../examples/messages-list.example.js";
 
 export const MessagesPaths = {
   "/messages/chat/{chatId}": {
@@ -110,7 +112,7 @@ export const MessagesPaths = {
       ],
 
       responses: {
-        200: okResponse("Messages.", "#/components/schemas/Message"),
+        200: jsonResponse("Messages.", "#/components/schemas/Message", messagesListExample),
 
         401: unauthorizedResponse,
 
@@ -272,7 +274,7 @@ export const MessagesPaths = {
       ],
 
       responses: {
-        201: noContentResponse("Messages loaded"),
+        200: jsonResponse("Messages.", "#/components/schemas/Message", messagesListExample),
 
         401: unauthorizedResponse,
       },
@@ -308,7 +310,7 @@ export const MessagesPaths = {
       ],
 
       responses: {
-        201: noContentResponse("Message pinned"),
+        200: okResponse("Message pinned.", "#/components/schemas/Message"),
 
         401: unauthorizedResponse,
       },
@@ -341,7 +343,7 @@ export const MessagesPaths = {
       ],
 
       responses: {
-        201: noContentResponse("Message pinned"),
+        200: okResponse("Message unpinned.", "#/components/schemas/Message"),
 
         401: unauthorizedResponse,
       },

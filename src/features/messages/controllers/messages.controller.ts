@@ -234,7 +234,7 @@ export class MessagesController {
 
     this.socketPublisher.messagePinned(message);
 
-    response.sendStatus(204);
+    response.status(200).json(message);
   }
 
   async unpinMessage(
@@ -256,12 +256,14 @@ export class MessagesController {
       "messageId",
     );
 
-    await this.service.unpinMessage(
+    const message = await this.service.unpinMessage(
       messageId,
 
       request.user.userId,
     );
 
-    response.sendStatus(204);
+    this.socketPublisher.messageUnpinned(message);
+
+    response.status(200).json(message);
   }
 }
