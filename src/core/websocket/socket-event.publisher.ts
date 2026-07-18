@@ -41,6 +41,11 @@ export class SocketEventPublisher {
   }
 
   messageCreated(message: Message): void {
+    console.log(
+      "Publishing message.created",
+
+      message.chatId,
+    );
     this.emitToChat(
       message.chatId,
 

@@ -41,6 +41,8 @@ export class SocketGateway {
 
             chatId,
           );
+
+          console.log(`${socket.data.user.userId} joined ${chatId}`);
         } catch {
           socket.emit(SocketEvents.Exception, {
             code: "CHAT_ACCESS_DENIED",
