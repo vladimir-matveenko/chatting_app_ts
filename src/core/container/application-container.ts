@@ -4,7 +4,7 @@ import { createUsersModule, type UsersFeature } from "../../features/users/index
 
 import { createAuthModule, type AuthModule } from "../../features/auth/index.js";
 import { BcryptPasswordHasher } from "../security/password/index.js";
-import { JwtServiceImpl } from "../security/jwt/index.js";
+import { JwtService, JwtServiceImpl } from "../security/jwt/index.js";
 import { Sha256TokenHasher } from "../security/index.js";
 import { JwtAuthMiddleware } from "../middleware/jwt-auth.middleware.js";
 import { RefreshTokenMapper } from "../../features/auth/mappers/refresh-token.mapper.js";
@@ -19,6 +19,7 @@ import { ChatListItemMapper } from "../../features/chats/mappers/chat-list-item.
 import { ChatListRepository } from "../../features/chats/repositories/chat-list.repository.js";
 import { ChatReadsRepository } from "../../features/messages/repositories/chat-reads.repository.js";
 import { createMessagesModule, type MessagesFeature } from "../../features/messages/index.js";
+import { SocketAuthMiddleware } from "../websocket/socket-auth.middleware.js";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;
@@ -30,6 +31,10 @@ export class ApplicationContainer {
   readonly chats: ChatsFeature;
 
   readonly messages: MessagesFeature;
+
+  readonly jwtService: JwtService;
+
+  readonly socketAuthMiddleware: SocketAuthMiddleware;
 
   constructor(database: Database) {
     const passwordHasher = new BcryptPasswordHasher();
@@ -108,5 +113,9 @@ export class ApplicationContainer {
 
       jwtAuthMiddleware,
     );
+
+    this.jwtService = new JwtServiceImpl();
+
+    this.socketAuthMiddleware = new SocketAuthMiddleware(this.jwtService);
   }
 }
