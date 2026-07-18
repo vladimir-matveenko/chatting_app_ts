@@ -169,4 +169,88 @@ export class MessagesController {
 
     response.json(message);
   }
+
+  async findPinnedMessages(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const chatId = requireId(
+      request.params.chatId,
+
+      "chatId",
+    );
+
+    const messages = await this.service.findPinnedMessages(
+      chatId,
+
+      request.user.userId,
+    );
+
+    response.json(messages);
+  }
+
+  async pinMessage(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const messageId = requireId(
+      request.params.id,
+
+      "messageId",
+    );
+
+    await this.service.pinMessage(
+      messageId,
+
+      request.user.userId,
+    );
+
+    response.sendStatus(204);
+  }
+
+  async unpinMessage(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const messageId = requireId(
+      request.params.id,
+
+      "messageId",
+    );
+
+    await this.service.unpinMessage(
+      messageId,
+
+      request.user.userId,
+    );
+
+    response.sendStatus(204);
+  }
 }

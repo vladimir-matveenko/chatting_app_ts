@@ -47,48 +47,52 @@ export const MessagesQueries = {
     `,
 
   FIND_BY_CHAT: `
-SELECT
-    m.id,
-    m.chat_id,
-    m.sender_id,
-    m.type,
-    m.body,
-    m.reply_to_id,
-    m.created_at,
-    m.updated_at,
-    m.deleted_at,
-    m.is_deleted,
+    SELECT
+        m.id,
+        m.chat_id,
+        m.sender_id,
+        m.type,
+        m.body,
+        m.reply_to_id,
+        m.created_at,
+        m.updated_at,
+        m.deleted_at,
+        m.is_deleted,
 
-    m.reactions,
+        m.reactions,
 
-    ur.type AS current_user_reaction,
+        ur.type AS current_user_reaction,
 
-    rm.id         AS reply_id,
-    rm.sender_id  AS reply_sender_id,
-    rm.type       AS reply_type,
-    rm.body       AS reply_body,
-    rm.deleted_at AS reply_deleted_at
+        rm.id         AS reply_id,
+        rm.sender_id  AS reply_sender_id,
+        rm.type       AS reply_type,
+        rm.body       AS reply_body,
+        rm.deleted_at AS reply_deleted_at
 
-FROM messages m
+    FROM messages m
 
-LEFT JOIN messages rm
-    ON rm.id = m.reply_to_id
+    LEFT JOIN messages rm
+        ON rm.id = m.reply_to_id
+    AND rm.is_deleted = FALSE
 
-LEFT JOIN message_reactions ur
-    ON ur.message_id = m.id
-   AND ur.user_id = $2
+    LEFT JOIN message_reactions ur
+        ON ur.message_id = m.id
+    AND ur.user_id = $2
 
-WHERE
-    m.chat_id = $1
-AND (
-    $3::timestamptz IS NULL
-    OR m.created_at < $3
-)
+    WHERE
+        m.chat_id = $1
+    AND
+        m.is_deleted = FALSE
+    AND (
+        $3::timestamptz IS NULL
+        OR m.created_at < $3
+    )
 
-ORDER BY m.created_at DESC
+    ORDER BY
+        m.created_at DESC
 
-LIMIT $4;
-`,
+    LIMIT $4;
+    `,
 
   UPDATE: `
         UPDATE messages
@@ -110,5 +114,39 @@ LIMIT $4;
     WHERE
         id = $1
     RETURNING *;
+    `,
+
+  PIN_MESSAGE: `
+    UPDATE messages
+    SET
+        is_pinned = TRUE,
+        updated_at = NOW()
+    WHERE
+        id = $1
+    RETURNING *;
+    `,
+
+  UNPIN_MESSAGE: `
+    UPDATE messages
+    SET
+        is_pinned = FALSE,
+        updated_at = NOW()
+    WHERE
+        id = $1
+    RETURNING *;
+    `,
+
+  FIND_PINNED_BY_CHAT: `
+    SELECT
+        m.*
+    FROM messages m
+    WHERE
+        m.chat_id = $1
+    AND
+        m.is_deleted = FALSE
+    AND
+        m.is_pinned = TRUE
+    ORDER BY
+        m.created_at DESC;
     `,
 };

@@ -1,4 +1,5 @@
 import { createdResponse } from "../../../../swagger/builders/created-response.js";
+import { noContentResponse } from "../../../../swagger/builders/no-content-response.js";
 import { okResponse } from "../../../../swagger/builders/ok-response.js";
 import {
   badRequestResponse,
@@ -8,7 +9,7 @@ import {
 } from "../../../../swagger/responses/index.js";
 
 export const MessagesPaths = {
-  "/messages/chat/{id}": {
+  "/messages/chat/{chatId}": {
     post: {
       tags: ["Messages"],
 
@@ -24,7 +25,7 @@ export const MessagesPaths = {
 
       parameters: [
         {
-          name: "id",
+          name: "chatId",
 
           in: "path",
 
@@ -74,7 +75,7 @@ export const MessagesPaths = {
 
       parameters: [
         {
-          name: "id",
+          name: "chatId",
 
           in: "path",
 
@@ -120,7 +121,7 @@ export const MessagesPaths = {
     },
   },
 
-  "/messages/{id}": {
+  "/messages/{messageId}": {
     get: {
       tags: ["Messages"],
 
@@ -134,7 +135,7 @@ export const MessagesPaths = {
 
       parameters: [
         {
-          name: "id",
+          name: "messageId",
 
           in: "path",
 
@@ -170,7 +171,7 @@ export const MessagesPaths = {
 
       parameters: [
         {
-          name: "id",
+          name: "messageId",
 
           in: "path",
 
@@ -218,7 +219,7 @@ export const MessagesPaths = {
 
       parameters: [
         {
-          name: "id",
+          name: "messageId",
 
           in: "path",
 
@@ -238,6 +239,111 @@ export const MessagesPaths = {
         403: forbiddenResponse,
 
         404: notFoundResponse,
+      },
+    },
+  },
+
+  "/messages/chat/{chatId}/pinned": {
+    get: {
+      tags: ["Messages"],
+
+      summary: "Get pinned messages",
+
+      description: "Get pinned messages for the chat.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "id",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      responses: {
+        201: noContentResponse("Messages loaded"),
+
+        401: unauthorizedResponse,
+      },
+    },
+  },
+
+  "/messages/{messageId}/pin": {
+    put: {
+      tags: ["Messages"],
+
+      summary: "Pin the message",
+
+      description: "Pin the message.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "messageId",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      responses: {
+        201: noContentResponse("Message pinned"),
+
+        401: unauthorizedResponse,
+      },
+    },
+    delete: {
+      tags: ["Messages"],
+
+      summary: "Unpin the message",
+
+      description: "Unpin the message.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "messageId",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      responses: {
+        201: noContentResponse("Message pinned"),
+
+        401: unauthorizedResponse,
       },
     },
   },

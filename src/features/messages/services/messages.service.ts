@@ -15,6 +15,7 @@ import type { IChatMembersRepository } from "../../chats/interfaces/chat-members
 import type { Message } from "../models/message.model.js";
 
 import { UpdateMessageRequestDto } from "../dto/request/update-message.request.dto.js";
+import { ChatMemberRole } from "../../chats/enums/chat-member-role.enum.js";
 
 export class MessagesService {
   constructor(
@@ -201,5 +202,83 @@ export class MessagesService {
     }
 
     return this.messagesRepository.delete(id);
+  }
+
+  async pinMessage(
+    messageId: string,
+
+    userId: string,
+  ): Promise<void> {
+    const message = await this.messagesRepository.findById(messageId);
+
+    if (!message) {
+      throw new NotFoundError("Message not found.", "MESSAGE_NOT_FOUND");
+    }
+
+    await this.ensureAdmin(
+      message.chatId,
+
+      userId,
+    );
+
+    await this.messagesRepository.pin(messageId);
+  }
+
+  async unpinMessage(
+    messageId: string,
+
+    userId: string,
+  ): Promise<void> {
+    const message = await this.messagesRepository.findById(messageId);
+
+    if (!message) {
+      throw new NotFoundError("Message not found.", "MESSAGE_NOT_FOUND");
+    }
+
+    await this.ensureAdmin(
+      message.chatId,
+
+      userId,
+    );
+
+    await this.messagesRepository.unpin(messageId);
+  }
+
+  private async ensureAdmin(
+    chatId: string,
+
+    userId: string,
+  ): Promise<void> {
+    const member = await this.chatMembersRepository.findByChatAndUser(
+      chatId,
+
+      userId,
+    );
+
+    if (!member) {
+      throw new NotFoundError("Chat not found.");
+    }
+
+    if (member.role !== ChatMemberRole.OWNER && member.role !== ChatMemberRole.ADMIN) {
+      throw new ForbiddenError(
+        "Insufficient permissions.",
+
+        "INSUFFICIENT_PERMISSIONS",
+      );
+    }
+  }
+
+  async findPinnedMessages(
+    chatId: string,
+
+    userId: string,
+  ): Promise<Message[]> {
+    await this.ensureMember(
+      chatId,
+
+      userId,
+    );
+
+    return this.messagesRepository.findPinned(chatId);
   }
 }

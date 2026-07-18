@@ -31,4 +31,10 @@ export interface IMessagesRepository {
   ): Promise<Message>;
 
   delete(id: string): Promise<Message>;
+
+  pin(messageId: string): Promise<Message>;
+
+  unpin(messageId: string): Promise<Message>;
+
+  findPinned(chatId: string): Promise<Message[]>;
 }
