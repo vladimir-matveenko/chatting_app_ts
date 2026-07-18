@@ -11,6 +11,7 @@ import { CreateMessageRequestValidator } from "../validators/create-message-requ
 import { UpdateMessageRequestValidator } from "../validators/update-message-request.validator.js";
 
 import { requireId } from "../../../core/http/validators/index.js";
+import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
 
 export class MessagesController {
   constructor(
@@ -21,6 +22,8 @@ export class MessagesController {
     private readonly createRequestMapper: CreateMessageRequestMapper,
 
     private readonly updateRequestValidator: UpdateMessageRequestValidator,
+
+    private readonly socketPublisher: SocketEventPublisher,
   ) {}
 
   async create(
@@ -49,6 +52,8 @@ export class MessagesController {
         request.user.userId,
       ),
     );
+
+    this.socketPublisher.messageCreated(message);
 
     response
 
@@ -143,6 +148,8 @@ export class MessagesController {
       dto,
     );
 
+    this.socketPublisher.messageUpdated(message);
+
     response.json(message);
   }
 
@@ -167,6 +174,96 @@ export class MessagesController {
       request.user.userId,
     );
 
+    this.socketPublisher.messageDeleted(message);
+
     response.json(message);
+  }
+
+  async findPinnedMessages(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const chatId = requireId(
+      request.params.chatId,
+
+      "chatId",
+    );
+
+    const messages = await this.service.findPinnedMessages(
+      chatId,
+
+      request.user.userId,
+    );
+
+    response.json(messages);
+  }
+
+  async pinMessage(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const messageId = requireId(
+      request.params.id,
+
+      "messageId",
+    );
+
+    const message = await this.service.pinMessage(
+      messageId,
+
+      request.user.userId,
+    );
+
+    this.socketPublisher.messagePinned(message);
+
+    response.status(200).json(message);
+  }
+
+  async unpinMessage(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError(
+        "Unauthorized.",
+
+        "UNAUTHORIZED",
+      );
+    }
+
+    const messageId = requireId(
+      request.params.id,
+
+      "messageId",
+    );
+
+    const message = await this.service.unpinMessage(
+      messageId,
+
+      request.user.userId,
+    );
+
+    this.socketPublisher.messageUnpinned(message);
+
+    response.status(200).json(message);
   }
 }

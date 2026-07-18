@@ -16,6 +16,7 @@ export function createMessagesRouter(
 ): Router {
   const router = Router();
 
+  // create message in the chat
   router.post(
     "/chat/:id",
 
@@ -24,6 +25,7 @@ export function createMessagesRouter(
     asyncHandler(controller.create.bind(controller)),
   );
 
+  // get messages from the chat
   router.get(
     "/chat/:id",
 
@@ -32,6 +34,7 @@ export function createMessagesRouter(
     asyncHandler(controller.findByChat.bind(controller)),
   );
 
+  // get message
   router.get(
     "/:id",
 
@@ -40,6 +43,7 @@ export function createMessagesRouter(
     asyncHandler(controller.findById.bind(controller)),
   );
 
+  // update message
   router.patch(
     "/:id",
 
@@ -48,6 +52,7 @@ export function createMessagesRouter(
     asyncHandler(controller.update.bind(controller)),
   );
 
+  // delete message
   router.delete(
     "/:id",
 
@@ -56,6 +61,7 @@ export function createMessagesRouter(
     asyncHandler(controller.delete.bind(controller)),
   );
 
+  // add reaction
   router.post(
     "/:id/reactions",
 
@@ -64,12 +70,40 @@ export function createMessagesRouter(
     asyncHandler(reactionsController.add.bind(reactionsController)),
   );
 
+  // delete reaction
   router.delete(
     "/:id/reactions",
 
     jwtAuthMiddleware.handler,
 
     asyncHandler(reactionsController.remove.bind(reactionsController)),
+  );
+
+  // get pinned messages
+  router.get(
+    "/chat/:chatId/pinned",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.findPinnedMessages.bind(controller)),
+  );
+
+  // pin message
+  router.put(
+    "/:id/pin",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.pinMessage.bind(controller)),
+  );
+
+  // unpin message
+  router.delete(
+    "/:id/unpin",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.unpinMessage.bind(controller)),
   );
 
   return router;

@@ -20,7 +20,8 @@ CREATE TABLE messages (
         created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
         updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
         deleted_at TIMESTAMPTZ,
-        is_deleted BOOLEAN NOT NULL DEFAULT FALSE
+        is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+        is_pinned BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE INDEX idx_messages_chat ON messages(chat_id);

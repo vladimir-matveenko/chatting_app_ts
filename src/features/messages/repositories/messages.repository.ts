@@ -96,4 +96,28 @@ export class MessagesRepository
       [id],
     );
   }
+
+  async pin(messageId: string): Promise<Message> {
+    return this.saveOne(
+      MessagesQueries.PIN_MESSAGE,
+
+      [messageId],
+    );
+  }
+
+  async unpin(messageId: string): Promise<Message> {
+    return this.saveOne(
+      MessagesQueries.UNPIN_MESSAGE,
+
+      [messageId],
+    );
+  }
+
+  async findPinned(chatId: string): Promise<Message[]> {
+    return this.findMany(
+      MessagesQueries.FIND_PINNED_BY_CHAT,
+
+      [chatId],
+    );
+  }
 }

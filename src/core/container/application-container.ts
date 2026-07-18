@@ -4,7 +4,7 @@ import { createUsersModule, type UsersFeature } from "../../features/users/index
 
 import { createAuthModule, type AuthModule } from "../../features/auth/index.js";
 import { BcryptPasswordHasher } from "../security/password/index.js";
-import { JwtServiceImpl } from "../security/jwt/index.js";
+import { JwtService, JwtServiceImpl } from "../security/jwt/index.js";
 import { Sha256TokenHasher } from "../security/index.js";
 import { JwtAuthMiddleware } from "../middleware/jwt-auth.middleware.js";
 import { RefreshTokenMapper } from "../../features/auth/mappers/refresh-token.mapper.js";
@@ -19,6 +19,11 @@ import { ChatListItemMapper } from "../../features/chats/mappers/chat-list-item.
 import { ChatListRepository } from "../../features/chats/repositories/chat-list.repository.js";
 import { ChatReadsRepository } from "../../features/messages/repositories/chat-reads.repository.js";
 import { createMessagesModule, type MessagesFeature } from "../../features/messages/index.js";
+import { SocketAuthMiddleware } from "../middleware/socket-auth.middleware.js";
+import { SocketGateway } from "../websocket/socket.gateway.js";
+import { SocketEventPublisher } from "../websocket/socket-event.publisher.js";
+import { ChatRoomService } from "../websocket/chat-room.service.js";
+import { ChatHandler, TypingHandler } from "../websocket/handlers/index.js";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;
@@ -30,6 +35,16 @@ export class ApplicationContainer {
   readonly chats: ChatsFeature;
 
   readonly messages: MessagesFeature;
+
+  readonly jwtService: JwtService;
+
+  readonly socketAuthMiddleware: SocketAuthMiddleware;
+
+  readonly socketGateway: SocketGateway;
+
+  readonly socketEventPublisher: SocketEventPublisher;
+
+  readonly chatRoomService: ChatRoomService;
 
   constructor(database: Database) {
     const passwordHasher = new BcryptPasswordHasher();
@@ -81,6 +96,28 @@ export class ApplicationContainer {
 
     const chatReadsRepository = new ChatReadsRepository(database);
 
+    this.jwtService = new JwtServiceImpl();
+
+    this.socketAuthMiddleware = new SocketAuthMiddleware(this.jwtService);
+
+    this.socketEventPublisher = new SocketEventPublisher();
+
+    this.chatRoomService = new ChatRoomService(chatMembersRepository);
+
+    const chatHandler = new ChatHandler(this.chatRoomService);
+
+    const typingHandler = new TypingHandler(
+      this.chatRoomService,
+
+      this.socketEventPublisher,
+    );
+
+    this.socketGateway = new SocketGateway(
+      chatHandler,
+
+      typingHandler,
+    );
+
     this.messages = createMessagesModule(
       database,
 
@@ -91,6 +128,8 @@ export class ApplicationContainer {
       chatReadsRepository,
 
       jwtAuthMiddleware,
+
+      this.socketEventPublisher,
     );
 
     this.chats = createChatsModule(

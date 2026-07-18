@@ -1,14 +1,17 @@
 import { createdResponse } from "../../../../swagger/builders/created-response.js";
 import { okResponse } from "../../../../swagger/builders/ok-response.js";
+import { jsonResponse } from "../../../../swagger/builders/response.builder.js";
 import {
   badRequestResponse,
   forbiddenResponse,
   notFoundResponse,
   unauthorizedResponse,
 } from "../../../../swagger/responses/index.js";
+import { messageExample } from "../examples/message.example.js";
+import { messagesListExample } from "../examples/messages-list.example.js";
 
 export const MessagesPaths = {
-  "/messages/chat/{id}": {
+  "/messages/chat/{chatId}": {
     post: {
       tags: ["Messages"],
 
@@ -24,7 +27,7 @@ export const MessagesPaths = {
 
       parameters: [
         {
-          name: "id",
+          name: "chatId",
 
           in: "path",
 
@@ -74,7 +77,7 @@ export const MessagesPaths = {
 
       parameters: [
         {
-          name: "id",
+          name: "chatId",
 
           in: "path",
 
@@ -109,7 +112,7 @@ export const MessagesPaths = {
       ],
 
       responses: {
-        200: okResponse("Messages.", "#/components/schemas/Message"),
+        200: jsonResponse("Messages.", "#/components/schemas/Message", messagesListExample),
 
         401: unauthorizedResponse,
 
@@ -120,7 +123,7 @@ export const MessagesPaths = {
     },
   },
 
-  "/messages/{id}": {
+  "/messages/{messageId}": {
     get: {
       tags: ["Messages"],
 
@@ -134,7 +137,7 @@ export const MessagesPaths = {
 
       parameters: [
         {
-          name: "id",
+          name: "messageId",
 
           in: "path",
 
@@ -170,7 +173,7 @@ export const MessagesPaths = {
 
       parameters: [
         {
-          name: "id",
+          name: "messageId",
 
           in: "path",
 
@@ -218,7 +221,7 @@ export const MessagesPaths = {
 
       parameters: [
         {
-          name: "id",
+          name: "messageId",
 
           in: "path",
 
@@ -238,6 +241,111 @@ export const MessagesPaths = {
         403: forbiddenResponse,
 
         404: notFoundResponse,
+      },
+    },
+  },
+
+  "/messages/chat/{chatId}/pinned": {
+    get: {
+      tags: ["Messages"],
+
+      summary: "Get pinned messages",
+
+      description: "Get pinned messages for the chat.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "id",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      responses: {
+        200: jsonResponse("Messages.", "#/components/schemas/Message", messagesListExample),
+
+        401: unauthorizedResponse,
+      },
+    },
+  },
+
+  "/messages/{messageId}/pin": {
+    put: {
+      tags: ["Messages"],
+
+      summary: "Pin the message",
+
+      description: "Pin the message.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "messageId",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      responses: {
+        200: okResponse("Message pinned.", "#/components/schemas/Message"),
+
+        401: unauthorizedResponse,
+      },
+    },
+    delete: {
+      tags: ["Messages"],
+
+      summary: "Unpin the message",
+
+      description: "Unpin the message.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "messageId",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      responses: {
+        200: okResponse("Message unpinned.", "#/components/schemas/Message"),
+
+        401: unauthorizedResponse,
       },
     },
   },
