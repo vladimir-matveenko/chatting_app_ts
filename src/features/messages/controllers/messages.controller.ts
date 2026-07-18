@@ -11,6 +11,7 @@ import { CreateMessageRequestValidator } from "../validators/create-message-requ
 import { UpdateMessageRequestValidator } from "../validators/update-message-request.validator.js";
 
 import { requireId } from "../../../core/http/validators/index.js";
+import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
 
 export class MessagesController {
   constructor(
@@ -21,6 +22,8 @@ export class MessagesController {
     private readonly createRequestMapper: CreateMessageRequestMapper,
 
     private readonly updateRequestValidator: UpdateMessageRequestValidator,
+
+    private readonly socketPublisher: SocketEventPublisher,
   ) {}
 
   async create(
@@ -49,6 +52,8 @@ export class MessagesController {
         request.user.userId,
       ),
     );
+
+    this.socketPublisher.messageCreated(message);
 
     response
 
@@ -143,6 +148,8 @@ export class MessagesController {
       dto,
     );
 
+    this.socketPublisher.messageUpdated(message);
+
     response.json(message);
   }
 
@@ -166,6 +173,8 @@ export class MessagesController {
 
       request.user.userId,
     );
+
+    this.socketPublisher.messageDeleted(message);
 
     response.json(message);
   }
@@ -217,11 +226,13 @@ export class MessagesController {
       "messageId",
     );
 
-    await this.service.pinMessage(
+    const message = await this.service.pinMessage(
       messageId,
 
       request.user.userId,
     );
+
+    this.socketPublisher.messagePinned(message);
 
     response.sendStatus(204);
   }

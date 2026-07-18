@@ -23,7 +23,10 @@ export class SocketAuthMiddleware {
       };
 
       next();
-    } catch {
+    } catch (error) {
+      if (error instanceof Error) {
+        return next(error);
+      }
       next(new Error("Unauthorized"));
     }
   };

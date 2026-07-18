@@ -19,7 +19,10 @@ import { ChatListItemMapper } from "../../features/chats/mappers/chat-list-item.
 import { ChatListRepository } from "../../features/chats/repositories/chat-list.repository.js";
 import { ChatReadsRepository } from "../../features/messages/repositories/chat-reads.repository.js";
 import { createMessagesModule, type MessagesFeature } from "../../features/messages/index.js";
-import { SocketAuthMiddleware } from "../websocket/socket-auth.middleware.js";
+import { SocketAuthMiddleware } from "../middleware/socket-auth.middleware.js";
+import { SocketGateway } from "../websocket/socket.gateway.js";
+import { SocketEventPublisher } from "../websocket/socket-event.publisher.js";
+import { ChatRoomService } from "../websocket/chat-room.service.js";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;
@@ -35,6 +38,12 @@ export class ApplicationContainer {
   readonly jwtService: JwtService;
 
   readonly socketAuthMiddleware: SocketAuthMiddleware;
+
+  readonly socketGateway: SocketGateway;
+
+  readonly socketEventPublisher: SocketEventPublisher;
+
+  readonly chatRoomService: ChatRoomService;
 
   constructor(database: Database) {
     const passwordHasher = new BcryptPasswordHasher();
@@ -86,6 +95,16 @@ export class ApplicationContainer {
 
     const chatReadsRepository = new ChatReadsRepository(database);
 
+    this.jwtService = new JwtServiceImpl();
+
+    this.socketAuthMiddleware = new SocketAuthMiddleware(this.jwtService);
+
+    this.socketEventPublisher = new SocketEventPublisher();
+
+    this.chatRoomService = new ChatRoomService(chatMembersRepository);
+
+    this.socketGateway = new SocketGateway(this.socketEventPublisher, this.chatRoomService);
+
     this.messages = createMessagesModule(
       database,
 
@@ -96,6 +115,8 @@ export class ApplicationContainer {
       chatReadsRepository,
 
       jwtAuthMiddleware,
+
+      this.socketEventPublisher,
     );
 
     this.chats = createChatsModule(
@@ -113,9 +134,5 @@ export class ApplicationContainer {
 
       jwtAuthMiddleware,
     );
-
-    this.jwtService = new JwtServiceImpl();
-
-    this.socketAuthMiddleware = new SocketAuthMiddleware(this.jwtService);
   }
 }

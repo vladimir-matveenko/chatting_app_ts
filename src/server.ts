@@ -20,18 +20,10 @@ const app = createApp(container);
 
 const server = createServer(app);
 
-const socketServer = new SocketServer(
-  server,
+const socketServer = new SocketServer(server);
 
-  container.socketAuthMiddleware,
-);
+socketServer.register(container.socketAuthMiddleware, container.socketGateway);
 
-socketServer.initialize();
-
-server.listen(
-  env.port,
-
-  () => {
-    console.log(`Server started on port ${env.port}`);
-  },
-);
+server.listen(env.port, () => {
+  console.log(`Server started on port ${env.port}`);
+});

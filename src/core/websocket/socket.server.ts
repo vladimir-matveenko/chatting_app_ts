@@ -1,37 +1,25 @@
+import { Server } from "socket.io";
 import { Server as HttpServer } from "node:http";
 
-import { Server } from "socket.io";
-import { SocketAuthMiddleware } from "./socket-auth.middleware.js";
+import type { SocketAuthMiddleware } from "../middleware/socket-auth.middleware.js";
+
+import { SocketGateway } from "./socket.gateway.js";
 
 export class SocketServer {
   readonly io: Server;
 
-  constructor(server: HttpServer, authMiddleware: SocketAuthMiddleware) {
+  constructor(server: HttpServer) {
     this.io = new Server(server, {
       cors: {
         origin: "*",
-
         methods: ["GET", "POST"],
       },
     });
-    this.io.use(authMiddleware.handler);
   }
 
-  initialize(): void {
-    this.io.on(
-      "connection",
+  register(authMiddleware: SocketAuthMiddleware, gateway: SocketGateway): void {
+    this.io.use(authMiddleware.handler);
 
-      (socket) => {
-        console.log(`Socket connected: ${socket.data.user.userId}`);
-
-        socket.on(
-          "disconnect",
-
-          () => {
-            console.log(`Socket disconnected: ${socket.data.user.userId}`);
-          },
-        );
-      },
-    );
+    gateway.register(this.io);
   }
 }

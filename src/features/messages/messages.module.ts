@@ -29,6 +29,7 @@ import { UpdateMessageRequestValidator } from "./validators/update-message-reque
 import { AddReactionRequestValidator } from "./validators/add-reaction-request.validator.js";
 import { ChatReadsRepository } from "./repositories/chat-reads.repository.js";
 import { MessageReadService } from "./services/message-read.service.js";
+import { SocketEventPublisher } from "../../core/websocket/socket-event.publisher.js";
 
 export function createMessagesModule(
   database: Database,
@@ -40,6 +41,8 @@ export function createMessagesModule(
   chatReadsRepository: ChatReadsRepository,
 
   jwtAuthMiddleware: JwtAuthMiddleware,
+
+  socketPublisher: SocketEventPublisher,
 ): MessagesFeature {
   const messagesMapper = new MessagesMapper();
 
@@ -83,6 +86,7 @@ export function createMessagesModule(
     createMessageRequestValidator,
     createMessageRequestMapper,
     updateMessageRequestValidator,
+    socketPublisher,
   );
 
   const messageReactionsController = new MessageReactionsController(

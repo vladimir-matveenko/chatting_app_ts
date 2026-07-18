@@ -208,7 +208,7 @@ export class MessagesService {
     messageId: string,
 
     userId: string,
-  ): Promise<void> {
+  ): Promise<Message> {
     const message = await this.messagesRepository.findById(messageId);
 
     if (!message) {
@@ -221,14 +221,14 @@ export class MessagesService {
       userId,
     );
 
-    await this.messagesRepository.pin(messageId);
+    return await this.messagesRepository.pin(messageId);
   }
 
   async unpinMessage(
     messageId: string,
 
     userId: string,
-  ): Promise<void> {
+  ): Promise<Message> {
     const message = await this.messagesRepository.findById(messageId);
 
     if (!message) {
@@ -241,7 +241,7 @@ export class MessagesService {
       userId,
     );
 
-    await this.messagesRepository.unpin(messageId);
+    return await this.messagesRepository.unpin(messageId);
   }
 
   private async ensureAdmin(
