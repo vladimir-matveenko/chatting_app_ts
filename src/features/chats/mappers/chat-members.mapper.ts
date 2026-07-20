@@ -20,6 +20,12 @@ export class ChatMembersMapper implements Mapper<ChatMemberEntity, ChatMember> {
       isMuted: entity.is_muted,
 
       isArchived: entity.is_archived,
+
+      userName: entity.user_name,
+
+      displayName: entity.display_name,
+
+      avatarUrl: entity.avatar_url,
     };
   }
 }

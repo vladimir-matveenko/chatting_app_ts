@@ -29,11 +29,26 @@ export const ChatMembersQueries = {
     `,
 
   FIND_BY_CHAT: `
-    SELECT *
+    SELECT
+        cm.chat_id,
+        cm.user_id,
+        cm.role,
+        cm.joined_at,
+        cm.last_read_message_id,
+        cm.is_muted,
+        cm.is_archived,
 
-    FROM chat_members
+        u.user_name,
+        u.display_name,
+        u.avatar_url
 
-    WHERE chat_id = $1
+    FROM chat_members cm
+
+    JOIN users u
+        ON u.id = cm.user_id
+
+    WHERE
+        cm.chat_id = $1
 
     ORDER BY joined_at;
     `,
@@ -100,20 +115,26 @@ export const ChatMembersQueries = {
 
   FIND_BY_CHAT_AND_USER: `
     SELECT
-        chat_id,
-        user_id,
-        role,
-        joined_at,
-        is_muted,
-        is_archived
+        cm.chat_id,
+        cm.user_id,
+        cm.role,
+        cm.joined_at,
+        cm.last_read_message_id,
+        cm.is_muted,
+        cm.is_archived,
 
-    FROM chat_members
+        u.user_name,
+        u.display_name,
+        u.avatar_url
+
+    FROM chat_members cm
+
+    JOIN users u
+        ON u.id = cm.user_id
 
     WHERE
-        chat_id = $1
-
-    AND
-        user_id = $2;
+        cm.chat_id = $1
+    AND cm.user_id = $2;
     `,
 
   UPDATE_ROLE: `
