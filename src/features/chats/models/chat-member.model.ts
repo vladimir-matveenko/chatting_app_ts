@@ -14,4 +14,10 @@ export interface ChatMember {
   isMuted: boolean;
 
   isArchived: boolean;
+
+  userName: string;
+
+  displayName: string | null;
+
+  avatarUrl: string | null;
 }

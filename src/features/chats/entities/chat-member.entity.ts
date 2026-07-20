@@ -14,4 +14,10 @@ export interface ChatMemberEntity {
   is_muted: boolean;
 
   is_archived: boolean;
+
+  user_name: string;
+
+  display_name: string | null;
+
+  avatar_url: string | null;
 }
