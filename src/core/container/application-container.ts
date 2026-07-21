@@ -49,11 +49,11 @@ export class ApplicationContainer {
   constructor(database: Database) {
     const passwordHasher = new BcryptPasswordHasher();
 
-    const jwtService = new JwtServiceImpl();
+    this.jwtService = new JwtServiceImpl();
 
     const tokenHasher = new Sha256TokenHasher();
 
-    const jwtAuthMiddleware = new JwtAuthMiddleware(jwtService);
+    const jwtAuthMiddleware = new JwtAuthMiddleware(this.jwtService);
 
     const refreshTokenMapper = new RefreshTokenMapper();
 
@@ -68,35 +68,25 @@ export class ApplicationContainer {
 
     this.auth = createAuthModule(
       this.users,
-
       passwordHasher,
-
       tokenHasher,
-
-      jwtService,
-
+      this.jwtService,
       jwtAuthMiddleware,
-
       refreshTokensRepository,
     );
 
     this.health = createHealthModule();
 
     const chatMapper = new ChatMapper();
-
     const chatsRepository = new ChatsRepository(database, chatMapper);
 
     const chatMembersMapper = new ChatMembersMapper();
-
     const chatMembersRepository = new ChatMembersRepository(database, chatMembersMapper);
 
     const chatListItemMapper = new ChatListItemMapper();
-
     const chatListRepository = new ChatListRepository(database, chatListItemMapper);
 
     const chatReadsRepository = new ChatReadsRepository(database);
-
-    this.jwtService = new JwtServiceImpl();
 
     this.socketAuthMiddleware = new SocketAuthMiddleware(this.jwtService);
 
@@ -106,45 +96,26 @@ export class ApplicationContainer {
 
     const chatHandler = new ChatHandler(this.chatRoomService);
 
-    const typingHandler = new TypingHandler(
-      this.chatRoomService,
+    const typingHandler = new TypingHandler(this.chatRoomService, this.socketEventPublisher);
 
-      this.socketEventPublisher,
-    );
-
-    this.socketGateway = new SocketGateway(
-      chatHandler,
-
-      typingHandler,
-    );
+    this.socketGateway = new SocketGateway([chatHandler, typingHandler]);
 
     this.messages = createMessagesModule(
       database,
-
       chatsRepository,
-
       chatMembersRepository,
-
       chatReadsRepository,
-
       jwtAuthMiddleware,
-
       this.socketEventPublisher,
     );
 
     this.chats = createChatsModule(
       database,
-
       this.users.repository,
-
       chatsRepository,
-
       chatListRepository,
-
       chatMembersRepository,
-
       this.messages.messageReadService,
-
       jwtAuthMiddleware,
     );
   }

@@ -2,15 +2,12 @@ import type { Server } from "socket.io";
 
 import type { AuthenticatedSocket } from "./socket.types.js";
 
-import { ChatHandler, TypingHandler } from "./handlers/index.js";
+import type { SocketHandler } from "./interfaces/socket-handler.interface.js";
+
 import { logger } from "../logger/logger.js";
 
 export class SocketGateway {
-  constructor(
-    private readonly chatHandler: ChatHandler,
-
-    private readonly typingHandler: TypingHandler,
-  ) {}
+  constructor(private readonly handlers: SocketHandler[]) {}
 
   register(io: Server): void {
     io.on(
@@ -21,9 +18,7 @@ export class SocketGateway {
 
         logger.info(`Socket connected: ${authenticatedSocket.data.user.userId}`);
 
-        this.chatHandler.register(authenticatedSocket);
-
-        this.typingHandler.register(authenticatedSocket);
+        this.handlers.forEach((handler) => handler.register(authenticatedSocket));
 
         authenticatedSocket.on(
           "disconnect",

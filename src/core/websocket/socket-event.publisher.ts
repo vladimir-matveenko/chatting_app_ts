@@ -5,6 +5,7 @@ import { SocketEvents } from "./socket.events.js";
 
 import type { Message } from "../../features/messages/models/message.model.js";
 import { logger } from "../logger/logger.js";
+import { TypingEventDto } from "./dto/typing-event.dto.js";
 
 export class SocketEventPublisher {
   private io?: Server;
@@ -103,16 +104,18 @@ export class SocketEventPublisher {
 
     userId: string,
   ): void {
+    const dto: TypingEventDto = {
+      chatId,
+
+      userId,
+    };
+
     this.emitToChat(
       chatId,
 
-      SocketEvents.TypingStart,
+      SocketEvents.TypingStarted,
 
-      {
-        chatId,
-
-        userId,
-      },
+      dto,
     );
   }
 
@@ -121,16 +124,18 @@ export class SocketEventPublisher {
 
     userId: string,
   ): void {
+    const dto: TypingEventDto = {
+      chatId,
+
+      userId,
+    };
+
     this.emitToChat(
       chatId,
 
-      SocketEvents.TypingStop,
+      SocketEvents.TypingStopped,
 
-      {
-        chatId,
-
-        userId,
-      },
+      dto,
     );
   }
 }
