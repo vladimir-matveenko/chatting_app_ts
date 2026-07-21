@@ -15,8 +15,6 @@ export class ChatMembersMapper implements Mapper<ChatMemberEntity, ChatMember> {
 
       joinedAt: entity.joined_at,
 
-      lastReadMessageId: entity.last_read_message_id === null ? null : entity.last_read_message_id,
-
       isMuted: entity.is_muted,
 
       isArchived: entity.is_archived,

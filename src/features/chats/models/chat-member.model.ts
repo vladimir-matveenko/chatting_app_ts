@@ -9,8 +9,6 @@ export interface ChatMember {
 
   joinedAt: Date;
 
-  lastReadMessageId: string | null;
-
   isMuted: boolean;
 
   isArchived: boolean;

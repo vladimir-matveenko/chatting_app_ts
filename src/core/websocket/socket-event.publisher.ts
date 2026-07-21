@@ -138,4 +138,26 @@ export class SocketEventPublisher {
       dto,
     );
   }
+
+  messageRead(
+    chatId: string,
+
+    messageId: string,
+
+    userId: string,
+  ): void {
+    this.emitToChat(
+      chatId,
+
+      SocketEvents.MessageRead,
+
+      {
+        chatId,
+
+        messageId,
+
+        userId,
+      },
+    );
+  }
 }

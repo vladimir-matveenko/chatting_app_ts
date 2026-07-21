@@ -5,6 +5,7 @@ import type { ChatMembersRepository } from "../../chats/repositories/chat-member
 import type { MessagesRepository } from "../repositories/messages.repository.js";
 
 import type { ChatReadsRepository } from "../repositories/chat-reads.repository.js";
+import { Message } from "../models/message.model.js";
 
 export class MessageReadService {
   constructor(
@@ -21,12 +22,8 @@ export class MessageReadService {
     messageId: string,
 
     userId: string,
-  ): Promise<void> {
-    const member = await this.chatMembersRepository.findByChatAndUser(
-      chatId,
-
-      userId,
-    );
+  ): Promise<Message> {
+    const member = await this.chatMembersRepository.findByChatAndUser(chatId, userId);
 
     if (!member) {
       throw new ValidationError("User is not a member of this chat.");
@@ -42,12 +39,8 @@ export class MessageReadService {
       throw new ValidationError("Message does not belong to this chat.");
     }
 
-    await this.chatReadsRepository.markRead(
-      chatId,
+    await this.chatReadsRepository.markRead(chatId, userId, messageId);
 
-      userId,
-
-      messageId,
-    );
+    return message;
   }
 }

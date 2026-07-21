@@ -9,8 +9,6 @@ export interface ChatMemberEntity {
 
   joined_at: Date;
 
-  last_read_message_id: string | null;
-
   is_muted: boolean;
 
   is_archived: boolean;
