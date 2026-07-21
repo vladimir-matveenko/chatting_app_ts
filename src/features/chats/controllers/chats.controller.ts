@@ -12,6 +12,7 @@ import { AddChatMembersRequestValidator } from "../validators/add-chat-members-r
 import { ChangeMemberRoleRequestValidator } from "../validators/change-member-role-request.validator.js";
 import { TransferOwnershipRequestValidator } from "../dto/transfer-ownership-request.validator.js";
 import { UpdateChatRequestValidator } from "../validators/update-chat-request.validator.js";
+import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
 
 export class ChatsController {
   constructor(
@@ -30,6 +31,8 @@ export class ChatsController {
     private readonly updateChatValidator: UpdateChatRequestValidator,
 
     private readonly mapper: CreateChatRequestMapper,
+
+    private readonly socketPublisher: SocketEventPublisher,
   ) {}
 
   async create(
@@ -271,6 +274,8 @@ export class ChatsController {
       dto,
     );
 
+    this.socketPublisher.chatChanged(chatId);
+
     response.sendStatus(204);
   }
 
@@ -306,6 +311,8 @@ export class ChatsController {
 
       memberId,
     );
+
+    this.socketPublisher.chatChanged(chatId);
 
     response.sendStatus(204);
   }
@@ -347,6 +354,8 @@ export class ChatsController {
       dto,
     );
 
+    this.socketPublisher.chatChanged(chatId);
+
     response.sendStatus(204);
   }
 
@@ -379,6 +388,8 @@ export class ChatsController {
       dto,
     );
 
+    this.socketPublisher.chatChanged(chatId);
+
     response.sendStatus(204);
   }
 
@@ -410,6 +421,8 @@ export class ChatsController {
 
       dto,
     );
+
+    this.socketPublisher.chatChanged(chat.id);
 
     response.json(chat);
   }

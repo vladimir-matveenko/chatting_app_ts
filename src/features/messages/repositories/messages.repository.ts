@@ -14,6 +14,7 @@ import { MessagesMapper } from "../mappers/messages.mapper.js";
 import type { Message } from "../models/message.model.js";
 
 import { MessagesQueries } from "../queries/messages.queries.js";
+import { NotFoundError } from "../../../core/errors/index.js";
 
 export class MessagesRepository
   extends BaseRepository<MessageEntity, Message>
@@ -119,5 +120,19 @@ export class MessagesRepository
 
       [chatId],
     );
+  }
+
+  async getByIdOrThrow(id: string): Promise<Message> {
+    const message = await this.findById(id);
+
+    if (!message) {
+      throw new NotFoundError(
+        "Message not found.",
+
+        "MESSAGE_NOT_FOUND",
+      );
+    }
+
+    return message;
   }
 }

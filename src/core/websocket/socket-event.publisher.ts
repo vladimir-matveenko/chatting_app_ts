@@ -5,6 +5,10 @@ import { SocketEvents } from "./socket.events.js";
 
 import type { Message } from "../../features/messages/models/message.model.js";
 import { logger } from "../logger/logger.js";
+import { TypingEventDto } from "./dto/typing-event.dto.js";
+import { MessageReadEventDto } from "./dto/message-read-event.dto.js";
+import { PresenceEventDto } from "./dto/presence-event.dto.js";
+import { ChatChangedEventDto } from "./dto/index.js";
 
 export class SocketEventPublisher {
   private io?: Server;
@@ -103,16 +107,18 @@ export class SocketEventPublisher {
 
     userId: string,
   ): void {
+    const dto: TypingEventDto = {
+      chatId,
+
+      userId,
+    };
+
     this.emitToChat(
       chatId,
 
-      SocketEvents.TypingStart,
+      SocketEvents.TypingStarted,
 
-      {
-        chatId,
-
-        userId,
-      },
+      dto,
     );
   }
 
@@ -121,16 +127,96 @@ export class SocketEventPublisher {
 
     userId: string,
   ): void {
+    const dto: TypingEventDto = {
+      chatId,
+
+      userId,
+    };
+
     this.emitToChat(
       chatId,
 
-      SocketEvents.TypingStop,
+      SocketEvents.TypingStopped,
 
-      {
-        chatId,
+      dto,
+    );
+  }
 
-        userId,
-      },
+  messageRead(
+    chatId: string,
+
+    messageId: string,
+
+    userId: string,
+  ): void {
+    const dto: MessageReadEventDto = {
+      chatId,
+
+      messageId,
+
+      userId,
+    };
+
+    this.emitToChat(
+      chatId,
+
+      SocketEvents.MessageRead,
+
+      dto,
+    );
+  }
+
+  userOnline(userId: string): void {
+    const dto: PresenceEventDto = {
+      userId,
+    };
+
+    this.io?.emit(
+      SocketEvents.UserOnline,
+
+      dto,
+    );
+  }
+
+  userOffline(userId: string): void {
+    const dto: PresenceEventDto = {
+      userId,
+    };
+
+    this.io?.emit(
+      SocketEvents.UserOffline,
+
+      dto,
+    );
+  }
+
+  reactionUpdated(message: Message): void {
+    logger.info(
+      "Publishing reaction.updated",
+
+      message.chatId,
+    );
+
+    this.emitToChat(
+      message.chatId,
+
+      SocketEvents.ReactionUpdated,
+
+      message,
+    );
+  }
+
+  chatChanged(chatId: string): void {
+    const dto: ChatChangedEventDto = {
+      chatId,
+    };
+
+    this.emitToChat(chatId, SocketEvents.ChatChanged, dto);
+
+    logger.info(
+      `Chat ${chatId} updated`,
+
+      chatId,
     );
   }
 }

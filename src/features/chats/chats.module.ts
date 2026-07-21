@@ -28,6 +28,7 @@ import { AddChatMembersRequestValidator } from "./validators/add-chat-members-re
 import { ChangeMemberRoleRequestValidator } from "./validators/change-member-role-request.validator.js";
 import { TransferOwnershipRequestValidator } from "./dto/transfer-ownership-request.validator.js";
 import { UpdateChatRequestValidator } from "./validators/update-chat-request.validator.js";
+import { SocketEventPublisher } from "../../core/websocket/socket-event.publisher.js";
 
 export function createChatsModule(
   database: Database,
@@ -43,6 +44,8 @@ export function createChatsModule(
   messageReadService: MessageReadService,
 
   jwtAuthMiddleware: JwtAuthMiddleware,
+
+  socketPublisher: SocketEventPublisher,
 ): ChatsFeature {
   const fingerprintService = new ChatFingerprintService();
 
@@ -88,6 +91,8 @@ export function createChatsModule(
     updateChatValidator,
 
     mapper,
+
+    socketPublisher,
   );
 
   const router = createChatsRouter(

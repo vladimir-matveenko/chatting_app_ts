@@ -69,6 +69,7 @@ export function createMessagesModule(
     messageReactionsRepository,
     messagesRepository,
     chatMembersRepository,
+    socketPublisher,
   );
 
   const createMessageRequestValidator = new CreateMessageRequestValidator();

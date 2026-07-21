@@ -4,8 +4,9 @@ import { SocketEvents } from "../socket.events.js";
 
 import type { ChatRoomService } from "../chat-room.service.js";
 import { logger } from "../../logger/logger.js";
+import { SocketHandler } from "../interfaces/socket-handler.interface.js";
 
-export class ChatHandler {
+export class ChatHandler implements SocketHandler {
   constructor(private readonly chatRoomService: ChatRoomService) {}
 
   register(socket: AuthenticatedSocket): void {

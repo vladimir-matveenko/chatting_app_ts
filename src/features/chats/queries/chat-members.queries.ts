@@ -34,7 +34,6 @@ export const ChatMembersQueries = {
         cm.user_id,
         cm.role,
         cm.joined_at,
-        cm.last_read_message_id,
         cm.is_muted,
         cm.is_archived,
 
@@ -119,7 +118,6 @@ export const ChatMembersQueries = {
         cm.user_id,
         cm.role,
         cm.joined_at,
-        cm.last_read_message_id,
         cm.is_muted,
         cm.is_archived,
 

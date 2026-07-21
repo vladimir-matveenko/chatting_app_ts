@@ -5,8 +5,10 @@ import { SocketEvents } from "../socket.events.js";
 import type { ChatRoomService } from "../chat-room.service.js";
 
 import type { SocketEventPublisher } from "../socket-event.publisher.js";
+import { SocketHandler } from "../interfaces/socket-handler.interface.js";
+import { logger } from "../../logger/logger.js";
 
-export class TypingHandler {
+export class TypingHandler implements SocketHandler {
   constructor(
     private readonly chatRoomService: ChatRoomService,
 
@@ -30,6 +32,8 @@ export class TypingHandler {
 
             socket.data.user.userId,
           );
+
+          logger.info(`User ${socket.data.user.userId} started typing in chat ${chatId}`);
         } catch (error) {
           socket.emit(
             SocketEvents.Exception,
@@ -58,6 +62,8 @@ export class TypingHandler {
 
             socket.data.user.userId,
           );
+
+          logger.info(`User ${socket.data.user.userId} stopped typing in chat ${chatId}`);
         } catch (error) {
           socket.emit(
             SocketEvents.Exception,

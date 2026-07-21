@@ -1,4 +1,6 @@
 export const SocketEvents = {
+  // Client -> Server
+
   JoinChat: "chat:join",
 
   LeaveChat: "chat:leave",
@@ -6,6 +8,8 @@ export const SocketEvents = {
   TypingStart: "typing:start",
 
   TypingStop: "typing:stop",
+
+  // Server -> Client
 
   MessageCreated: "message:created",
 
@@ -20,6 +24,16 @@ export const SocketEvents = {
   ReactionUpdated: "reaction:updated",
 
   MessageRead: "message:read",
+
+  TypingStarted: "typing:started",
+
+  TypingStopped: "typing:stopped",
+
+  UserOnline: "presence:online",
+
+  UserOffline: "presence:offline",
+
+  ChatChanged: "chat:changed",
 
   Exception: "exception",
 } as const;

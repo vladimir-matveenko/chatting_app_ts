@@ -153,11 +153,7 @@ export class MessagesService {
 
     dto: UpdateMessageRequestDto,
   ): Promise<Message> {
-    const message = await this.messagesRepository.findById(messageId);
-
-    if (!message) {
-      throw new NotFoundError("Message not found.");
-    }
+    const message = await this.messagesRepository.getByIdOrThrow(messageId);
 
     if (message.senderId !== userId) {
       throw new ForbiddenError(
@@ -183,11 +179,7 @@ export class MessagesService {
 
     userId: string,
   ): Promise<Message> {
-    const message = await this.messagesRepository.findById(id);
-
-    if (!message) {
-      throw new NotFoundError("Message not found.");
-    }
+    const message = await this.messagesRepository.getByIdOrThrow(id);
 
     if (message.senderId !== userId) {
       throw new ForbiddenError(
@@ -209,11 +201,7 @@ export class MessagesService {
 
     userId: string,
   ): Promise<Message> {
-    const message = await this.messagesRepository.findById(messageId);
-
-    if (!message) {
-      throw new NotFoundError("Message not found.", "MESSAGE_NOT_FOUND");
-    }
+    const message = await this.messagesRepository.getByIdOrThrow(messageId);
 
     await this.ensureAdmin(
       message.chatId,
@@ -229,11 +217,7 @@ export class MessagesService {
 
     userId: string,
   ): Promise<Message> {
-    const message = await this.messagesRepository.findById(messageId);
-
-    if (!message) {
-      throw new NotFoundError("Message not found.", "MESSAGE_NOT_FOUND");
-    }
+    const message = await this.messagesRepository.getByIdOrThrow(messageId);
 
     await this.ensureAdmin(
       message.chatId,
