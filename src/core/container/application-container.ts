@@ -24,6 +24,7 @@ import { SocketGateway } from "../websocket/socket.gateway.js";
 import { SocketEventPublisher } from "../websocket/socket-event.publisher.js";
 import { ChatRoomService } from "../websocket/chat-room.service.js";
 import { ChatHandler, ReadHandler, TypingHandler } from "../websocket/handlers/index.js";
+import { PresenceService } from "../websocket/presence.service.js";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;
@@ -113,7 +114,12 @@ export class ApplicationContainer {
       this.socketEventPublisher,
     );
 
-    this.socketGateway = new SocketGateway([chatHandler, typingHandler, readHandler]);
+    const presenceService = new PresenceService();
+    this.socketGateway = new SocketGateway(presenceService, this.socketEventPublisher, [
+      chatHandler,
+      typingHandler,
+      readHandler,
+    ]);
 
     this.chats = createChatsModule(
       database,

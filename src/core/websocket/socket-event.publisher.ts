@@ -6,6 +6,8 @@ import { SocketEvents } from "./socket.events.js";
 import type { Message } from "../../features/messages/models/message.model.js";
 import { logger } from "../logger/logger.js";
 import { TypingEventDto } from "./dto/typing-event.dto.js";
+import { MessageReadEventDto } from "./dto/message-read-event.dto.js";
+import { PresenceEventDto } from "./dto/presence-event.dto.js";
 
 export class SocketEventPublisher {
   private io?: Server;
@@ -146,18 +148,44 @@ export class SocketEventPublisher {
 
     userId: string,
   ): void {
+    const dto: MessageReadEventDto = {
+      chatId,
+
+      messageId,
+
+      userId,
+    };
+
     this.emitToChat(
       chatId,
 
       SocketEvents.MessageRead,
 
-      {
-        chatId,
+      dto,
+    );
+  }
 
-        messageId,
+  userOnline(userId: string): void {
+    const dto: PresenceEventDto = {
+      userId,
+    };
 
-        userId,
-      },
+    this.io?.emit(
+      SocketEvents.UserOnline,
+
+      dto,
+    );
+  }
+
+  userOffline(userId: string): void {
+    const dto: PresenceEventDto = {
+      userId,
+    };
+
+    this.io?.emit(
+      SocketEvents.UserOffline,
+
+      dto,
     );
   }
 }

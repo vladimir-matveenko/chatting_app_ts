@@ -29,5 +29,9 @@ export const SocketEvents = {
 
   TypingStopped: "typing:stopped",
 
+  UserOnline: "presence:online",
+
+  UserOffline: "presence:offline",
+
   Exception: "exception",
 } as const;
