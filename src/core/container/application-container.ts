@@ -23,7 +23,7 @@ import { SocketAuthMiddleware } from "../middleware/socket-auth.middleware.js";
 import { SocketGateway } from "../websocket/socket.gateway.js";
 import { SocketEventPublisher } from "../websocket/socket-event.publisher.js";
 import { ChatRoomService } from "../websocket/chat-room.service.js";
-import { ChatHandler, TypingHandler } from "../websocket/handlers/index.js";
+import { ChatHandler, ReadHandler, TypingHandler } from "../websocket/handlers/index.js";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;
@@ -98,8 +98,6 @@ export class ApplicationContainer {
 
     const typingHandler = new TypingHandler(this.chatRoomService, this.socketEventPublisher);
 
-    this.socketGateway = new SocketGateway([chatHandler, typingHandler]);
-
     this.messages = createMessagesModule(
       database,
       chatsRepository,
@@ -108,6 +106,14 @@ export class ApplicationContainer {
       jwtAuthMiddleware,
       this.socketEventPublisher,
     );
+
+    const readHandler = new ReadHandler(
+      this.messages.messageReadService,
+
+      this.socketEventPublisher,
+    );
+
+    this.socketGateway = new SocketGateway([chatHandler, typingHandler, readHandler]);
 
     this.chats = createChatsModule(
       database,

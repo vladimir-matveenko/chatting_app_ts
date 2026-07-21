@@ -39,7 +39,13 @@ export class MessageReadService {
       throw new ValidationError("Message does not belong to this chat.");
     }
 
-    await this.chatReadsRepository.markRead(chatId, userId, messageId);
+    await this.chatReadsRepository.markRead(
+      chatId,
+
+      userId,
+
+      messageId,
+    );
 
     return message;
   }

@@ -7,7 +7,7 @@ import {
   notFoundResponse,
   unauthorizedResponse,
 } from "../../../../swagger/responses/index.js";
-import { messageExample } from "../examples/message.example.js";
+
 import { messagesListExample } from "../examples/messages-list.example.js";
 
 export const MessagesPaths = {
