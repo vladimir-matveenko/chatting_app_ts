@@ -8,6 +8,7 @@ import { logger } from "../logger/logger.js";
 import { TypingEventDto } from "./dto/typing-event.dto.js";
 import { MessageReadEventDto } from "./dto/message-read-event.dto.js";
 import { PresenceEventDto } from "./dto/presence-event.dto.js";
+import { ReactionUpdatedEventDto } from "./dto/reaction-updated-event.dto.js";
 
 export class SocketEventPublisher {
   private io?: Server;
@@ -186,6 +187,22 @@ export class SocketEventPublisher {
       SocketEvents.UserOffline,
 
       dto,
+    );
+  }
+
+  reactionUpdated(message: Message): void {
+    logger.info(
+      "Publishing reaction.updated",
+
+      message.chatId,
+    );
+
+    this.emitToChat(
+      message.chatId,
+
+      SocketEvents.ReactionUpdated,
+
+      message,
     );
   }
 }

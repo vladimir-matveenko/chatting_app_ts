@@ -37,4 +37,6 @@ export interface IMessagesRepository {
   unpin(messageId: string): Promise<Message>;
 
   findPinned(chatId: string): Promise<Message[]>;
+
+  getByIdOrThrow(id: string): Promise<Message>;
 }

@@ -10,6 +10,8 @@ import type { IChatMembersRepository } from "../../chats/interfaces/chat-members
 
 import type { MessageReaction } from "../models/message-reaction.model.js";
 
+import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
+
 export class MessageReactionsService {
   constructor(
     private readonly reactionsRepository: IMessageReactionsRepository,
@@ -17,6 +19,8 @@ export class MessageReactionsService {
     private readonly messagesRepository: IMessagesRepository,
 
     private readonly chatMembersRepository: IChatMembersRepository,
+
+    private readonly socketPublisher: SocketEventPublisher,
   ) {}
 
   async add(dto: AddReactionDto): Promise<MessageReaction> {
@@ -56,7 +60,7 @@ export class MessageReactionsService {
       );
     }
 
-    await this.reactionsRepository.refreshMessageReactions(dto.messageId);
+    await this.publishUpdatedMessage(dto.messageId);
 
     return reaction;
   }
@@ -78,6 +82,16 @@ export class MessageReactionsService {
 
     await this.reactionsRepository.delete(reaction.id);
 
+    await this.reactionsRepository.delete(reaction.id);
+
+    await this.publishUpdatedMessage(messageId);
+  }
+
+  private async publishUpdatedMessage(messageId: string): Promise<void> {
     await this.reactionsRepository.refreshMessageReactions(messageId);
+
+    const updatedMessage = await this.messagesRepository.getByIdOrThrow(messageId);
+
+    this.socketPublisher.reactionUpdated(updatedMessage);
   }
 }
