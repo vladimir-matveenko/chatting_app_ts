@@ -146,6 +146,7 @@ export class ApplicationContainer {
       chatMembersRepository,
       this.messages.messageReadService,
       jwtAuthMiddleware,
+      this.socketEventPublisher,
     );
 
     //

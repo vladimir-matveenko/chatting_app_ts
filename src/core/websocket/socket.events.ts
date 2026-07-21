@@ -33,5 +33,7 @@ export const SocketEvents = {
 
   UserOffline: "presence:offline",
 
+  ChatChanged: "chat:changed",
+
   Exception: "exception",
 } as const;
