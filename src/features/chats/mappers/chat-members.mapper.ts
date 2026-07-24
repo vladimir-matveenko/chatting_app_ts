@@ -24,6 +24,8 @@ export class ChatMembersMapper implements Mapper<ChatMemberEntity, ChatMember> {
       displayName: entity.display_name,
 
       avatarUrl: entity.avatar_url,
+
+      isOnline: false,
     };
   }
 }
