@@ -80,6 +80,10 @@ export const MessageSchema = {
 
         nullable: true,
       },
+
+      readCount: {
+        type: "integer",
+      },
     },
   },
 };
