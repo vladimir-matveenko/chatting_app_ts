@@ -33,6 +33,12 @@ export interface MessageEntity {
 
   reply_sender_id: string | null;
 
+  reply_sender_user_name: string | null;
+
+  reply_sender_display_name: string | null;
+
+  reply_sender_avatar_url: string | null;
+
   reply_body: string | null;
 
   reply_type: MessageType | null;

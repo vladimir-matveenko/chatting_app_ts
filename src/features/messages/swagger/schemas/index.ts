@@ -11,6 +11,7 @@ import { MessageReplySchema } from "./message-reply.schema.js";
 import { MessageReactionSummarySchema } from "./message-reaction-summary.schema.js";
 import { ReactionTypeSchema } from "./reaction-type.schema.js";
 import { MessageTypeSchema } from "./message-type.schema.js";
+import { MessageSenderSchema } from "./message-sender.schema.js";
 
 export const messagesSchemas = {
   ...MessageSchema,
@@ -32,4 +33,6 @@ export const messagesSchemas = {
   ...ReactionTypeSchema,
 
   ...MessageTypeSchema,
+
+  ...MessageSenderSchema,
 };

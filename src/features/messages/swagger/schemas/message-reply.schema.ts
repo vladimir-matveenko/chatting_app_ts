@@ -9,8 +9,8 @@ export const MessageReplySchema = {
         $ref: "#/components/schemas/Id",
       },
 
-      senderId: {
-        $ref: "#/components/schemas/Id",
+      sender: {
+        $ref: "#/components/schemas/MessageSender",
       },
 
       type: {
