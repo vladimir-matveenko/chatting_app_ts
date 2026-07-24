@@ -31,6 +31,8 @@ export const MessageReactionsPath = {
           schema: {
             type: "string",
           },
+
+          description: "Message ID",
         },
       ],
 
@@ -81,6 +83,8 @@ export const MessageReactionsPath = {
           schema: {
             type: "string",
           },
+
+          description: "Message ID",
         },
       ],
 

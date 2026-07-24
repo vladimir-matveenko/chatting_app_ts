@@ -82,8 +82,17 @@ export function createMessagesModule(
 
   const addReactionRequestMapper = new AddReactionRequestMapper();
 
+  const messageReadService = new MessageReadService(
+    messagesRepository,
+
+    chatMembersRepository,
+
+    chatReadsRepository,
+  );
+
   const messagesController = new MessagesController(
     messagesService,
+    messageReadService,
     createMessageRequestValidator,
     createMessageRequestMapper,
     updateMessageRequestValidator,
@@ -100,14 +109,6 @@ export function createMessagesModule(
     messagesController,
     messageReactionsController,
     jwtAuthMiddleware,
-  );
-
-  const messageReadService = new MessageReadService(
-    messagesRepository,
-
-    chatMembersRepository,
-
-    chatReadsRepository,
   );
 
   return {

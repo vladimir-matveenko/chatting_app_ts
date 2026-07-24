@@ -60,6 +60,8 @@ export class MessagesMapper implements Mapper<MessageEntity, Message> {
       reactions: entity.reactions ?? [],
 
       currentUserReaction: entity.current_user_reaction,
+
+      readCount: entity.read_count,
     };
   }
 }

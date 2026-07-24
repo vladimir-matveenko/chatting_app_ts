@@ -114,11 +114,11 @@ export class MessagesRepository
     );
   }
 
-  async findPinned(chatId: string): Promise<Message[]> {
+  async findPinned(chatId: string, currentUserId: string): Promise<Message[]> {
     return this.findMany(
       MessagesQueries.FIND_PINNED_BY_CHAT,
 
-      [chatId],
+      [chatId, currentUserId],
     );
   }
 

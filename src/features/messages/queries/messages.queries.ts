@@ -37,6 +37,17 @@ export const MessagesQueries = {
 
       m.reactions,
 
+      (
+      SELECT COUNT(*)
+      FROM chat_reads cr
+      WHERE
+        cr.chat_id = m.chat_id
+      AND
+        cr.user_id <> m.sender_id
+      AND
+        cr.last_read_message_id >= m.id
+      ) AS read_count,
+
       rm.id           AS reply_id,
       rm.sender_id    AS reply_sender_id,
 
@@ -82,6 +93,17 @@ export const MessagesQueries = {
       m.is_deleted,
 
       m.reactions,
+
+      (
+      SELECT COUNT(*)
+      FROM chat_reads cr
+      WHERE
+        cr.chat_id = m.chat_id
+      AND
+        cr.user_id <> m.sender_id
+      AND
+        cr.last_read_message_id >= m.id
+      ) AS read_count,
 
       ur.type AS current_user_reaction,
 
@@ -169,57 +191,74 @@ export const MessagesQueries = {
   `,
 
   FIND_PINNED_BY_CHAT: `
-    SELECT
-      m.id,
-      m.chat_id,
-      m.sender_id,
+  SELECT
+    m.id,
+    m.chat_id,
+    m.sender_id,
 
-      su.user_name      AS sender_user_name,
-      su.display_name   AS sender_display_name,
-      su.avatar_url     AS sender_avatar_url,
+    su.user_name      AS sender_user_name,
+    su.display_name   AS sender_display_name,
+    su.avatar_url     AS sender_avatar_url,
 
-      m.type,
-      m.body,
-      m.reply_to_id,
-      m.created_at,
-      m.updated_at,
-      m.deleted_at,
-      m.is_deleted,
-      m.is_pinned,
+    m.type,
+    m.body,
+    m.reply_to_id,
+    m.created_at,
+    m.updated_at,
+    m.deleted_at,
+    m.is_deleted,
+    m.is_pinned,
 
-      m.reactions,
+    m.reactions,
 
-      NULL AS current_user_reaction,
+    (
+        SELECT COUNT(*)
+        FROM chat_reads cr
+        WHERE
+            cr.chat_id = m.chat_id
+        AND
+            cr.user_id <> m.sender_id
+        AND
+            cr.last_read_message_id >= m.id
+    ) AS read_count,
 
-      rm.id         AS reply_id,
-      rm.sender_id  AS reply_sender_id,
+    ur.type AS current_user_reaction,
 
-      ru.user_name    AS reply_sender_user_name,
-      ru.display_name AS reply_sender_display_name,
-      ru.avatar_url   AS reply_sender_avatar_url,
+    rm.id         AS reply_id,
+    rm.sender_id  AS reply_sender_id,
 
-      rm.type       AS reply_type,
-      rm.body       AS reply_body,
-      rm.deleted_at AS reply_deleted_at
+    ru.user_name    AS reply_sender_user_name,
+    ru.display_name AS reply_sender_display_name,
+    ru.avatar_url   AS reply_sender_avatar_url,
 
-    FROM messages m
+    rm.type       AS reply_type,
+    rm.body       AS reply_body,
+    rm.deleted_at AS reply_deleted_at
 
-    INNER JOIN users su
-      ON su.id = m.sender_id
+  FROM messages m
 
-    LEFT JOIN messages rm
-      ON rm.id = m.reply_to_id
-     AND rm.is_deleted = FALSE
+  INNER JOIN users su
+    ON su.id = m.sender_id
 
-    LEFT JOIN users ru
-      ON ru.id = rm.sender_id
+  LEFT JOIN messages rm
+    ON rm.id = m.reply_to_id
+   AND rm.is_deleted = FALSE
 
-    WHERE
-      m.chat_id = $1
-      AND m.is_deleted = FALSE
-      AND m.is_pinned = TRUE
+  LEFT JOIN users ru
+    ON ru.id = rm.sender_id
 
-    ORDER BY
-      m.created_at DESC;
+  LEFT JOIN message_reactions ur
+    ON ur.message_id = m.id
+   AND ur.user_id = $2
+
+  WHERE
+    m.chat_id = $1
+  AND
+    m.is_deleted = FALSE
+  AND
+    m.is_pinned = TRUE
+
+  ORDER BY
+    m.created_at DESC;
   `,
 };

@@ -31,4 +31,6 @@ export interface Message {
   reactions: MessageReactionSummary[];
 
   currentUserReaction: ReactionType | null;
+
+  readCount: number;
 }

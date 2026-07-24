@@ -48,4 +48,6 @@ export interface MessageEntity {
   reactions: MessageReactionSummary[];
 
   current_user_reaction: ReactionType | null;
+
+  read_count: number;
 }

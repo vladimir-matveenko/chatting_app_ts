@@ -263,6 +263,6 @@ export class MessagesService {
       userId,
     );
 
-    return this.messagesRepository.findPinned(chatId);
+    return this.messagesRepository.findPinned(chatId, userId);
   }
 }
