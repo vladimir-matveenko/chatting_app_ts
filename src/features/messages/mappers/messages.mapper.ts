@@ -11,7 +11,15 @@ export class MessagesMapper implements Mapper<MessageEntity, Message> {
 
       chatId: entity.chat_id,
 
-      senderId: entity.sender_id,
+      sender: {
+        id: entity.sender_id,
+
+        userName: entity.sender_user_name,
+
+        displayName: entity.sender_display_name,
+
+        avatarUrl: entity.sender_avatar_url,
+      },
 
       type: entity.type,
 
