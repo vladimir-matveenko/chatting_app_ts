@@ -25,6 +25,7 @@ import { ChangeMemberRoleDto } from "../dto/request/change-member-role.dto.js";
 import { TransferOwnershipDto } from "../dto/transfer-ownership.dto.js";
 import { UpdateChatDto } from "../dto/update-chat.dto.js";
 import { EditChatPermissions } from "../constants/edit-chat-permissions.js";
+import { PresenceService } from "../../../core/websocket/presence.service.js";
 
 const PREVIOUS_OWNER_ROLE = ChatMemberRole.ADMIN;
 
@@ -41,6 +42,8 @@ export class ChatsService {
     private readonly chatMembersRepository: IChatMembersRepository,
 
     private readonly fingerprintService: ChatFingerprintService,
+
+    private readonly presenceService: PresenceService,
   ) {}
 
   async create(dto: CreateChatDto): Promise<Chat> {
@@ -216,7 +219,13 @@ export class ChatsService {
       userId,
     );
 
-    return this.chatMembersRepository.findByChat(chatId);
+    const members = await this.chatMembersRepository.findByChat(chatId);
+
+    return members.map((member) => ({
+      ...member,
+
+      isOnline: this.presenceService.isOnline(member.userId),
+    }));
   }
 
   private async ensureMember(

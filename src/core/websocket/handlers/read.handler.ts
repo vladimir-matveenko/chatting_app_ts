@@ -17,11 +17,9 @@ export class ReadHandler {
     socket.on(
       SocketEvents.MessageRead,
 
-      async (payload: { chatId: string; messageId: string }) => {
+      async (payload: { messageId: string }) => {
         try {
           const message = await this.messageReadService.markRead(
-            payload.chatId,
-
             payload.messageId,
 
             socket.data.user.userId,

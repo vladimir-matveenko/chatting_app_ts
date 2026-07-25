@@ -18,4 +18,6 @@ export interface ChatMember {
   displayName: string | null;
 
   avatarUrl: string | null;
+
+  isOnline: boolean;
 }

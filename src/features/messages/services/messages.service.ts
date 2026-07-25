@@ -155,7 +155,7 @@ export class MessagesService {
   ): Promise<Message> {
     const message = await this.messagesRepository.getByIdOrThrow(messageId);
 
-    if (message.senderId !== userId) {
+    if (message.sender.id !== userId) {
       throw new ForbiddenError(
         "Only the author can edit the message.",
 
@@ -181,7 +181,7 @@ export class MessagesService {
   ): Promise<Message> {
     const message = await this.messagesRepository.getByIdOrThrow(id);
 
-    if (message.senderId !== userId) {
+    if (message.sender.id !== userId) {
       throw new ForbiddenError(
         "You can delete only your own messages.",
 
@@ -263,6 +263,6 @@ export class MessagesService {
       userId,
     );
 
-    return this.messagesRepository.findPinned(chatId);
+    return this.messagesRepository.findPinned(chatId, userId);
   }
 }

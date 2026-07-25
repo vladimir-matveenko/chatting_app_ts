@@ -11,7 +11,15 @@ export class MessagesMapper implements Mapper<MessageEntity, Message> {
 
       chatId: entity.chat_id,
 
-      senderId: entity.sender_id,
+      sender: {
+        id: entity.sender_id,
+
+        userName: entity.sender_user_name,
+
+        displayName: entity.sender_display_name,
+
+        avatarUrl: entity.sender_avatar_url,
+      },
 
       type: entity.type,
 
@@ -31,7 +39,15 @@ export class MessagesMapper implements Mapper<MessageEntity, Message> {
         ? {
             id: entity.reply_id,
 
-            senderId: entity.reply_sender_id as string,
+            sender: {
+              id: entity.reply_sender_id as string,
+
+              userName: entity.reply_sender_user_name as string,
+
+              displayName: entity.reply_sender_display_name,
+
+              avatarUrl: entity.reply_sender_avatar_url,
+            },
 
             type: entity.reply_type as NonNullable<MessageEntity["reply_type"]>,
 
@@ -44,6 +60,8 @@ export class MessagesMapper implements Mapper<MessageEntity, Message> {
       reactions: entity.reactions ?? [],
 
       currentUserReaction: entity.current_user_reaction,
+
+      readCount: entity.read_count,
     };
   }
 }

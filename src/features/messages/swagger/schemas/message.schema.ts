@@ -2,7 +2,7 @@ export const MessageSchema = {
   Message: {
     type: "object",
 
-    required: ["id", "chatId", "senderId", "type", "createdAt", "isDeleted", "reactions"],
+    required: ["id", "chatId", "sender", "type", "createdAt", "isDeleted", "reactions"],
 
     properties: {
       id: {
@@ -13,8 +13,8 @@ export const MessageSchema = {
         $ref: "#/components/schemas/Id",
       },
 
-      senderId: {
-        $ref: "#/components/schemas/Id",
+      sender: {
+        $ref: "#/components/schemas/MessageSender",
       },
 
       type: {
@@ -79,6 +79,10 @@ export const MessageSchema = {
         ],
 
         nullable: true,
+      },
+
+      readCount: {
+        type: "integer",
       },
     },
   },

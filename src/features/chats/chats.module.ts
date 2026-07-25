@@ -29,6 +29,7 @@ import { ChangeMemberRoleRequestValidator } from "./validators/change-member-rol
 import { TransferOwnershipRequestValidator } from "./dto/transfer-ownership-request.validator.js";
 import { UpdateChatRequestValidator } from "./validators/update-chat-request.validator.js";
 import { SocketEventPublisher } from "../../core/websocket/socket-event.publisher.js";
+import { PresenceService } from "../../core/websocket/presence.service.js";
 
 export function createChatsModule(
   database: Database,
@@ -46,6 +47,8 @@ export function createChatsModule(
   jwtAuthMiddleware: JwtAuthMiddleware,
 
   socketPublisher: SocketEventPublisher,
+
+  presenceService: PresenceService,
 ): ChatsFeature {
   const fingerprintService = new ChatFingerprintService();
 
@@ -61,6 +64,8 @@ export function createChatsModule(
     chatMembersRepository,
 
     fingerprintService,
+
+    presenceService,
   );
 
   const validator = new CreateChatRequestValidator();

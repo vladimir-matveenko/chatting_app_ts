@@ -131,8 +131,6 @@ export class ChatsController {
     }
 
     await this.messageReadService.markRead(
-      chatId,
-
       messageId,
 
       request.user!.userId,

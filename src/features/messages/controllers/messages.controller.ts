@@ -12,10 +12,13 @@ import { UpdateMessageRequestValidator } from "../validators/update-message-requ
 
 import { requireId } from "../../../core/http/validators/index.js";
 import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
+import { MessageReadService } from "../services/message-read.service.js";
 
 export class MessagesController {
   constructor(
     private readonly service: MessagesService,
+
+    private readonly messageReadService: MessageReadService,
 
     private readonly createRequestValidator: CreateMessageRequestValidator,
 
@@ -265,5 +268,17 @@ export class MessagesController {
     this.socketPublisher.messageUnpinned(message);
 
     response.status(200).json(message);
+  }
+
+  async markRead(request: Request, response: Response): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError("Unauthorized.", "UNAUTHORIZED");
+    }
+
+    const messageId = requireId(request.params.id, "messageId");
+
+    await this.messageReadService.markRead(messageId, request.user.userId);
+
+    response.sendStatus(204);
   }
 }

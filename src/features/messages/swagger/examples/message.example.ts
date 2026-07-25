@@ -1,7 +1,12 @@
 export const messageExample = {
   id: "15",
   chatId: "1",
-  senderId: "1",
+  sender: {
+    id: "1",
+    userName: "Petya",
+    displayName: "Ipollit",
+    avatarUrl: null,
+  },
   type: "text",
   body: "Hi there!",
   replyToId: null,

@@ -147,6 +147,8 @@ export class ApplicationContainer {
       this.messages.messageReadService,
       jwtAuthMiddleware,
       this.socketEventPublisher,
+
+      this.presenceService,
     );
 
     //

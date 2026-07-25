@@ -33,11 +33,13 @@ export class MessagesRepository
   }
 
   async create(dto: CreateMessageDto): Promise<Message> {
-    return this.saveOne(
+    const result = await this.saveOne(
       MessagesQueries.CREATE,
 
       [dto.chatId, dto.senderId, dto.type, dto.body, dto.replyToId],
     );
+
+    return this.getByIdOrThrow(result.id);
   }
 
   async createTx(
@@ -45,13 +47,15 @@ export class MessagesRepository
 
     dto: CreateMessageDto,
   ): Promise<Message> {
-    return this.saveOneTx(
+    const result = await this.saveOneTx(
       client,
 
       MessagesQueries.CREATE,
 
       [dto.chatId, dto.senderId, dto.type, dto.body, dto.replyToId],
     );
+
+    return this.getByIdOrThrowTx(client, result.id);
   }
 
   async findById(id: string): Promise<Message | null> {
@@ -60,6 +64,20 @@ export class MessagesRepository
 
       [id],
     );
+  }
+
+  async findByIdTx(client: PoolClient, id: string): Promise<Message | null> {
+    return this.findOneTx(client, MessagesQueries.FIND_BY_ID, [id]);
+  }
+
+  async getByIdOrThrowTx(client: PoolClient, id: string): Promise<Message> {
+    const message = await this.findByIdTx(client, id);
+
+    if (!message) {
+      throw new NotFoundError("Message not found.", "MESSAGE_NOT_FOUND");
+    }
+
+    return message;
   }
 
   async findByChat(
@@ -83,42 +101,50 @@ export class MessagesRepository
 
     body: string,
   ): Promise<Message> {
-    return this.saveOne(
+    await this.saveOne(
       MessagesQueries.UPDATE,
 
       [id, body],
     );
+
+    return this.getByIdOrThrow(id);
   }
 
   async delete(id: string): Promise<Message> {
-    return this.saveOne(
+    await this.saveOne(
       MessagesQueries.DELETE,
 
       [id],
     );
+
+    return this.getByIdOrThrow(id);
   }
 
   async pin(messageId: string): Promise<Message> {
-    return this.saveOne(
+    await this.saveOne(
       MessagesQueries.PIN_MESSAGE,
 
       [messageId],
     );
+
+    return this.getByIdOrThrow(messageId);
   }
 
   async unpin(messageId: string): Promise<Message> {
-    return this.saveOne(
+    await this.saveOne(
       MessagesQueries.UNPIN_MESSAGE,
 
       [messageId],
     );
+
+    return this.getByIdOrThrow(messageId);
   }
 
-  async findPinned(chatId: string): Promise<Message[]> {
+  async findPinned(chatId: string, currentUserId: string): Promise<Message[]> {
     return this.findMany(
       MessagesQueries.FIND_PINNED_BY_CHAT,
 
-      [chatId],
+      [chatId, currentUserId],
     );
   }
 

@@ -3,13 +3,14 @@ import { ReactionType } from "../enums/reaction-type.enum.js";
 import { MessageReactionSummary } from "./message-reaction-summary.model.js";
 
 import type { MessageReply } from "./message-reply.model.js";
+import { MessageSender } from "./message-sender.model.js";
 
 export interface Message {
   id: string;
 
   chatId: string;
 
-  senderId: string;
+  sender: MessageSender;
 
   type: MessageType;
 
@@ -30,4 +31,6 @@ export interface Message {
   reactions: MessageReactionSummary[];
 
   currentUserReaction: ReactionType | null;
+
+  readCount: number;
 }

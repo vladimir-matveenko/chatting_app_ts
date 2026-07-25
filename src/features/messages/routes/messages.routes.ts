@@ -106,5 +106,8 @@ export function createMessagesRouter(
     asyncHandler(controller.unpinMessage.bind(controller)),
   );
 
+  // mark message as read
+  router.post("/:id/read", jwtAuthMiddleware.handler, controller.markRead.bind(controller));
+
   return router;
 }

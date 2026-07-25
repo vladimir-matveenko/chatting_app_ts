@@ -1,4 +1,5 @@
 import { createdResponse } from "../../../../swagger/builders/created-response.js";
+import { noContentResponse } from "../../../../swagger/builders/no-content-response.js";
 import { okResponse } from "../../../../swagger/builders/ok-response.js";
 import { jsonResponse } from "../../../../swagger/builders/response.builder.js";
 import {
@@ -36,6 +37,8 @@ export const MessagesPaths = {
           schema: {
             type: "string",
           },
+
+          description: "Chat ID",
         },
       ],
 
@@ -86,6 +89,8 @@ export const MessagesPaths = {
           schema: {
             type: "string",
           },
+
+          description: "Chat ID",
         },
 
         {
@@ -146,6 +151,8 @@ export const MessagesPaths = {
           schema: {
             type: "string",
           },
+
+          description: "Message ID",
         },
       ],
 
@@ -182,6 +189,8 @@ export const MessagesPaths = {
           schema: {
             type: "string",
           },
+
+          description: "Message ID",
         },
       ],
 
@@ -270,6 +279,8 @@ export const MessagesPaths = {
           schema: {
             type: "string",
           },
+
+          description: "Chat ID",
         },
       ],
 
@@ -306,6 +317,8 @@ export const MessagesPaths = {
           schema: {
             type: "string",
           },
+
+          description: "Message ID",
         },
       ],
 
@@ -339,6 +352,8 @@ export const MessagesPaths = {
           schema: {
             type: "string",
           },
+
+          description: "Message ID",
         },
       ],
 
@@ -346,6 +361,46 @@ export const MessagesPaths = {
         200: okResponse("Message unpinned.", "#/components/schemas/Message"),
 
         401: unauthorizedResponse,
+      },
+    },
+  },
+
+  "/messages/{id}/read": {
+    post: {
+      tags: ["Messages"],
+
+      summary: "Mark message as read",
+
+      description: "Mark message as read. You can use websockets instead of this request",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "id",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+
+          description: "Message ID",
+        },
+      ],
+
+      responses: {
+        204: noContentResponse("Message marked as read"),
+
+        401: unauthorizedResponse,
+
+        404: notFoundResponse,
       },
     },
   },
