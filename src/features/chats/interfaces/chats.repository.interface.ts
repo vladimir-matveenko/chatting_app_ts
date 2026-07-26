@@ -22,7 +22,7 @@ export interface IChatsRepository {
     fingerprint: string,
   ): Promise<Chat | null>;
 
-  findById(id: string): Promise<Chat | null>;
+  findById(chatId: string, userId: string): Promise<Chat | null>;
 
   updateActivityTx(
     client: PoolClient,

@@ -17,6 +17,8 @@ export class ChatMapper implements Mapper<ChatEntity, Chat> {
 
       ownerId: entity.owner_id,
 
+      lastReadMessageId: entity.last_read_message_id,
+
       createdAt: entity.created_at,
 
       updatedAt: entity.updated_at,

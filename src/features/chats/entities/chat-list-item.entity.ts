@@ -17,13 +17,17 @@ export interface ChatListItemEntity {
 
   updated_at: Date;
 
-  last_message: string | null;
+  last_message_id: string | null;
+
+  last_message_body: string | null;
 
   last_message_at: Date | null;
 
   last_message_type: MessageType | null;
 
   unread_count: number;
+
+  last_read_message_id: string | null;
 
   participants: ChatListParticipant[];
 

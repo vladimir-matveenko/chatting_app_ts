@@ -9,6 +9,8 @@ export interface Chat {
 
   ownerId: string | null;
 
+  lastReadMessageId: string | null;
+
   createdAt: Date;
 
   updatedAt: Date;

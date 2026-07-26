@@ -55,8 +55,10 @@ export class ChatListItemMapper implements Mapper<ChatListItemEntity, ChatListIt
 
       updatedAt: entity.updated_at,
 
+      lastMessageId: entity.last_message_id,
+
       lastMessagePreview: this.buildMessagePreview(
-        entity.last_message,
+        entity.last_message_body,
 
         entity.last_message_type,
       ),
@@ -64,6 +66,8 @@ export class ChatListItemMapper implements Mapper<ChatListItemEntity, ChatListIt
       lastMessageAt: entity.last_message_at,
 
       unreadCount: entity.unread_count,
+
+      lastReadMessageId: entity.last_read_message_id,
 
       participants: entity.participants,
 

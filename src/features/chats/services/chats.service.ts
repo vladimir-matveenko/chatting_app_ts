@@ -181,12 +181,12 @@ export class ChatsService {
   }
 
   async findById(
-    id: string,
+    chatId: string,
 
     userId: string,
   ): Promise<Chat> {
     const member = await this.chatMembersRepository.findByChatAndUser(
-      id,
+      chatId,
 
       userId,
     );
@@ -195,7 +195,7 @@ export class ChatsService {
       throw new NotFoundError("Chat not found.");
     }
 
-    const chat = await this.chatsRepository.findById(id);
+    const chat = await this.chatsRepository.findById(chatId, userId);
 
     if (!chat) {
       throw new NotFoundError("Chat not found.");
@@ -303,7 +303,7 @@ export class ChatsService {
       userId,
     );
 
-    const chat = await this.chatsRepository.findById(chatId);
+    const chat = await this.chatsRepository.findById(chatId, userId);
 
     if (!chat) {
       throw new NotFoundError("Chat not found.");
@@ -333,7 +333,7 @@ export class ChatsService {
       actorId,
     );
 
-    const chat = await this.chatsRepository.findById(chatId);
+    const chat = await this.chatsRepository.findById(chatId, actorId);
 
     if (!chat) {
       throw new NotFoundError("Chat not found.");
@@ -461,7 +461,7 @@ export class ChatsService {
       throw new ValidationError("You are already the owner.");
     }
 
-    const chat = await this.chatsRepository.findById(chatId);
+    const chat = await this.chatsRepository.findById(chatId, actorId);
 
     if (!chat) {
       throw new NotFoundError("Chat not found.");

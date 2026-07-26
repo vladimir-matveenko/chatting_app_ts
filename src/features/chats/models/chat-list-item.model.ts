@@ -16,11 +16,15 @@ export interface ChatListItem {
 
   updatedAt: Date;
 
+  lastMessageId: string | null;
+
   lastMessagePreview: string | null;
 
   lastMessageAt: Date | null;
 
   unreadCount: number;
+
+  lastReadMessageId: string | null;
 
   participants: ChatListParticipant[];
 
