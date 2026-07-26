@@ -9,6 +9,8 @@ export const SocketEvents = {
 
   TypingStop: "typing:stop",
 
+  ReadMessage: "message:mark-read",
+
   // Server -> Client
 
   MessageCreated: "message:created",
