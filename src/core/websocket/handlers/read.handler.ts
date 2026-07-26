@@ -15,7 +15,7 @@ export class ReadHandler {
 
   register(socket: AuthenticatedSocket): void {
     socket.on(
-      SocketEvents.MessageRead,
+      SocketEvents.ReadMessage,
 
       async (payload: { messageId: string }) => {
         try {
@@ -32,6 +32,8 @@ export class ReadHandler {
 
             socket.data.user.userId,
           );
+
+          this.socketPublisher.chatChanged(message.chatId);
 
           logger.info(
             `User ${socket.data.user.userId} read message ${message.id} in chat ${message.chatId}`,

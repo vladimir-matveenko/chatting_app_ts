@@ -26,13 +26,29 @@ export const ChatsQueries = {
     `,
 
   FIND_BY_ID: `
-    SELECT *
-    FROM chats
-    WHERE id = $1;
+    SELECT
+        c.id,
+        c.type,
+        c.title,
+        c.avatar_url,
+        c.owner_id,
+        c.created_at,
+        c.updated_at,
+
+        cr.last_read_message_id
+
+    FROM chats c
+
+    LEFT JOIN chat_reads cr
+        ON cr.chat_id = c.id
+    AND cr.user_id = $2
+
+    WHERE
+        c.id = $1;
     `,
 
   FIND_ALL_BY_USER: `
-SELECT
+    SELECT
     c.id,
     c.type,
     c.title,
@@ -41,25 +57,27 @@ SELECT
     c.created_at,
     c.updated_at,
 
-    lm.body AS last_message,
+    lm.id AS last_message_id,
+    lm.body AS last_message_body,
     lm.type AS last_message_type,
     lm.created_at AS last_message_at,
+    
+    cr.last_read_message_id,
 
     (
-        SELECT COUNT(*)
-        FROM messages m
-        LEFT JOIN chat_reads cr
-            ON cr.chat_id = c.id
-           AND cr.user_id = $1
-        WHERE
-            m.chat_id = c.id
-        AND
-            m.is_deleted = FALSE
-        AND (
-            cr.last_read_message_id IS NULL
-            OR
-            m.id > cr.last_read_message_id
-        )
+    SELECT COUNT(*)
+    FROM messages m
+    WHERE
+        m.chat_id = c.id
+    AND
+        m.is_deleted = FALSE
+    AND
+        m.sender_id <> $1
+    AND (
+        cr.last_read_message_id IS NULL
+        OR
+        m.id > cr.last_read_message_id
+    )
     )::integer AS unread_count,
 
     COALESCE(
@@ -99,37 +117,42 @@ SELECT
         WHERE cm2.chat_id = c.id
     )::integer AS participants_count
 
-FROM chats c
+    FROM chats c
 
-INNER JOIN chat_members cm
-    ON cm.chat_id = c.id
+    INNER JOIN chat_members cm
+        ON cm.chat_id = c.id
 
-LEFT JOIN LATERAL (
-    SELECT
-        m.body,
-        m.type,
-        m.created_at
-    FROM messages m
+    LEFT JOIN chat_reads cr
+        ON cr.chat_id = c.id
+    AND cr.user_id = $1
+
+    LEFT JOIN LATERAL (
+        SELECT
+            m.id,    
+            m.body,
+            m.type,
+            m.created_at
+        FROM messages m
+        WHERE
+            m.chat_id = c.id
+        AND
+            m.is_deleted = FALSE
+        ORDER BY
+            m.created_at DESC
+        LIMIT 1
+    ) lm ON TRUE
+
     WHERE
-        m.chat_id = c.id
+        cm.user_id = $1
     AND
-        m.is_deleted = FALSE
+        cm.is_archived = FALSE
+
     ORDER BY
-        m.created_at DESC
-    LIMIT 1
-) lm ON TRUE
-
-WHERE
-    cm.user_id = $1
-AND
-    cm.is_archived = FALSE
-
-ORDER BY
-    COALESCE(
-        lm.created_at,
-        c.updated_at
-    ) DESC;
-`,
+        COALESCE(
+            lm.created_at,
+            c.updated_at
+        ) DESC;
+    `,
 
   UPDATE_ACTIVITY: `
     UPDATE chats

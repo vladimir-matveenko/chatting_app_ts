@@ -29,7 +29,7 @@ export class MessagesService {
   ) {}
 
   async create(dto: CreateMessageDto): Promise<Message> {
-    await this.ensureChatExists(dto.chatId);
+    await this.ensureChatExists(dto.chatId, dto.senderId);
 
     await this.ensureMember(
       dto.chatId,
@@ -90,8 +90,8 @@ export class MessagesService {
     return this.messagesRepository.findByChat(chatId, userId, limit, before);
   }
 
-  private async ensureChatExists(chatId: string): Promise<void> {
-    const chat = await this.chatsRepository.findById(chatId);
+  private async ensureChatExists(chatId: string, userId: string): Promise<void> {
+    const chat = await this.chatsRepository.findById(chatId, userId);
 
     if (!chat) {
       throw new NotFoundError(

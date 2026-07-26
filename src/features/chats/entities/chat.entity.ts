@@ -11,6 +11,8 @@ export interface ChatEntity {
 
   owner_id: string | null;
 
+  last_read_message_id: string | null;
+
   created_at: Date;
 
   updated_at: Date;
