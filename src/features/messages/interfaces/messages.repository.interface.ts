@@ -39,4 +39,16 @@ export interface IMessagesRepository {
   findPinned(chatId: string, currentUserId: string): Promise<Message[]>;
 
   getByIdOrThrow(id: string): Promise<Message>;
+
+  findAroundMessage(
+    chatId: string,
+    messageId: string,
+    currentUserId: string,
+    before: number,
+    after: number,
+  ): Promise<Message[]>;
+
+  hasMessagesBefore(chatId: string, messageId: string): Promise<boolean>;
+
+  hasMessagesAfter(chatId: string, messageId: string): Promise<boolean>;
 }

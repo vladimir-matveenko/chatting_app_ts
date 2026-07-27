@@ -161,4 +161,32 @@ export class MessagesRepository
 
     return message;
   }
+
+  async findAroundMessage(
+    chatId: string,
+    messageId: string,
+    currentUserId: string,
+    before: number,
+    after: number,
+  ): Promise<Message[]> {
+    return this.findMany(MessagesQueries.FIND_AROUND_MESSAGE, [
+      chatId,
+      messageId,
+      currentUserId,
+      before,
+      after,
+    ]);
+  }
+
+  async hasMessagesBefore(chatId: string, messageId: string): Promise<boolean> {
+    const result = await this.db.query(MessagesQueries.HAS_MESSAGES_BEFORE, [chatId, messageId]);
+
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async hasMessagesAfter(chatId: string, messageId: string): Promise<boolean> {
+    const result = await this.db.query(MessagesQueries.HAS_MESSAGES_AFTER, [chatId, messageId]);
+
+    return (result.rowCount ?? 0) > 0;
+  }
 }

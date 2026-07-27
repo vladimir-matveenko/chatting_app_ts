@@ -16,6 +16,7 @@ import type { Message } from "../models/message.model.js";
 
 import { UpdateMessageRequestDto } from "../dto/request/update-message.request.dto.js";
 import { ChatMemberRole } from "../../chats/enums/chat-member-role.enum.js";
+import { MessageContext } from "../dto/message-context.dto.js";
 
 export class MessagesService {
   constructor(
@@ -264,5 +265,61 @@ export class MessagesService {
     );
 
     return this.messagesRepository.findPinned(chatId, userId);
+  }
+
+  async findAroundMessage(
+    chatId: string,
+    messageId: string,
+    currentUserId: string,
+    before = 20,
+    after = 20,
+  ): Promise<MessageContext> {
+    const member = await this.chatMembersRepository.findByChatAndUser(chatId, currentUserId);
+
+    if (!member) {
+      throw new ValidationError("User is not a member of this chat.");
+    }
+
+    const target = await this.messagesRepository.findById(messageId);
+
+    if (!target) {
+      throw new NotFoundError("Message not found.");
+    }
+
+    if (target.chatId !== chatId) {
+      throw new ValidationError("Message does not belong to this chat.");
+    }
+
+    const messages = await this.messagesRepository.findAroundMessage(
+      chatId,
+      messageId,
+      currentUserId,
+      before,
+      after,
+    );
+
+    if (messages.length === 0) {
+      return {
+        targetMessageId: messageId,
+        hasPrevious: false,
+        hasNext: false,
+        messages: [],
+      };
+    }
+
+    const firstMessage = messages.at(0)!;
+    const lastMessage = messages.at(-1)!;
+
+    const [hasPrevious, hasNext] = await Promise.all([
+      this.messagesRepository.hasMessagesBefore(chatId, firstMessage.id),
+      this.messagesRepository.hasMessagesAfter(chatId, lastMessage.id),
+    ]);
+
+    return {
+      targetMessageId: messageId,
+      hasPrevious,
+      hasNext,
+      messages,
+    };
   }
 }
