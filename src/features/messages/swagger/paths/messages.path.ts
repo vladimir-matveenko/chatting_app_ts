@@ -404,4 +404,81 @@ export const MessagesPaths = {
       },
     },
   },
+
+  "/messages/{chatId}/message/{messageId}/context": {
+    get: {
+      tags: ["Messages"],
+
+      summary: "Get messages around target message",
+
+      description: "Get messages around target message",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "chatId",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+
+          description: "Chat ID",
+        },
+        {
+          name: "messageId",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+
+          description: "Message ID",
+        },
+        {
+          name: "before",
+
+          in: "query",
+
+          required: false,
+
+          schema: {
+            type: "integer",
+            default: 20,
+          },
+        },
+        {
+          name: "after",
+
+          in: "query",
+
+          required: false,
+
+          schema: {
+            type: "integer",
+            default: 20,
+          },
+        },
+      ],
+
+      responses: {
+        200: okResponse("Context loaded successfully", "#/components/schemas/MessageContext"),
+
+        401: unauthorizedResponse,
+
+        404: notFoundResponse,
+      },
+    },
+  },
 };

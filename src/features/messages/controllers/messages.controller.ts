@@ -10,7 +10,7 @@ import { CreateMessageRequestValidator } from "../validators/create-message-requ
 
 import { UpdateMessageRequestValidator } from "../validators/update-message-request.validator.js";
 
-import { requireId } from "../../../core/http/validators/index.js";
+import { requireId, requireString } from "../../../core/http/validators/index.js";
 import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
 import { MessageReadService } from "../services/message-read.service.js";
 
@@ -280,5 +280,29 @@ export class MessagesController {
     await this.messageReadService.markRead(messageId, request.user.userId);
 
     response.sendStatus(204);
+  }
+
+  async findAroundMessage(request: Request, response: Response): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError("Unauthorized.", "UNAUTHORIZED");
+    }
+
+    const chatId = requireString(request.params.chatId, "chatId");
+
+    const messageId = requireString(request.params.messageId, "messageId");
+
+    const before = Number(request.query.before ?? 20);
+
+    const after = Number(request.query.after ?? 20);
+
+    const context = await this.service.findAroundMessage(
+      chatId,
+      messageId,
+      request.user.userId,
+      before,
+      after,
+    );
+
+    response.json(context);
   }
 }

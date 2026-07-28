@@ -109,5 +109,12 @@ export function createMessagesRouter(
   // mark message as read
   router.post("/:id/read", jwtAuthMiddleware.handler, controller.markRead.bind(controller));
 
+  // get around messages
+  router.get(
+    "/:chatId/message/:messageId/context",
+    jwtAuthMiddleware.handler,
+    controller.findAroundMessage.bind(controller),
+  );
+
   return router;
 }

@@ -44,6 +44,7 @@ export class ChatHandler implements SocketHandler {
 
             chatId,
           );
+          logger.info(`${socket.data.user.userId} leaved ${chatId}`);
         } catch (error) {
           socket.emit(
             SocketEvents.Exception,
