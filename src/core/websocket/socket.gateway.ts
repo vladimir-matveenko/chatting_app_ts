@@ -25,7 +25,7 @@ export class SocketGateway {
 
         const userId = authenticatedSocket.data.user.userId;
 
-        logger.info(`Socket connected: ${userId}`);
+        logger.info(`Socket connected: ${userId}, socket=${socket.id}`);
 
         const firstConnection = this.presenceService.connect(userId);
 
@@ -40,8 +40,8 @@ export class SocketGateway {
         authenticatedSocket.on(
           "disconnect",
 
-          () => {
-            logger.info(`Socket disconnected: ${userId}`);
+          (reason) => {
+            logger.info(`Socket disconnected: ${userId}, socket=${socket.id}, reason=${reason}`);
 
             const lastConnection = this.presenceService.disconnect(userId);
 
