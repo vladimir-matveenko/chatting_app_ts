@@ -16,12 +16,9 @@ export interface IMessagesRepository {
 
   findByChat(
     chatId: string,
-
     userId: string,
-
     limit: number,
-
-    before?: Date,
+    beforeMessageId?: string,
   ): Promise<Message[]>;
 
   update(

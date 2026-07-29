@@ -138,12 +138,12 @@ export const MessagesQueries = {
       m.chat_id = $1
       AND m.is_deleted = FALSE
       AND (
-        $3::timestamptz IS NULL
-        OR m.created_at < $3
+        $3::bigint IS NULL
+        OR m.id < $3
       )
 
     ORDER BY
-      m.created_at DESC
+      m.id DESC
 
     LIMIT $4;
   `,
@@ -259,11 +259,11 @@ export const MessagesQueries = {
     m.is_pinned = TRUE
 
   ORDER BY
-    m.created_at DESC;
+      m.id DESC;
   `,
 
   FIND_AROUND_MESSAGE: `
-WITH target AS (
+  WITH target AS (
     SELECT
         id,
         chat_id,
@@ -273,9 +273,9 @@ WITH target AS (
         id = $2
     AND
         chat_id = $1
-)
+  )
 
-SELECT
+  SELECT
     m.id,
     m.chat_id,
     m.sender_id,
@@ -319,35 +319,35 @@ SELECT
     rm.body       AS reply_body,
     rm.deleted_at AS reply_deleted_at
 
-FROM messages m
+  FROM messages m
 
-INNER JOIN users su
+  INNER JOIN users su
     ON su.id = m.sender_id
 
-LEFT JOIN message_reactions ur
+  LEFT JOIN message_reactions ur
     ON ur.message_id = m.id
    AND ur.user_id = $3
 
-LEFT JOIN messages rm
+  LEFT JOIN messages rm
     ON rm.id = m.reply_to_id
    AND rm.is_deleted = FALSE
 
-LEFT JOIN users ru
+  LEFT JOIN users ru
     ON ru.id = rm.sender_id
 
-CROSS JOIN target t
+  CROSS JOIN target t
 
-WHERE
+  WHERE
     m.chat_id = $1
-AND
+  AND
     m.is_deleted = FALSE
-AND
+  AND
 
-m.id BETWEEN ($2 - $4) AND ($2 + $5)
+  m.id BETWEEN ($2 - $4) AND ($2 + $5)
 
-ORDER BY
-    m.created_at ASC;
-`,
+  ORDER BY
+      m.id DESC;
+  `,
 
   HAS_MESSAGES_BEFORE: `
   SELECT 1

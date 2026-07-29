@@ -101,12 +101,12 @@ export const MessagesPaths = {
           schema: {
             type: "integer",
 
-            default: 50,
+            default: 10,
           },
         },
 
         {
-          name: "before",
+          name: "beforeMessageId",
 
           in: "query",
 
@@ -455,7 +455,7 @@ export const MessagesPaths = {
 
           schema: {
             type: "integer",
-            default: 20,
+            default: 10,
           },
         },
         {
@@ -467,7 +467,7 @@ export const MessagesPaths = {
 
           schema: {
             type: "integer",
-            default: 20,
+            default: 10,
           },
         },
       ],

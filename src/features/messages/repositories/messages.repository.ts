@@ -87,12 +87,12 @@ export class MessagesRepository
 
     limit: number,
 
-    before?: Date,
+    beforeMessageId?: string,
   ): Promise<Message[]> {
     return this.findMany(
       MessagesQueries.FIND_BY_CHAT,
 
-      [chatId, userId, before ?? null, limit],
+      [chatId, userId, beforeMessageId ?? null, limit],
     );
   }
 

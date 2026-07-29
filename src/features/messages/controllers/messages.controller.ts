@@ -80,8 +80,9 @@ export class MessagesController {
       throw new Error("Authenticated user is missing.");
     }
 
-    const before =
-      typeof request.query.before === "string" ? new Date(request.query.before) : undefined;
+    const beforeMessageId = request.query.beforeMessageId
+      ? String(request.query.beforeMessageId)
+      : undefined;
 
     const limit = typeof request.query.limit === "string" ? Number(request.query.limit) : 30;
 
@@ -92,7 +93,7 @@ export class MessagesController {
 
       limit,
 
-      before,
+      beforeMessageId,
     );
 
     response.json(messages);

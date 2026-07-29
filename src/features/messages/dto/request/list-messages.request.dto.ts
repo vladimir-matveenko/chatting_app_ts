@@ -1,5 +1,5 @@
 export interface ListMessagesRequestDto {
-  before?: string;
+  beforeMessageId?: string;
 
   limit?: number;
 }

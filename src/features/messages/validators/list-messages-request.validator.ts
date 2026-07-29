@@ -12,8 +12,8 @@ export class ListMessagesRequestValidator {
 
     const result: ListMessagesRequestDto = {};
 
-    if (dto.before !== undefined) {
-      result.before = dto.before;
+    if (dto.beforeMessageId !== undefined) {
+      result.beforeMessageId = dto.beforeMessageId;
     }
 
     if (dto.limit !== undefined) {

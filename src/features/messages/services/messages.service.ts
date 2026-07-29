@@ -82,13 +82,13 @@ export class MessagesService {
 
     userId: string,
 
-    limit = 30,
+    limit = 10,
 
-    before?: Date,
+    beforeMessageId?: string,
   ): Promise<Message[]> {
     await this.ensureMember(chatId, userId);
 
-    return this.messagesRepository.findByChat(chatId, userId, limit, before);
+    return this.messagesRepository.findByChat(chatId, userId, limit, beforeMessageId);
   }
 
   private async ensureChatExists(chatId: string, userId: string): Promise<void> {
@@ -271,8 +271,8 @@ export class MessagesService {
     chatId: string,
     messageId: string,
     currentUserId: string,
-    before = 20,
-    after = 20,
+    before = 10,
+    after = 10,
   ): Promise<MessageContext> {
     const member = await this.chatMembersRepository.findByChatAndUser(chatId, currentUserId);
 
