@@ -138,7 +138,7 @@ export const ChatsQueries = {
         AND
             m.is_deleted = FALSE
         ORDER BY
-            m.created_at DESC
+            m.id DESC
         LIMIT 1
     ) lm ON TRUE
 
