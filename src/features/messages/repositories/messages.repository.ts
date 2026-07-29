@@ -80,22 +80,6 @@ export class MessagesRepository
     return message;
   }
 
-  async findByChat(
-    chatId: string,
-
-    userId: string,
-
-    limit: number,
-
-    beforeMessageId?: string,
-  ): Promise<Message[]> {
-    return this.findMany(
-      MessagesQueries.FIND_BY_CHAT,
-
-      [chatId, userId, beforeMessageId ?? null, limit],
-    );
-  }
-
   async update(
     id: string,
 
@@ -160,6 +144,41 @@ export class MessagesRepository
     }
 
     return message;
+  }
+
+  // get list of messages
+  async findLatest(chatId: string, currentUserId: string, limit: number): Promise<Message[]> {
+    return this.findMany(MessagesQueries.FIND_LATEST, [chatId, currentUserId, limit]);
+  }
+
+  async findBefore(
+    chatId: string,
+    currentUserId: string,
+    beforeMessageId: string,
+    limit: number,
+  ): Promise<Message[]> {
+    return this.findMany(MessagesQueries.FIND_BEFORE, [
+      chatId,
+      currentUserId,
+      beforeMessageId,
+      limit,
+    ]);
+  }
+
+  async findAfter(
+    chatId: string,
+    currentUserId: string,
+    afterMessageId: string,
+    limit: number,
+  ): Promise<Message[]> {
+    const messages = await this.findMany(MessagesQueries.FIND_AFTER, [
+      chatId,
+      currentUserId,
+      afterMessageId,
+      limit,
+    ]);
+
+    return messages.reverse();
   }
 
   async findAroundMessage(

@@ -16,7 +16,10 @@ import type { Message } from "../models/message.model.js";
 
 import { UpdateMessageRequestDto } from "../dto/request/update-message.request.dto.js";
 import { ChatMemberRole } from "../../chats/enums/chat-member-role.enum.js";
-import { MessageContext } from "../dto/message-context.dto.js";
+
+import { GetMessagesRequestDto } from "../dto/request/get-messages.request.dto.js";
+import { MessagesMode } from "../enums/message-mode.enum.js";
+import { MessagesPage } from "../models/messages-page.model.js";
 
 export class MessagesService {
   constructor(
@@ -77,18 +80,156 @@ export class MessagesService {
     return message;
   }
 
-  async findByChat(
+  async getMessages(
     chatId: string,
+    currentUserId: string,
+    dto: GetMessagesRequestDto,
+  ): Promise<MessagesPage> {
+    const member = await this.chatMembersRepository.findByChatAndUser(chatId, currentUserId);
 
-    userId: string,
+    if (!member) {
+      throw new ValidationError("User is not a member of this chat.");
+    }
 
-    limit = 10,
+    switch (dto.mode) {
+      case MessagesMode.LATEST:
+        return this.loadLatestMessages(chatId, currentUserId, dto.limit);
 
-    beforeMessageId?: string,
-  ): Promise<Message[]> {
-    await this.ensureMember(chatId, userId);
+      case MessagesMode.BEFORE:
+        return this.loadMessagesBefore(chatId, currentUserId, dto.anchorMessageId!, dto.limit);
 
-    return this.messagesRepository.findByChat(chatId, userId, limit, beforeMessageId);
+      case MessagesMode.AFTER:
+        return this.loadMessagesAfter(chatId, currentUserId, dto.anchorMessageId!, dto.limit);
+
+      case MessagesMode.AROUND:
+        return this.loadAroundMessages(
+          chatId,
+          currentUserId,
+          dto.anchorMessageId!,
+          dto.before!,
+          dto.after!,
+        );
+    }
+  }
+
+  private async loadLatestMessages(
+    chatId: string,
+    currentUserId: string,
+    limit: number,
+  ): Promise<MessagesPage> {
+    const messages = await this.messagesRepository.findLatest(chatId, currentUserId, limit);
+
+    const hasMore =
+      messages.length > 0 &&
+      (await this.messagesRepository.hasMessagesBefore(chatId, messages.at(-1)!.id));
+
+    return {
+      messages,
+      hasPrevious: hasMore,
+      hasNext: false,
+    };
+  }
+
+  private async loadMessagesBefore(
+    chatId: string,
+    currentUserId: string,
+    beforeMessageId: string,
+    limit: number,
+  ): Promise<MessagesPage> {
+    const messages = await this.messagesRepository.findBefore(
+      chatId,
+      currentUserId,
+      beforeMessageId,
+      limit,
+    );
+
+    const hasPrevious =
+      messages.length > 0 &&
+      (await this.messagesRepository.hasMessagesBefore(chatId, messages.at(-1)!.id));
+
+    return {
+      messages,
+      hasPrevious,
+      hasNext: true,
+    };
+  }
+
+  private async loadMessagesAfter(
+    chatId: string,
+    currentUserId: string,
+    afterMessageId: string,
+    limit: number,
+  ): Promise<MessagesPage> {
+    const messages = await this.messagesRepository.findAfter(
+      chatId,
+      currentUserId,
+      afterMessageId,
+      limit,
+    );
+
+    if (messages.length === 0) {
+      return {
+        messages,
+        hasPrevious: true,
+        hasNext: false,
+      };
+    }
+
+    const hasNext = await this.messagesRepository.hasMessagesAfter(chatId, messages[0]!.id);
+
+    return {
+      messages,
+      hasPrevious: true,
+      hasNext,
+    };
+  }
+
+  private async loadAroundMessages(
+    chatId: string,
+    currentUserId: string,
+    messageId: string,
+    before: number,
+    after: number,
+  ): Promise<MessagesPage> {
+    const target = await this.messagesRepository.findById(messageId);
+
+    if (!target) {
+      throw new NotFoundError("Message not found.");
+    }
+
+    if (target.chatId !== chatId) {
+      throw new ValidationError("Message does not belong to this chat.");
+    }
+
+    const messages = await this.messagesRepository.findAroundMessage(
+      chatId,
+      currentUserId,
+      messageId,
+      before,
+      after,
+    );
+
+    if (messages.length === 0) {
+      return {
+        messages: [],
+        hasPrevious: false,
+        hasNext: false,
+      };
+    }
+
+    const newest = messages[0]!;
+    const oldest = messages.at(-1)!;
+
+    const [hasPrevious, hasNext] = await Promise.all([
+      this.messagesRepository.hasMessagesBefore(chatId, oldest.id),
+      this.messagesRepository.hasMessagesAfter(chatId, newest.id),
+    ]);
+
+    return {
+      messages,
+      hasPrevious,
+      hasNext,
+    };
   }
 
   private async ensureChatExists(chatId: string, userId: string): Promise<void> {
@@ -265,61 +406,5 @@ export class MessagesService {
     );
 
     return this.messagesRepository.findPinned(chatId, userId);
-  }
-
-  async findAroundMessage(
-    chatId: string,
-    messageId: string,
-    currentUserId: string,
-    before = 10,
-    after = 10,
-  ): Promise<MessageContext> {
-    const member = await this.chatMembersRepository.findByChatAndUser(chatId, currentUserId);
-
-    if (!member) {
-      throw new ValidationError("User is not a member of this chat.");
-    }
-
-    const target = await this.messagesRepository.findById(messageId);
-
-    if (!target) {
-      throw new NotFoundError("Message not found.");
-    }
-
-    if (target.chatId !== chatId) {
-      throw new ValidationError("Message does not belong to this chat.");
-    }
-
-    const messages = await this.messagesRepository.findAroundMessage(
-      chatId,
-      messageId,
-      currentUserId,
-      before,
-      after,
-    );
-
-    if (messages.length === 0) {
-      return {
-        targetMessageId: messageId,
-        hasPrevious: false,
-        hasNext: false,
-        messages: [],
-      };
-    }
-
-    const firstMessage = messages.at(0)!;
-    const lastMessage = messages.at(-1)!;
-
-    const [hasPrevious, hasNext] = await Promise.all([
-      this.messagesRepository.hasMessagesBefore(chatId, firstMessage.id),
-      this.messagesRepository.hasMessagesAfter(chatId, lastMessage.id),
-    ]);
-
-    return {
-      targetMessageId: messageId,
-      hasPrevious,
-      hasNext,
-      messages,
-    };
   }
 }
