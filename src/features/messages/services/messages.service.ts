@@ -203,8 +203,8 @@ export class MessagesService {
 
     const messages = await this.messagesRepository.findAroundMessage(
       chatId,
-      currentUserId,
       messageId,
+      currentUserId,
       before,
       after,
     );

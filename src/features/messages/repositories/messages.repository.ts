@@ -178,6 +178,8 @@ export class MessagesRepository
       limit,
     ]);
 
+    // Repository always returns messages in DESC order.
+    // SQL fetches newer messages in ASC order for efficient index usage.
     return messages.reverse();
   }
 

@@ -1,67 +1,3 @@
-const MESSAGE_SELECT = `
-  SELECT
-    m.id,
-    m.chat_id,
-    m.sender_id,
-
-    su.user_name      AS sender_user_name,
-    su.display_name   AS sender_display_name,
-    su.avatar_url     AS sender_avatar_url,
-
-    m.type,
-    m.body,
-    m.reply_to_id,
-    m.created_at,
-    m.updated_at,
-    m.deleted_at,
-    m.is_deleted,
-    m.is_pinned,
-
-    m.reactions,
-
-    (
-      SELECT COUNT(*)
-      FROM chat_reads cr
-      WHERE
-        cr.chat_id = m.chat_id
-      AND
-        cr.user_id <> m.sender_id
-      AND
-        cr.last_read_message_id >= m.id
-    ) AS read_count,
-
-    ur.type AS current_user_reaction,
-
-    rm.id           AS reply_id,
-    rm.sender_id    AS reply_sender_id,
-
-    ru.user_name    AS reply_sender_user_name,
-    ru.display_name AS reply_sender_display_name,
-    ru.avatar_url   AS reply_sender_avatar_url,
-
-    rm.type         AS reply_type,
-    rm.body         AS reply_body,
-    rm.deleted_at   AS reply_deleted_at
-`;
-
-const MESSAGE_FROM = `
-  FROM messages m
-
-  INNER JOIN users su
-    ON su.id = m.sender_id
-
-  LEFT JOIN messages rm
-    ON rm.id = m.reply_to_id
-  AND rm.is_deleted = FALSE
-
-  LEFT JOIN users ru
-    ON ru.id = rm.sender_id
-
-  LEFT JOIN message_reactions ur
-    ON ur.message_id = m.id
-  AND ur.user_id = $2
-  `;
-
 export const MessagesQueries = {
   CREATE: `
     INSERT INTO messages (
@@ -139,9 +75,65 @@ export const MessagesQueries = {
   `,
 
   FIND_LATEST: `
-  ${MESSAGE_SELECT}
+  SELECT
+    m.id,
+    m.chat_id,
+    m.sender_id,
 
-  ${MESSAGE_FROM}
+    su.user_name      AS sender_user_name,
+    su.display_name   AS sender_display_name,
+    su.avatar_url     AS sender_avatar_url,
+
+    m.type,
+    m.body,
+    m.reply_to_id,
+    m.created_at,
+    m.updated_at,
+    m.deleted_at,
+    m.is_deleted,
+    m.is_pinned,
+
+    m.reactions,
+
+    (
+      SELECT COUNT(*)
+      FROM chat_reads cr
+      WHERE
+        cr.chat_id = m.chat_id
+      AND
+        cr.user_id <> m.sender_id
+      AND
+        cr.last_read_message_id >= m.id
+    ) AS read_count,
+
+    ur.type AS current_user_reaction,
+
+    rm.id         AS reply_id,
+    rm.sender_id  AS reply_sender_id,
+
+    ru.user_name    AS reply_sender_user_name,
+    ru.display_name AS reply_sender_display_name,
+    ru.avatar_url   AS reply_sender_avatar_url,
+
+    rm.type       AS reply_type,
+    rm.body       AS reply_body,
+    rm.deleted_at AS reply_deleted_at
+
+  FROM messages m
+
+  INNER JOIN users su
+    ON su.id = m.sender_id
+
+  LEFT JOIN messages rm
+    ON rm.id = m.reply_to_id
+   AND rm.is_deleted = FALSE
+
+  LEFT JOIN users ru
+    ON ru.id = rm.sender_id
+
+  LEFT JOIN message_reactions ur
+    ON ur.message_id = m.id
+   AND ur.user_id = $2
 
   WHERE
     m.chat_id = $1
@@ -152,12 +144,68 @@ export const MessagesQueries = {
     m.id DESC
 
   LIMIT $3;
-  `,
+`,
 
   FIND_BEFORE: `
-  ${MESSAGE_SELECT}
+  SELECT
+    m.id,
+    m.chat_id,
+    m.sender_id,
 
-  ${MESSAGE_FROM}
+    su.user_name      AS sender_user_name,
+    su.display_name   AS sender_display_name,
+    su.avatar_url     AS sender_avatar_url,
+
+    m.type,
+    m.body,
+    m.reply_to_id,
+    m.created_at,
+    m.updated_at,
+    m.deleted_at,
+    m.is_deleted,
+    m.is_pinned,
+
+    m.reactions,
+
+    (
+      SELECT COUNT(*)
+      FROM chat_reads cr
+      WHERE
+        cr.chat_id = m.chat_id
+      AND
+        cr.user_id <> m.sender_id
+      AND
+        cr.last_read_message_id >= m.id
+    ) AS read_count,
+
+    ur.type AS current_user_reaction,
+
+    rm.id         AS reply_id,
+    rm.sender_id  AS reply_sender_id,
+
+    ru.user_name    AS reply_sender_user_name,
+    ru.display_name AS reply_sender_display_name,
+    ru.avatar_url   AS reply_sender_avatar_url,
+
+    rm.type       AS reply_type,
+    rm.body       AS reply_body,
+    rm.deleted_at AS reply_deleted_at
+
+  FROM messages m
+
+  INNER JOIN users su
+    ON su.id = m.sender_id
+
+  LEFT JOIN messages rm
+    ON rm.id = m.reply_to_id
+   AND rm.is_deleted = FALSE
+
+  LEFT JOIN users ru
+    ON ru.id = rm.sender_id
+
+  LEFT JOIN message_reactions ur
+    ON ur.message_id = m.id
+   AND ur.user_id = $2
 
   WHERE
     m.chat_id = $1
@@ -170,12 +218,68 @@ export const MessagesQueries = {
     m.id DESC
 
   LIMIT $4;
-  `,
+`,
 
   FIND_AFTER: `
-  ${MESSAGE_SELECT}
+  SELECT
+    m.id,
+    m.chat_id,
+    m.sender_id,
 
-  ${MESSAGE_FROM}
+    su.user_name      AS sender_user_name,
+    su.display_name   AS sender_display_name,
+    su.avatar_url     AS sender_avatar_url,
+
+    m.type,
+    m.body,
+    m.reply_to_id,
+    m.created_at,
+    m.updated_at,
+    m.deleted_at,
+    m.is_deleted,
+    m.is_pinned,
+
+    m.reactions,
+
+    (
+      SELECT COUNT(*)
+      FROM chat_reads cr
+      WHERE
+        cr.chat_id = m.chat_id
+      AND
+        cr.user_id <> m.sender_id
+      AND
+        cr.last_read_message_id >= m.id
+    ) AS read_count,
+
+    ur.type AS current_user_reaction,
+
+    rm.id         AS reply_id,
+    rm.sender_id  AS reply_sender_id,
+
+    ru.user_name    AS reply_sender_user_name,
+    ru.display_name AS reply_sender_display_name,
+    ru.avatar_url   AS reply_sender_avatar_url,
+
+    rm.type       AS reply_type,
+    rm.body       AS reply_body,
+    rm.deleted_at AS reply_deleted_at
+
+  FROM messages m
+
+  INNER JOIN users su
+    ON su.id = m.sender_id
+
+  LEFT JOIN messages rm
+    ON rm.id = m.reply_to_id
+   AND rm.is_deleted = FALSE
+
+  LEFT JOIN users ru
+    ON ru.id = rm.sender_id
+
+  LEFT JOIN message_reactions ur
+    ON ur.message_id = m.id
+   AND ur.user_id = $2
 
   WHERE
     m.chat_id = $1
@@ -188,7 +292,7 @@ export const MessagesQueries = {
     m.id ASC
 
   LIMIT $4;
-  `,
+`,
 
   UPDATE: `
     UPDATE messages
@@ -233,9 +337,65 @@ export const MessagesQueries = {
   `,
 
   FIND_PINNED_BY_CHAT: `
-  ${MESSAGE_SELECT}
+  SELECT
+    m.id,
+    m.chat_id,
+    m.sender_id,
 
-  ${MESSAGE_FROM}
+    su.user_name      AS sender_user_name,
+    su.display_name   AS sender_display_name,
+    su.avatar_url     AS sender_avatar_url,
+
+    m.type,
+    m.body,
+    m.reply_to_id,
+    m.created_at,
+    m.updated_at,
+    m.deleted_at,
+    m.is_deleted,
+    m.is_pinned,
+
+    m.reactions,
+
+    (
+      SELECT COUNT(*)
+      FROM chat_reads cr
+      WHERE
+        cr.chat_id = m.chat_id
+      AND
+        cr.user_id <> m.sender_id
+      AND
+        cr.last_read_message_id >= m.id
+    ) AS read_count,
+
+    ur.type AS current_user_reaction,
+
+    rm.id         AS reply_id,
+    rm.sender_id  AS reply_sender_id,
+
+    ru.user_name    AS reply_sender_user_name,
+    ru.display_name AS reply_sender_display_name,
+    ru.avatar_url   AS reply_sender_avatar_url,
+
+    rm.type       AS reply_type,
+    rm.body       AS reply_body,
+    rm.deleted_at AS reply_deleted_at
+
+  FROM messages m
+
+  INNER JOIN users su
+    ON su.id = m.sender_id
+
+  LEFT JOIN messages rm
+    ON rm.id = m.reply_to_id
+   AND rm.is_deleted = FALSE
+
+  LEFT JOIN users ru
+    ON ru.id = rm.sender_id
+
+  LEFT JOIN message_reactions ur
+    ON ur.message_id = m.id
+   AND ur.user_id = $2
 
   WHERE
     m.chat_id = $1
@@ -245,24 +405,118 @@ export const MessagesQueries = {
     m.is_pinned = TRUE
 
   ORDER BY
-      m.id DESC;
-  `,
+    m.id DESC;
+`,
 
   FIND_AROUND_MESSAGE: `
-  ${MESSAGE_SELECT}
+WITH
+before_messages AS (
+    SELECT *
+    FROM messages
+    WHERE
+        chat_id = $1
+    AND
+        is_deleted = FALSE
+    AND
+        id < $2
+    ORDER BY id DESC
+    LIMIT $4
+),
 
-  ${MESSAGE_FROM}
+target_message AS (
+    SELECT *
+    FROM messages
+    WHERE
+        chat_id = $1
+    AND
+        is_deleted = FALSE
+    AND
+        id = $2
+),
 
-  WHERE
-    m.chat_id = $1
-  AND
-    m.is_deleted = FALSE
-  AND
-  m.id BETWEEN ($2 - $4) AND ($2 + $5)
+after_messages AS (
+    SELECT *
+    FROM messages
+    WHERE
+        chat_id = $1
+    AND
+        is_deleted = FALSE
+    AND
+        id > $2
+    ORDER BY id ASC
+    LIMIT $5
+),
 
-  ORDER BY
-      m.id DESC;
-  `,
+context_messages AS (
+    SELECT * FROM before_messages
+    UNION ALL
+    SELECT * FROM target_message
+    UNION ALL
+    SELECT * FROM after_messages
+)
+
+SELECT
+    m.id,
+    m.chat_id,
+    m.sender_id,
+
+    su.user_name      AS sender_user_name,
+    su.display_name   AS sender_display_name,
+    su.avatar_url     AS sender_avatar_url,
+
+    m.type,
+    m.body,
+    m.reply_to_id,
+    m.created_at,
+    m.updated_at,
+    m.deleted_at,
+    m.is_deleted,
+    m.is_pinned,
+
+    m.reactions,
+
+    (
+        SELECT COUNT(*)
+        FROM chat_reads cr
+        WHERE
+            cr.chat_id = m.chat_id
+        AND
+            cr.user_id <> m.sender_id
+        AND
+            cr.last_read_message_id >= m.id
+    ) AS read_count,
+
+    ur.type AS current_user_reaction,
+
+    rm.id         AS reply_id,
+    rm.sender_id  AS reply_sender_id,
+
+    ru.user_name    AS reply_sender_user_name,
+    ru.display_name AS reply_sender_display_name,
+    ru.avatar_url   AS reply_sender_avatar_url,
+
+    rm.type       AS reply_type,
+    rm.body       AS reply_body,
+    rm.deleted_at AS reply_deleted_at
+
+FROM context_messages m
+
+INNER JOIN users su
+    ON su.id = m.sender_id
+
+LEFT JOIN messages rm
+    ON rm.id = m.reply_to_id
+   AND rm.is_deleted = FALSE
+
+LEFT JOIN users ru
+    ON ru.id = rm.sender_id
+
+LEFT JOIN message_reactions ur
+    ON ur.message_id = m.id
+   AND ur.user_id = $3
+
+ORDER BY m.id DESC;
+`,
 
   HAS_MESSAGES_BEFORE: `
   SELECT 1
