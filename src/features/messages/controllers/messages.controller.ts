@@ -37,7 +37,7 @@ export class MessagesController {
       throw new UnauthorizedError("Unauthorized.", "UNAUTHORIZED");
     }
 
-    const chatId = requireId(request.params.chatId, "chatId");
+    const chatId = requireId(request.params.id, "chatId");
 
     const dto = this.getMessagesRequestValidator.validate(request);
 
