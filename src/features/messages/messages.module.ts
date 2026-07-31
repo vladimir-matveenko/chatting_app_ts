@@ -30,6 +30,7 @@ import { AddReactionRequestValidator } from "./validators/add-reaction-request.v
 import { ChatReadsRepository } from "./repositories/chat-reads.repository.js";
 import { MessageReadService } from "./services/message-read.service.js";
 import { SocketEventPublisher } from "../../core/websocket/socket-event.publisher.js";
+import { GetMessagesRequestValidator } from "./validators/get-messages-request.validator.js";
 
 export function createMessagesModule(
   database: Database,
@@ -80,6 +81,8 @@ export function createMessagesModule(
 
   const addReactionRequestValidator = new AddReactionRequestValidator();
 
+  const getMessagesRequestValidator = new GetMessagesRequestValidator();
+
   const addReactionRequestMapper = new AddReactionRequestMapper();
 
   const messageReadService = new MessageReadService(
@@ -96,6 +99,7 @@ export function createMessagesModule(
     createMessageRequestValidator,
     createMessageRequestMapper,
     updateMessageRequestValidator,
+    getMessagesRequestValidator,
     socketPublisher,
   );
 

@@ -33,3 +33,7 @@ CREATE INDEX idx_messages_created ON messages(chat_id, created_at DESC);
 CREATE INDEX idx_messages_deleted ON messages(is_deleted);
 
 CREATE INDEX idx_messages_reply ON messages(reply_to_id);
+
+CREATE INDEX idx_messages_chat_id_id ON messages(chat_id, id DESC)
+WHERE
+    is_deleted = FALSE;

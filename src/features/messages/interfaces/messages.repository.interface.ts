@@ -14,16 +14,6 @@ export interface IMessagesRepository {
 
   findById(id: string): Promise<Message | null>;
 
-  findByChat(
-    chatId: string,
-
-    userId: string,
-
-    limit: number,
-
-    before?: Date,
-  ): Promise<Message[]>;
-
   update(
     id: string,
 
@@ -39,6 +29,23 @@ export interface IMessagesRepository {
   findPinned(chatId: string, currentUserId: string): Promise<Message[]>;
 
   getByIdOrThrow(id: string): Promise<Message>;
+
+  // get list of messages
+  findLatest(chatId: string, currentUserId: string, limit: number): Promise<Message[]>;
+
+  findBefore(
+    chatId: string,
+    beforeMessageId: string,
+    currentUserId: string,
+    limit: number,
+  ): Promise<Message[]>;
+
+  findAfter(
+    chatId: string,
+    afterMessageId: string,
+    currentUserId: string,
+    limit: number,
+  ): Promise<Message[]>;
 
   findAroundMessage(
     chatId: string,

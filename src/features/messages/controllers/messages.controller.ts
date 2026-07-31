@@ -10,9 +10,10 @@ import { CreateMessageRequestValidator } from "../validators/create-message-requ
 
 import { UpdateMessageRequestValidator } from "../validators/update-message-request.validator.js";
 
-import { requireId, requireString } from "../../../core/http/validators/index.js";
+import { requireId } from "../../../core/http/validators/index.js";
 import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
 import { MessageReadService } from "../services/message-read.service.js";
+import { GetMessagesRequestValidator } from "../validators/get-messages-request.validator.js";
 
 export class MessagesController {
   constructor(
@@ -26,8 +27,24 @@ export class MessagesController {
 
     private readonly updateRequestValidator: UpdateMessageRequestValidator,
 
+    private readonly getMessagesRequestValidator: GetMessagesRequestValidator,
+
     private readonly socketPublisher: SocketEventPublisher,
   ) {}
+
+  async getMessages(request: Request, response: Response): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError("Unauthorized.", "UNAUTHORIZED");
+    }
+
+    const chatId = requireId(request.params.id, "chatId");
+
+    const dto = this.getMessagesRequestValidator.validate(request);
+
+    const result = await this.service.getMessages(chatId, request.user.userId, dto);
+
+    response.json(result);
+  }
 
   async create(
     request: Request,
@@ -63,39 +80,6 @@ export class MessagesController {
       .status(201)
 
       .json(message);
-  }
-
-  async findByChat(
-    request: Request,
-
-    response: Response,
-  ): Promise<void> {
-    const id = request.params.id;
-
-    if (typeof id !== "string") {
-      throw new ValidationError("Chat id is required.");
-    }
-
-    if (!request.user) {
-      throw new Error("Authenticated user is missing.");
-    }
-
-    const before =
-      typeof request.query.before === "string" ? new Date(request.query.before) : undefined;
-
-    const limit = typeof request.query.limit === "string" ? Number(request.query.limit) : 30;
-
-    const messages = await this.service.findByChat(
-      id,
-
-      request.user.userId,
-
-      limit,
-
-      before,
-    );
-
-    response.json(messages);
   }
 
   async findById(
@@ -280,29 +264,5 @@ export class MessagesController {
     await this.messageReadService.markRead(messageId, request.user.userId);
 
     response.sendStatus(204);
-  }
-
-  async findAroundMessage(request: Request, response: Response): Promise<void> {
-    if (!request.user) {
-      throw new UnauthorizedError("Unauthorized.", "UNAUTHORIZED");
-    }
-
-    const chatId = requireString(request.params.chatId, "chatId");
-
-    const messageId = requireString(request.params.messageId, "messageId");
-
-    const before = Number(request.query.before ?? 20);
-
-    const after = Number(request.query.after ?? 20);
-
-    const context = await this.service.findAroundMessage(
-      chatId,
-      messageId,
-      request.user.userId,
-      before,
-      after,
-    );
-
-    response.json(context);
   }
 }

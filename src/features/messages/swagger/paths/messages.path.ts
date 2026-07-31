@@ -8,6 +8,7 @@ import {
   notFoundResponse,
   unauthorizedResponse,
 } from "../../../../swagger/responses/index.js";
+import { messagesPageExample } from "../examples/message-page.example.js";
 
 import { messagesListExample } from "../examples/messages-list.example.js";
 
@@ -72,6 +73,11 @@ export const MessagesPaths = {
 
       summary: "Get chat messages",
 
+      description:
+        "Returns chat messages. " +
+        "If no anchor parameter is specified, the latest messages are returned. " +
+        "Only one of beforeMessageId, afterMessageId or aroundMessageId can be specified.",
+
       security: [
         {
           bearerAuth: [],
@@ -100,9 +106,48 @@ export const MessagesPaths = {
 
           schema: {
             type: "integer",
-
-            default: 50,
+            default: 10,
+            minimum: 1,
           },
+
+          description:
+            "Maximum number of messages to return. Used for latest, before and after modes.",
+        },
+
+        {
+          name: "beforeMessageId",
+
+          in: "query",
+
+          schema: {
+            type: "string",
+          },
+
+          description: "Returns messages older than the specified message ID.",
+        },
+
+        {
+          name: "afterMessageId",
+
+          in: "query",
+
+          schema: {
+            type: "string",
+          },
+
+          description: "Returns messages newer than the specified message ID.",
+        },
+
+        {
+          name: "aroundMessageId",
+
+          in: "query",
+
+          schema: {
+            type: "string",
+          },
+
+          description: "Returns messages around the specified message ID.",
         },
 
         {
@@ -111,13 +156,31 @@ export const MessagesPaths = {
           in: "query",
 
           schema: {
-            type: "string",
+            type: "integer",
+            default: 10,
+            minimum: 0,
           },
+
+          description: "Number of messages before aroundMessageId.",
+        },
+
+        {
+          name: "after",
+
+          in: "query",
+
+          schema: {
+            type: "integer",
+            default: 10,
+            minimum: 0,
+          },
+
+          description: "Number of messages after aroundMessageId.",
         },
       ],
 
       responses: {
-        200: jsonResponse("Messages.", "#/components/schemas/Message", messagesListExample),
+        200: jsonResponse("Messages.", "#/components/schemas/MessagesPage", messagesPageExample),
 
         401: unauthorizedResponse,
 
@@ -397,83 +460,6 @@ export const MessagesPaths = {
 
       responses: {
         204: noContentResponse("Message marked as read"),
-
-        401: unauthorizedResponse,
-
-        404: notFoundResponse,
-      },
-    },
-  },
-
-  "/messages/{chatId}/message/{messageId}/context": {
-    get: {
-      tags: ["Messages"],
-
-      summary: "Get messages around target message",
-
-      description: "Get messages around target message",
-
-      security: [
-        {
-          bearerAuth: [],
-        },
-      ],
-
-      parameters: [
-        {
-          name: "chatId",
-
-          in: "path",
-
-          required: true,
-
-          schema: {
-            type: "string",
-          },
-
-          description: "Chat ID",
-        },
-        {
-          name: "messageId",
-
-          in: "path",
-
-          required: true,
-
-          schema: {
-            type: "string",
-          },
-
-          description: "Message ID",
-        },
-        {
-          name: "before",
-
-          in: "query",
-
-          required: false,
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-        {
-          name: "after",
-
-          in: "query",
-
-          required: false,
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-      ],
-
-      responses: {
-        200: okResponse("Context loaded successfully", "#/components/schemas/MessageContext"),
 
         401: unauthorizedResponse,
 
