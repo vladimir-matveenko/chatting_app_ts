@@ -12,7 +12,7 @@ import { MessageReactionSummarySchema } from "./message-reaction-summary.schema.
 import { ReactionTypeSchema } from "./reaction-type.schema.js";
 import { MessageTypeSchema } from "./message-type.schema.js";
 import { MessageSenderSchema } from "./message-sender.schema.js";
-import { MessageContextSchema } from "./message-context.schema.js";
+import { MessagePageSchema } from "./message-page.schema.js";
 
 export const messagesSchemas = {
   ...MessageSchema,
@@ -37,5 +37,5 @@ export const messagesSchemas = {
 
   ...MessageSenderSchema,
 
-  ...MessageContextSchema,
+  ...MessagePageSchema,
 };
