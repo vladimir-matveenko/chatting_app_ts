@@ -9,6 +9,8 @@ import {
   unauthorizedResponse,
 } from "../../../../swagger/responses/index.js";
 import { messagesPageExample } from "../examples/message-page.example.js";
+import { messageSearchResultListExample } from "../examples/message-search-result-list.example.js";
+import { messageSearchResultExample } from "../examples/message-search-result.example.js";
 
 import { messagesListExample } from "../examples/messages-list.example.js";
 
@@ -181,6 +183,71 @@ export const MessagesPaths = {
         201: createdResponse("Message created successfully.", "#/components/schemas/Message"),
 
         400: badRequestResponse,
+
+        401: unauthorizedResponse,
+
+        403: forbiddenResponse,
+
+        404: notFoundResponse,
+      },
+    },
+  },
+
+  "/messages/{messageId}/search": {
+    get: {
+      tags: ["Messages"],
+
+      summary: "Search messages",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "chatId",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+
+          description: "Chat ID",
+        },
+        {
+          name: "query",
+
+          in: "query",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "limit",
+
+          in: "query",
+
+          schema: {
+            type: "integer",
+            default: 30,
+          },
+        },
+      ],
+
+      responses: {
+        200: jsonResponse(
+          "Message.",
+          "#/components/schemas/MessageSearchResult",
+          messageSearchResultListExample,
+        ),
 
         401: unauthorizedResponse,
 

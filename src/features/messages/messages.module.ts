@@ -31,6 +31,8 @@ import { ChatReadsRepository } from "./repositories/chat-reads.repository.js";
 import { MessageReadService } from "./services/message-read.service.js";
 import { SocketEventPublisher } from "../../core/websocket/socket-event.publisher.js";
 import { GetMessagesRequestValidator } from "./validators/get-messages-request.validator.js";
+import { MessageSearchRepository } from "./repositories/message-search.repository.js";
+import { MessagesSearchMapper } from "./mappers/messages-search.mapper.js";
 
 export function createMessagesModule(
   database: Database,
@@ -47,9 +49,13 @@ export function createMessagesModule(
 ): MessagesFeature {
   const messagesMapper = new MessagesMapper();
 
+  const messagesSearchMapper = new MessagesSearchMapper();
+
   const messageReactionMapper = new MessageReactionMapper();
 
   const messagesRepository = new MessagesRepository(database, messagesMapper);
+
+  const messagesSearchRepository = new MessageSearchRepository(database, messagesSearchMapper);
 
   const messageReactionsRepository = new MessageReactionsRepository(
     database,
@@ -60,6 +66,8 @@ export function createMessagesModule(
     database,
 
     messagesRepository,
+
+    messagesSearchRepository,
 
     chatsRepository,
 

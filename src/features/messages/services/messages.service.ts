@@ -20,12 +20,16 @@ import { ChatMemberRole } from "../../chats/enums/chat-member-role.enum.js";
 import { GetMessagesRequestDto } from "../dto/request/get-messages.request.dto.js";
 import { MessagesMode } from "../enums/message-mode.enum.js";
 import { MessagesPage } from "../models/messages-page.model.js";
+import { MessageSearchResult } from "../models/message-search.model.js";
+import { IMessageSearchRepository } from "../interfaces/message-search.repository.interface.js";
 
 export class MessagesService {
   constructor(
     private readonly database: Database,
 
     private readonly messagesRepository: IMessagesRepository,
+
+    private readonly messagesSearchRepository: IMessageSearchRepository,
 
     private readonly chatsRepository: IChatsRepository,
 
@@ -406,5 +410,20 @@ export class MessagesService {
     );
 
     return this.messagesRepository.findPinned(chatId, userId);
+  }
+
+  async search(
+    chatId: string,
+    currentUserId: string,
+    query: string,
+    limit = 30,
+  ): Promise<MessageSearchResult[]> {
+    const member = await this.chatMembersRepository.findByChatAndUser(chatId, currentUserId);
+
+    if (!member) {
+      throw new ValidationError("User is not a member of this chat.");
+    }
+
+    return this.messagesSearchRepository.search(chatId, query, limit);
   }
 }

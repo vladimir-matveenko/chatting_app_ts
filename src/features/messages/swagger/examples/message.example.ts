@@ -3,7 +3,7 @@ export const messageExample = {
   chatId: "1",
   sender: {
     id: "1",
-    userName: "Petya",
+    userName: "Ipollit",
     displayName: "Ipollit",
     avatarUrl: null,
   },
