@@ -10,7 +10,6 @@ import {
 } from "../../../../swagger/responses/index.js";
 import { messagesPageExample } from "../examples/message-page.example.js";
 import { messageSearchResultListExample } from "../examples/message-search-result-list.example.js";
-import { messageSearchResultExample } from "../examples/message-search-result.example.js";
 
 import { messagesListExample } from "../examples/messages-list.example.js";
 
@@ -193,7 +192,7 @@ export const MessagesPaths = {
     },
   },
 
-  "/messages/{messageId}/search": {
+  "/messages/chat/{chatId}/search": {
     get: {
       tags: ["Messages"],
 

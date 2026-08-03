@@ -271,7 +271,7 @@ export class MessagesController {
       throw new UnauthorizedError("Unauthorized.", "UNAUTHORIZED");
     }
 
-    const chatId = String(request.params.chatId);
+    const chatId = String(request.params.id);
 
     const query = String(request.query.query ?? "");
 

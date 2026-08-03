@@ -35,11 +35,7 @@ export function createMessagesRouter(
   );
 
   // search messages
-  router.get(
-    "/messages/:chatId/search",
-    jwtAuthMiddleware.handler,
-    controller.search.bind(controller),
-  );
+  router.get("/chat/:id/search", jwtAuthMiddleware.handler, controller.search.bind(controller));
 
   // get message
   router.get(
