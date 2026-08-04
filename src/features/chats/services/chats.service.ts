@@ -187,15 +187,7 @@ export class ChatsService {
 
     userId: string,
   ): Promise<Chat> {
-    const member = await this.chatMembersRepository.findByChatAndUser(
-      chatId,
-
-      userId,
-    );
-
-    if (!member) {
-      throw new NotFoundError("Chat not found.");
-    }
+    await this.chatPermissionsService.ensureMember(chatId, userId);
 
     const chat = await this.chatsRepository.findById(chatId, userId);
 
