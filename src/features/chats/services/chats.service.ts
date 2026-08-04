@@ -327,6 +327,7 @@ export class ChatsService {
 
     dto: AddChatMembersDto,
   ): Promise<void> {
+    // any participant can add a new member
     await this.ensureMember(
       chatId,
 

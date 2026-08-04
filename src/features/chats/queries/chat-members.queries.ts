@@ -15,19 +15,6 @@ export const ChatMembersQueries = {
         RETURNING *;
     `,
 
-  ADD_MANY: `
-        INSERT INTO chat_members (
-            chat_id,
-            user_id,
-            role
-        )
-        VALUES (
-            $1,
-            $2,
-            $3
-        );
-    `,
-
   FIND_BY_CHAT: `
     SELECT
         cm.chat_id,
@@ -58,12 +45,8 @@ export const ChatMembersQueries = {
     FROM chat_members
 
     WHERE
-
         chat_id = $1
-
         AND user_id = $2
-
-        AND is_archived = FALSE
 
     LIMIT 1;
     `,
@@ -136,15 +119,6 @@ export const ChatMembersQueries = {
     `,
 
   UPDATE_ROLE: `
-    UPDATE chat_members
-    SET role = $3
-    WHERE
-        chat_id = $1
-    AND
-        user_id = $2;
-    `,
-
-  UPDATE_MEMBER_ROLE: `
     UPDATE chat_members
     SET role = $3
     WHERE
