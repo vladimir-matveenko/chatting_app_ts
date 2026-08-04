@@ -10,7 +10,7 @@ import { ChatMemberRole } from "../enums/chat-member-role.enum.js";
 import { Database } from "../../../core/database/database.js";
 import { PoolClient } from "pg";
 import { ChatType } from "../enums/chat-type.enum.js";
-import { ForbiddenError, NotFoundError, ValidationError } from "../../../core/errors/index.js";
+import { NotFoundError, ValidationError } from "../../../core/errors/index.js";
 import type { IUsersRepository } from "../../users/interfaces/users.repository.interface.js";
 import { Chat } from "../models/chat.model.js";
 import type { IChatListRepository } from "../interfaces/chat-list.repository.interface.js";
@@ -20,12 +20,12 @@ import { isUniqueViolation } from "../../../core/database/is-unique-violation.js
 import { ArchiveChatDto } from "../dto/archive-chat.dto.js";
 import { MuteChatDto } from "../dto/mute-chat.dto.js";
 import { AddChatMembersDto } from "../dto/add-chat-members.dto.js";
-import { ManageMembersPermissions } from "../constants/chat-member-permissions.js";
 import { ChangeMemberRoleDto } from "../dto/request/change-member-role.dto.js";
 import { TransferOwnershipDto } from "../dto/transfer-ownership.dto.js";
 import { UpdateChatDto } from "../dto/update-chat.dto.js";
-import { EditChatPermissions } from "../constants/edit-chat-permissions.js";
+
 import { PresenceService } from "../../../core/websocket/presence.service.js";
+import { ChatPermissionsService } from "./chat-permissions.service.js";
 
 const PREVIOUS_OWNER_ROLE = ChatMemberRole.ADMIN;
 
@@ -44,6 +44,8 @@ export class ChatsService {
     private readonly fingerprintService: ChatFingerprintService,
 
     private readonly presenceService: PresenceService,
+
+    private readonly chatPermissionsService: ChatPermissionsService,
   ) {}
 
   async create(dto: CreateChatDto): Promise<Chat> {
@@ -213,7 +215,7 @@ export class ChatsService {
 
     userId: string,
   ): Promise<ChatMember[]> {
-    await this.ensureMember(
+    await this.chatPermissionsService.ensureMember(
       chatId,
 
       userId,
@@ -228,26 +230,6 @@ export class ChatsService {
     }));
   }
 
-  private async ensureMember(
-    chatId: string,
-
-    userId: string,
-  ): Promise<void> {
-    const isMember = await this.chatMembersRepository.isMember(
-      chatId,
-
-      userId,
-    );
-
-    if (!isMember) {
-      throw new ForbiddenError(
-        "You are not a member of this chat.",
-
-        "CHAT_ACCESS_DENIED",
-      );
-    }
-  }
-
   async archive(
     chatId: string,
 
@@ -255,7 +237,7 @@ export class ChatsService {
 
     dto: ArchiveChatDto,
   ): Promise<void> {
-    await this.ensureMember(
+    await this.chatPermissionsService.ensureMember(
       chatId,
 
       userId,
@@ -277,7 +259,7 @@ export class ChatsService {
 
     dto: MuteChatDto,
   ): Promise<void> {
-    await this.ensureMember(
+    await this.chatPermissionsService.ensureMember(
       chatId,
 
       userId,
@@ -297,7 +279,7 @@ export class ChatsService {
 
     userId: string,
   ): Promise<void> {
-    await this.ensureMember(
+    await this.chatPermissionsService.ensureMember(
       chatId,
 
       userId,
@@ -328,7 +310,7 @@ export class ChatsService {
     dto: AddChatMembersDto,
   ): Promise<void> {
     // any participant can add a new member
-    await this.ensureMember(
+    await this.chatPermissionsService.ensureMember(
       chatId,
 
       actorId,
@@ -364,7 +346,7 @@ export class ChatsService {
 
     memberId: string,
   ): Promise<void> {
-    await this.ensureCanManageMembers(
+    await this.chatPermissionsService.ensureCanManageMembers(
       chatId,
 
       actorId,
@@ -379,52 +361,6 @@ export class ChatsService {
     );
   }
 
-  private async ensureCanManageMembers(
-    chatId: string,
-
-    actorId: string,
-
-    targetId: string,
-  ): Promise<void> {
-    if (actorId === targetId) {
-      throw new ValidationError("Use leave() to leave the chat.");
-    }
-
-    const actor = await this.chatMembersRepository.findByChatAndUser(
-      chatId,
-
-      actorId,
-    );
-
-    if (!actor) {
-      throw new ForbiddenError(
-        "You are not a member of this chat.",
-
-        "CHAT_ACCESS_DENIED",
-      );
-    }
-
-    const target = await this.chatMembersRepository.findByChatAndUser(
-      chatId,
-
-      targetId,
-    );
-
-    if (!target) {
-      throw new NotFoundError("Member not found.");
-    }
-
-    const allowedRoles = ManageMembersPermissions[actor.role];
-
-    if (!allowedRoles.includes(target.role)) {
-      throw new ForbiddenError(
-        "Insufficient permissions.",
-
-        "INSUFFICIENT_PERMISSIONS",
-      );
-    }
-  }
-
   async changeMemberRole(
     chatId: string,
 
@@ -434,7 +370,7 @@ export class ChatsService {
 
     dto: ChangeMemberRoleDto,
   ): Promise<void> {
-    await this.ensureCanManageMembers(
+    await this.chatPermissionsService.ensureCanManageMembers(
       chatId,
 
       actorId,
@@ -472,41 +408,7 @@ export class ChatsService {
       throw new ValidationError("Ownership can only be transferred in group chats.");
     }
 
-    const actor = await this.chatMembersRepository.findByChatAndUser(
-      chatId,
-
-      actorId,
-    );
-
-    if (!actor) {
-      throw new ForbiddenError(
-        "You are not a member of this chat.",
-
-        "CHAT_ACCESS_DENIED",
-      );
-    }
-
-    if (actor.role !== ChatMemberRole.OWNER) {
-      throw new ForbiddenError(
-        "Only the owner can transfer ownership.",
-
-        "INSUFFICIENT_PERMISSIONS",
-      );
-    }
-
-    const target = await this.chatMembersRepository.findByChatAndUser(
-      chatId,
-
-      dto.userId,
-    );
-
-    if (!target) {
-      throw new NotFoundError("Member not found.");
-    }
-
-    if (target.role === ChatMemberRole.OWNER) {
-      throw new ValidationError("User is already the owner.");
-    }
+    await this.chatPermissionsService.ensureCanTransferOwnership(chatId, actorId, dto.userId);
 
     await this.database.transaction(async (client: PoolClient) => {
       await this.chatMembersRepository.updateRoleTx(
@@ -546,27 +448,7 @@ export class ChatsService {
 
     dto: UpdateChatDto,
   ): Promise<Chat> {
-    const member = await this.chatMembersRepository.findByChatAndUser(
-      chatId,
-
-      userId,
-    );
-
-    if (!member) {
-      throw new ForbiddenError(
-        "You are not a member of this chat.",
-
-        "CHAT_ACCESS_DENIED",
-      );
-    }
-
-    if (!EditChatPermissions.has(member.role)) {
-      throw new ForbiddenError(
-        "Insufficient permissions.",
-
-        "INSUFFICIENT_PERMISSIONS",
-      );
-    }
+    await this.chatPermissionsService.ensureCanEditChat(chatId, userId);
 
     return this.chatsRepository.update(
       chatId,

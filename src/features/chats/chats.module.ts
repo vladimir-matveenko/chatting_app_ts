@@ -30,6 +30,7 @@ import { TransferOwnershipRequestValidator } from "./dto/transfer-ownership-requ
 import { UpdateChatRequestValidator } from "./validators/update-chat-request.validator.js";
 import { SocketEventPublisher } from "../../core/websocket/socket-event.publisher.js";
 import { PresenceService } from "../../core/websocket/presence.service.js";
+import { ChatPermissionsService } from "./services/chat-permissions.service.js";
 
 export function createChatsModule(
   database: Database,
@@ -49,6 +50,8 @@ export function createChatsModule(
   socketPublisher: SocketEventPublisher,
 
   presenceService: PresenceService,
+
+  chatPermissionsService: ChatPermissionsService,
 ): ChatsFeature {
   const fingerprintService = new ChatFingerprintService();
 
@@ -66,6 +69,8 @@ export function createChatsModule(
     fingerprintService,
 
     presenceService,
+
+    chatPermissionsService,
   );
 
   const validator = new CreateChatRequestValidator();
