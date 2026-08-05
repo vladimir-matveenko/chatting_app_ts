@@ -265,4 +265,20 @@ export class MessagesController {
 
     response.sendStatus(204);
   }
+
+  async search(request: Request, response: Response): Promise<void> {
+    if (!request.user) {
+      throw new UnauthorizedError("Unauthorized.", "UNAUTHORIZED");
+    }
+
+    const chatId = String(request.params.id);
+
+    const query = String(request.query.query ?? "");
+
+    const limit = Number(request.query.limit ?? 30);
+
+    const result = await this.service.search(chatId, request.user.userId, query, limit);
+
+    response.json(result);
+  }
 }

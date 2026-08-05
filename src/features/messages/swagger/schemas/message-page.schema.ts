@@ -1,14 +1,10 @@
-export const MessageContextSchema = {
-  MessageContext: {
+export const MessagePageSchema = {
+  MessagesPage: {
     type: "object",
 
-    required: ["targetMessageId", "hasPrevious", "hasNext", "messages"],
+    required: ["hasPrevious", "hasNext", "messages"],
 
     properties: {
-      targetMessageId: {
-        $ref: "#/components/schemas/Id",
-      },
-
       hasPrevious: {
         type: "boolean",
       },

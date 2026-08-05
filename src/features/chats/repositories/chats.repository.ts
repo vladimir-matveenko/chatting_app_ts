@@ -88,14 +88,6 @@ export class ChatsRepository extends BaseRepository<ChatEntity, Chat> implements
     );
   }
 
-  async findAllByUser(userId: string): Promise<Chat[]> {
-    return this.findMany(
-      ChatsQueries.FIND_ALL_BY_USER,
-
-      [userId],
-    );
-  }
-
   findById(chatId: string, userId: string): Promise<Chat | null> {
     return this.findOne(ChatsQueries.FIND_BY_ID, [chatId, userId]);
   }

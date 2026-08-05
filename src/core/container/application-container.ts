@@ -32,6 +32,7 @@ import { ChatRoomService } from "../websocket/chat-room.service.js";
 import { PresenceService } from "../websocket/presence.service.js";
 
 import { ChatHandler, ReadHandler, TypingHandler } from "../websocket/handlers/index.js";
+import { ChatPermissionsService } from "../../features/chats/services/chat-permissions.service.js";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;
@@ -138,6 +139,11 @@ export class ApplicationContainer {
       this.socketEventPublisher,
     );
 
+    const chatPermissionsService = new ChatPermissionsService(
+      chatMembersRepository,
+      chatsRepository,
+    );
+
     this.chats = createChatsModule(
       database,
       this.users.repository,
@@ -147,8 +153,8 @@ export class ApplicationContainer {
       this.messages.messageReadService,
       jwtAuthMiddleware,
       this.socketEventPublisher,
-
       this.presenceService,
+      chatPermissionsService,
     );
 
     //

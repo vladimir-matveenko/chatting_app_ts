@@ -61,23 +61,23 @@ export const ChatsQueries = {
     lm.body AS last_message_body,
     lm.type AS last_message_type,
     lm.created_at AS last_message_at,
-    
+
     cr.last_read_message_id,
 
     (
-    SELECT COUNT(*)
-    FROM messages m
-    WHERE
-        m.chat_id = c.id
-    AND
-        m.is_deleted = FALSE
-    AND
-        m.sender_id <> $1
-    AND (
-        cr.last_read_message_id IS NULL
-        OR
-        m.id > cr.last_read_message_id
-    )
+        SELECT COUNT(*)
+        FROM messages m
+        WHERE
+            m.chat_id = c.id
+        AND
+            m.is_deleted = FALSE
+        AND
+            m.sender_id <> $1
+        AND (
+            cr.last_read_message_id IS NULL
+            OR
+            m.id > cr.last_read_message_id
+        )
     )::integer AS unread_count,
 
     COALESCE(
@@ -124,11 +124,11 @@ export const ChatsQueries = {
 
     LEFT JOIN chat_reads cr
         ON cr.chat_id = c.id
-    AND cr.user_id = $1
+        AND cr.user_id = $1
 
     LEFT JOIN LATERAL (
         SELECT
-            m.id,    
+            m.id,
             m.body,
             m.type,
             m.created_at
@@ -142,16 +142,53 @@ export const ChatsQueries = {
         LIMIT 1
     ) lm ON TRUE
 
+    LEFT JOIN LATERAL (
+        SELECT
+            u.user_name,
+            u.display_name
+        FROM chat_members cm2
+
+        INNER JOIN users u
+            ON u.id = cm2.user_id
+
+        WHERE
+            cm2.chat_id = c.id
+        AND
+            u.id <> $1
+
+        LIMIT 1
+    ) pu ON TRUE
+
     WHERE
         cm.user_id = $1
     AND
-        cm.is_archived = FALSE
+        cm.is_archived = $2
+
+    AND (
+        $3::text IS NULL
+
+        OR
+
+        c.title ILIKE '%' || $3 || '%'
+
+        OR
+
+        pu.user_name ILIKE '%' || $3 || '%'
+
+        OR
+
+        pu.display_name ILIKE '%' || $3 || '%'
+    )
 
     ORDER BY
         COALESCE(
             lm.created_at,
             c.updated_at
-        ) DESC;
+        ) DESC,
+        c.id DESC
+
+    LIMIT $4
+    OFFSET $5;
     `,
 
   UPDATE_ACTIVITY: `

@@ -7,3 +7,11 @@ export const ManageMembersPermissions: Record<ChatMemberRole, readonly ChatMembe
 
   [ChatMemberRole.MEMBER]: [],
 };
+
+export const TransferOwnershipPermissions: Record<ChatMemberRole, readonly ChatMemberRole[]> = {
+  [ChatMemberRole.OWNER]: [ChatMemberRole.ADMIN],
+
+  [ChatMemberRole.ADMIN]: [],
+
+  [ChatMemberRole.MEMBER]: [],
+};

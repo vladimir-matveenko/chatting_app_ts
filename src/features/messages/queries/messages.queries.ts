@@ -541,4 +541,41 @@ ORDER BY m.id DESC;
     id > $2
   LIMIT 1;
   `,
+
+  SEARCH: `
+  SELECT
+    m.id           AS message_id,
+    m.chat_id,
+    m.type,
+    m.body,
+    m.created_at,
+
+    u.id           AS sender_id,
+    u.user_name    AS sender_user_name,
+    u.display_name AS sender_display_name,
+    u.avatar_url   AS sender_avatar_url
+
+  FROM messages m
+
+  INNER JOIN users u
+    ON u.id = m.sender_id
+
+  WHERE
+
+    m.chat_id = $1
+
+  AND
+
+    m.is_deleted = FALSE
+
+  AND
+
+    m.body ILIKE '%' || $2 || '%'
+
+  ORDER BY
+
+    m.id DESC
+
+  LIMIT $3;
+  `,
 };

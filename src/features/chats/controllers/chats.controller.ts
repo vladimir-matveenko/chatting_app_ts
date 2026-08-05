@@ -2,17 +2,12 @@ import type { Request, Response } from "express";
 
 import type { ChatsService } from "../services/chats.service.js";
 
-import { CreateChatRequestValidator } from "../validators/create-chat-request.validator.js";
-
 import { CreateChatRequestMapper } from "../mappers/create-chat-request.mapper.js";
 import { UnauthorizedError, ValidationError } from "../../../core/errors/index.js";
 import { MessageReadService } from "../../messages/services/message-read.service.js";
 import { requireBoolean, requireId } from "../../../core/http/validators/index.js";
-import { AddChatMembersRequestValidator } from "../validators/add-chat-members-request.validator.js";
-import { ChangeMemberRoleRequestValidator } from "../validators/change-member-role-request.validator.js";
-import { TransferOwnershipRequestValidator } from "../dto/transfer-ownership-request.validator.js";
-import { UpdateChatRequestValidator } from "../validators/update-chat-request.validator.js";
 import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
+import { ChatsRequestValidators } from "../validators/chats-request.validators.js";
 
 export class ChatsController {
   constructor(
@@ -20,15 +15,7 @@ export class ChatsController {
 
     private readonly messageReadService: MessageReadService,
 
-    private readonly validator: CreateChatRequestValidator,
-
-    private readonly addMemberValidator: AddChatMembersRequestValidator,
-
-    private readonly memberRoleValidator: ChangeMemberRoleRequestValidator,
-
-    private readonly transferOwnershipValidator: TransferOwnershipRequestValidator,
-
-    private readonly updateChatValidator: UpdateChatRequestValidator,
+    private readonly validators: ChatsRequestValidators,
 
     private readonly mapper: CreateChatRequestMapper,
 
@@ -40,7 +27,7 @@ export class ChatsController {
 
     response: Response,
   ): Promise<void> {
-    const dto = this.validator.validate(request);
+    const dto = this.validators.create.validate(request);
 
     if (!request.user) {
       throw new Error("Authenticated user is missing.");
@@ -66,7 +53,25 @@ export class ChatsController {
       throw new Error("Authenticated user is missing.");
     }
 
-    const chats = await this.service.findByUser(request.user.userId);
+    const dto = this.validators.findChats.validate(request.query);
+
+    const chats = await this.service.findByUser(request.user.userId, dto);
+
+    response.json(chats);
+  }
+
+  async archivedList(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new Error("Authenticated user is missing.");
+    }
+
+    const dto = this.validators.findChats.validate(request.query);
+
+    const chats = await this.service.findArchivedByUser(request.user.userId, dto);
 
     response.json(chats);
   }
@@ -262,7 +267,7 @@ export class ChatsController {
       "chatId",
     );
 
-    const dto = this.addMemberValidator.validate(request);
+    const dto = this.validators.addMembers.validate(request);
 
     await this.service.addMembers(
       chatId,
@@ -340,7 +345,7 @@ export class ChatsController {
       "userId",
     );
 
-    const dto = this.memberRoleValidator.validate(request);
+    const dto = this.validators.changeRole.validate(request);
 
     await this.service.changeMemberRole(
       chatId,
@@ -376,7 +381,7 @@ export class ChatsController {
       "chatId",
     );
 
-    const dto = this.transferOwnershipValidator.validate(request);
+    const dto = this.validators.transferOwnership.validate(request);
 
     await this.service.transferOwnership(
       chatId,
@@ -410,7 +415,7 @@ export class ChatsController {
       "chatId",
     );
 
-    const dto = this.updateChatValidator.validate(request);
+    const dto = this.validators.update.validate(request);
 
     const chat = await this.service.update(
       chatId,

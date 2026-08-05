@@ -34,6 +34,9 @@ export function createMessagesRouter(
     asyncHandler(controller.getMessages.bind(controller)),
   );
 
+  // search messages
+  router.get("/chat/:id/search", jwtAuthMiddleware.handler, controller.search.bind(controller));
+
   // get message
   router.get(
     "/:id",

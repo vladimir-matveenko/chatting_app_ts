@@ -22,6 +22,15 @@ export function createChatsRouter(
     asyncHandler(controller.list.bind(controller)),
   );
 
+  // get archived chats list
+  router.get(
+    "/archive",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.archivedList.bind(controller)),
+  );
+
   // create chat
   router.post(
     "/",

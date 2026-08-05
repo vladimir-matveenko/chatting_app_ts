@@ -21,6 +21,54 @@ export const ChatsPath = {
         },
       ],
 
+      parameters: [
+        {
+          name: "query",
+
+          in: "query",
+
+          required: false,
+
+          schema: {
+            type: "string",
+          },
+        },
+
+        {
+          name: "limit",
+
+          in: "query",
+
+          required: false,
+
+          schema: {
+            type: "integer",
+
+            minimum: 1,
+
+            maximum: 100,
+
+            default: 20,
+          },
+        },
+
+        {
+          name: "offset",
+
+          in: "query",
+
+          required: false,
+
+          schema: {
+            type: "integer",
+
+            minimum: 0,
+
+            default: 0,
+          },
+        },
+      ],
+
       responses: {
         200: okResponse("User chats.", "#/components/schemas/ChatListItem"),
 
@@ -61,6 +109,76 @@ export const ChatsPath = {
         401: unauthorizedResponse,
 
         409: conflictResponse,
+      },
+    },
+  },
+
+  "/chats/archive": {
+    get: {
+      tags: ["Chats"],
+
+      summary: "Get user archived chats",
+
+      description: "Returns archived chats of the authenticated user.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "query",
+
+          in: "query",
+
+          required: false,
+
+          schema: {
+            type: "string",
+          },
+        },
+
+        {
+          name: "limit",
+
+          in: "query",
+
+          required: false,
+
+          schema: {
+            type: "integer",
+
+            minimum: 1,
+
+            maximum: 100,
+
+            default: 20,
+          },
+        },
+
+        {
+          name: "offset",
+
+          in: "query",
+
+          required: false,
+
+          schema: {
+            type: "integer",
+
+            minimum: 0,
+
+            default: 0,
+          },
+        },
+      ],
+
+      responses: {
+        200: okResponse("User chats.", "#/components/schemas/ChatListItem"),
+
+        401: unauthorizedResponse,
       },
     },
   },
