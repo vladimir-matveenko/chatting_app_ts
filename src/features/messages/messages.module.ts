@@ -33,6 +33,7 @@ import { SocketEventPublisher } from "../../core/websocket/socket-event.publishe
 import { GetMessagesRequestValidator } from "./validators/get-messages-request.validator.js";
 import { MessageSearchRepository } from "./repositories/message-search.repository.js";
 import { MessagesSearchMapper } from "./mappers/messages-search.mapper.js";
+import { MessagesRequestValidators } from "./validators/messages-request.validators.js";
 
 export function createMessagesModule(
   database: Database,
@@ -81,15 +82,15 @@ export function createMessagesModule(
     socketPublisher,
   );
 
-  const createMessageRequestValidator = new CreateMessageRequestValidator();
+  const messagesValidators = new MessagesRequestValidators(
+    new CreateMessageRequestValidator(),
+    new UpdateMessageRequestValidator(),
+    new GetMessagesRequestValidator(),
+  );
 
   const createMessageRequestMapper = new CreateMessageRequestMapper();
 
-  const updateMessageRequestValidator = new UpdateMessageRequestValidator();
-
   const addReactionRequestValidator = new AddReactionRequestValidator();
-
-  const getMessagesRequestValidator = new GetMessagesRequestValidator();
 
   const addReactionRequestMapper = new AddReactionRequestMapper();
 
@@ -104,10 +105,8 @@ export function createMessagesModule(
   const messagesController = new MessagesController(
     messagesService,
     messageReadService,
-    createMessageRequestValidator,
+    messagesValidators,
     createMessageRequestMapper,
-    updateMessageRequestValidator,
-    getMessagesRequestValidator,
     socketPublisher,
   );
 

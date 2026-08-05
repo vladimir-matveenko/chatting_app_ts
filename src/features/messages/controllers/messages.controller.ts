@@ -6,14 +6,11 @@ import type { MessagesService } from "../services/messages.service.js";
 
 import { CreateMessageRequestMapper } from "../mappers/create-message-request.mapper.js";
 
-import { CreateMessageRequestValidator } from "../validators/create-message-request.validator.js";
-
-import { UpdateMessageRequestValidator } from "../validators/update-message-request.validator.js";
-
 import { requireId } from "../../../core/http/validators/index.js";
 import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
 import { MessageReadService } from "../services/message-read.service.js";
-import { GetMessagesRequestValidator } from "../validators/get-messages-request.validator.js";
+
+import { MessagesRequestValidators } from "../validators/messages-request.validators.js";
 
 export class MessagesController {
   constructor(
@@ -21,13 +18,9 @@ export class MessagesController {
 
     private readonly messageReadService: MessageReadService,
 
-    private readonly createRequestValidator: CreateMessageRequestValidator,
+    private readonly validators: MessagesRequestValidators,
 
     private readonly createRequestMapper: CreateMessageRequestMapper,
-
-    private readonly updateRequestValidator: UpdateMessageRequestValidator,
-
-    private readonly getMessagesRequestValidator: GetMessagesRequestValidator,
 
     private readonly socketPublisher: SocketEventPublisher,
   ) {}
@@ -39,7 +32,7 @@ export class MessagesController {
 
     const chatId = requireId(request.params.id, "chatId");
 
-    const dto = this.getMessagesRequestValidator.validate(request);
+    const dto = this.validators.getMessages.validate(request);
 
     const result = await this.service.getMessages(chatId, request.user.userId, dto);
 
@@ -51,7 +44,7 @@ export class MessagesController {
 
     response: Response,
   ): Promise<void> {
-    const dto = this.createRequestValidator.validate(request);
+    const dto = this.validators.create.validate(request);
 
     if (!request.user) {
       throw new Error("Authenticated user is missing.");
@@ -125,7 +118,7 @@ export class MessagesController {
       "messageId",
     );
 
-    const dto = this.updateRequestValidator.validate(request);
+    const dto = this.validators.update.validate(request);
 
     const message = await this.service.update(
       id,
