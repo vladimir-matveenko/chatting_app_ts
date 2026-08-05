@@ -31,6 +31,8 @@ import { UpdateChatRequestValidator } from "./validators/update-chat-request.val
 import { SocketEventPublisher } from "../../core/websocket/socket-event.publisher.js";
 import { PresenceService } from "../../core/websocket/presence.service.js";
 import { ChatPermissionsService } from "./services/chat-permissions.service.js";
+import { ChatsRequestValidators } from "./validators/chats-request.validators.js";
+import { FindChatsRequestValidator } from "./validators/find-chats.request.validator.js";
 
 export function createChatsModule(
   database: Database,
@@ -73,15 +75,14 @@ export function createChatsModule(
     chatPermissionsService,
   );
 
-  const validator = new CreateChatRequestValidator();
-
-  const addMemberValidator = new AddChatMembersRequestValidator();
-
-  const memberRoleValidator = new ChangeMemberRoleRequestValidator();
-
-  const transferOwnershipValidator = new TransferOwnershipRequestValidator();
-
-  const updateChatValidator = new UpdateChatRequestValidator();
+  const validators = new ChatsRequestValidators(
+    new CreateChatRequestValidator(),
+    new UpdateChatRequestValidator(),
+    new FindChatsRequestValidator(),
+    new AddChatMembersRequestValidator(),
+    new ChangeMemberRoleRequestValidator(),
+    new TransferOwnershipRequestValidator(),
+  );
 
   const mapper = new CreateChatRequestMapper();
 
@@ -90,15 +91,7 @@ export function createChatsModule(
 
     messageReadService,
 
-    validator,
-
-    addMemberValidator,
-
-    memberRoleValidator,
-
-    transferOwnershipValidator,
-
-    updateChatValidator,
+    validators,
 
     mapper,
 

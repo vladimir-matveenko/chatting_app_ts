@@ -26,6 +26,7 @@ import { UpdateChatDto } from "../dto/update-chat.dto.js";
 
 import { PresenceService } from "../../../core/websocket/presence.service.js";
 import { ChatPermissionsService } from "./chat-permissions.service.js";
+import { FindUsersDto } from "../../users/dto/find-users.dto.js";
 
 const PREVIOUS_OWNER_ROLE = ChatMemberRole.ADMIN;
 
@@ -198,12 +199,12 @@ export class ChatsService {
     return chat;
   }
 
-  async findByUser(userId: string): Promise<ChatListItem[]> {
-    return this.chatListRepository.findByUser(userId);
+  async findByUser(userId: string, dto: FindUsersDto): Promise<ChatListItem[]> {
+    return this.chatListRepository.findByUser(userId, dto);
   }
 
-  async findArchivedByUser(userId: string): Promise<ChatListItem[]> {
-    return this.chatListRepository.findArchivedByUser(userId);
+  async findArchivedByUser(userId: string, dto: FindUsersDto): Promise<ChatListItem[]> {
+    return this.chatListRepository.findArchivedByUser(userId, dto);
   }
 
   async findMembers(

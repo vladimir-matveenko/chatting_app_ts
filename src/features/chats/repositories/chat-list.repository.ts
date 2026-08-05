@@ -11,6 +11,7 @@ import { ChatListItemMapper } from "../mappers/chat-list-item.mapper.js";
 import { ChatsQueries } from "../queries/chats.queries.js";
 
 import type { IChatListRepository } from "../interfaces/chat-list.repository.interface.js";
+import { FindUsersDto } from "../../users/dto/find-users.dto.js";
 
 export class ChatListRepository
   extends BaseRepository<ChatListItemEntity, ChatListItem>
@@ -28,19 +29,19 @@ export class ChatListRepository
     );
   }
 
-  async findByUser(userId: string): Promise<ChatListItem[]> {
+  async findByUser(userId: string, dto: FindUsersDto): Promise<ChatListItem[]> {
     return this.findMany(
       ChatsQueries.FIND_ALL_BY_USER,
 
-      [userId, false],
+      [userId, false, dto.query ?? null, dto.limit, dto.offset],
     );
   }
 
-  async findArchivedByUser(userId: string): Promise<ChatListItem[]> {
+  async findArchivedByUser(userId: string, dto: FindUsersDto): Promise<ChatListItem[]> {
     return this.findMany(
       ChatsQueries.FIND_ALL_BY_USER,
 
-      [userId, true],
+      [userId, true, dto.query ?? null, dto.limit, dto.offset],
     );
   }
 }
