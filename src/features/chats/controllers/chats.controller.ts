@@ -5,9 +5,9 @@ import type { ChatsService } from "../services/chats.service.js";
 import { CreateChatRequestMapper } from "../mappers/create-chat-request.mapper.js";
 import { UnauthorizedError, ValidationError } from "../../../core/errors/index.js";
 import { MessageReadService } from "../../messages/services/message-read.service.js";
-import { requireBoolean, requireId } from "../../../core/http/validators/index.js";
 import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
 import { ChatsRequestValidators } from "../validators/chats-request.validators.js";
+import { requireId } from "../../../core/http/validators/index.js";
 
 export class ChatsController {
   constructor(
@@ -163,20 +163,14 @@ export class ChatsController {
       "chatId",
     );
 
-    const isArchived = requireBoolean(
-      request.body.isArchived,
-
-      "isArchived",
-    );
+    const dto = this.validators.archive.validate(request);
 
     await this.service.archive(
       chatId,
 
       request.user.userId,
 
-      {
-        isArchived,
-      },
+      dto,
     );
 
     response.sendStatus(204);
@@ -201,20 +195,14 @@ export class ChatsController {
       "chatId",
     );
 
-    const isMuted = requireBoolean(
-      request.body.isMuted,
-
-      "isMuted",
-    );
+    const dto = this.validators.mute.validate(request);
 
     await this.service.mute(
       chatId,
 
       request.user.userId,
 
-      {
-        isMuted,
-      },
+      dto,
     );
 
     response.sendStatus(204);

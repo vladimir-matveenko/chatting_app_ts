@@ -33,6 +33,8 @@ import { PresenceService } from "../../core/websocket/presence.service.js";
 import { ChatPermissionsService } from "./services/chat-permissions.service.js";
 import { ChatsRequestValidators } from "./validators/chats-request.validators.js";
 import { FindChatsRequestValidator } from "./validators/find-chats.request.validator.js";
+import { ArchiveChatRequestValidator } from "./validators/archive-chat-request.validator.js";
+import { MuteChatRequestValidator } from "./validators/mute-chat-request.validator.js";
 
 export function createChatsModule(
   database: Database,
@@ -82,6 +84,8 @@ export function createChatsModule(
     new AddChatMembersRequestValidator(),
     new ChangeMemberRoleRequestValidator(),
     new TransferOwnershipRequestValidator(),
+    new ArchiveChatRequestValidator(),
+    new MuteChatRequestValidator(),
   );
 
   const mapper = new CreateChatRequestMapper();
