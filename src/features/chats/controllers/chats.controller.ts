@@ -71,6 +71,20 @@ export class ChatsController {
     response.json(chats);
   }
 
+  async archivedList(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    if (!request.user) {
+      throw new Error("Authenticated user is missing.");
+    }
+
+    const chats = await this.service.findArchivedByUser(request.user.userId);
+
+    response.json(chats);
+  }
+
   async findById(
     request: Request,
 

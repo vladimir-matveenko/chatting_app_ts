@@ -145,7 +145,7 @@ export const ChatsQueries = {
     WHERE
         cm.user_id = $1
     AND
-        cm.is_archived = FALSE
+        cm.is_archived = $2
 
     ORDER BY
         COALESCE(

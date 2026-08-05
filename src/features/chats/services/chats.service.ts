@@ -202,6 +202,10 @@ export class ChatsService {
     return this.chatListRepository.findByUser(userId);
   }
 
+  async findArchivedByUser(userId: string): Promise<ChatListItem[]> {
+    return this.chatListRepository.findArchivedByUser(userId);
+  }
+
   async findMembers(
     chatId: string,
 

@@ -64,4 +64,26 @@ export const ChatsPath = {
       },
     },
   },
+
+  "/chats/archive": {
+    get: {
+      tags: ["Chats"],
+
+      summary: "Get user archived chats",
+
+      description: "Returns archived chats of the authenticated user.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      responses: {
+        200: okResponse("User chats.", "#/components/schemas/ChatListItem"),
+
+        401: unauthorizedResponse,
+      },
+    },
+  },
 };

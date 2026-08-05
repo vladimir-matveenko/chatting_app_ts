@@ -32,7 +32,15 @@ export class ChatListRepository
     return this.findMany(
       ChatsQueries.FIND_ALL_BY_USER,
 
-      [userId],
+      [userId, false],
+    );
+  }
+
+  async findArchivedByUser(userId: string): Promise<ChatListItem[]> {
+    return this.findMany(
+      ChatsQueries.FIND_ALL_BY_USER,
+
+      [userId, true],
     );
   }
 }
