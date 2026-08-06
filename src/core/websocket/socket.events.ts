@@ -38,4 +38,6 @@ export const SocketEvents = {
   ChatChanged: "chat:changed",
 
   Exception: "exception",
+
+  NotificationCreated: "notification:created",
 } as const;

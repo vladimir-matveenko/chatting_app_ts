@@ -7,6 +7,7 @@ import type { SocketHandler } from "./interfaces/socket-handler.interface.js";
 import { logger } from "../logger/logger.js";
 import { PresenceService } from "./services/presence.service.js";
 import { SocketEventPublisher } from "./publishers/socket-event.publisher.js";
+import { SocketRoomBuilder } from "./socket-room.builder.js";
 
 export class SocketGateway {
   constructor(
@@ -26,6 +27,10 @@ export class SocketGateway {
         const userId = authenticatedSocket.data.user.userId;
 
         logger.info(`Socket connected: ${userId}, socket=${socket.id}`);
+
+        socket.join(SocketRoomBuilder.user(userId));
+
+        logger.info(`User ${userId} joined personal room`);
 
         const firstConnection = this.presenceService.connect(userId);
 

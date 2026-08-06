@@ -9,6 +9,7 @@ import {
   TypingEventDto,
 } from "../dto/index.js";
 import { logger } from "../../logger/logger.js";
+import { NotificationModel } from "../../../features/notifications/models/notification.model.js";
 
 export class SocketEventPublisher {
   private io?: Server;
@@ -43,6 +44,12 @@ export class SocketEventPublisher {
 
       payload,
     );
+  }
+
+  // notifications events
+
+  notificationCreated(notification: NotificationModel): void {
+    this.emitToUser(notification.userId, SocketEvents.NotificationCreated, notification);
   }
 
   // feature events

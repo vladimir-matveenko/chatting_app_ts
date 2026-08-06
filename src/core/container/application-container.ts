@@ -33,6 +33,8 @@ import { PresenceService } from "../websocket/services/presence.service.js";
 import { ChatHandler, ReadHandler, TypingHandler } from "../websocket/handlers/index.js";
 import { ChatPermissionsService } from "../../features/chats/services/chat-permissions.service.js";
 import { SocketEventPublisher } from "../websocket/publishers/socket-event.publisher.js";
+import { NotificationsFeature } from "../../features/notifications/notifications.module.interface.js";
+import { createNotificationsModule } from "../../features/notifications/notifications.module.js";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;
@@ -56,6 +58,8 @@ export class ApplicationContainer {
   readonly presenceService: PresenceService;
 
   readonly socketGateway: SocketGateway;
+
+  readonly notifications: NotificationsFeature;
 
   constructor(database: Database) {
     //
@@ -155,6 +159,13 @@ export class ApplicationContainer {
       this.socketEventPublisher,
       this.presenceService,
       chatPermissionsService,
+    );
+
+    // notifications module
+    this.notifications = createNotificationsModule(
+      database,
+      jwtAuthMiddleware,
+      this.socketEventPublisher,
     );
 
     //
