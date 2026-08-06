@@ -5,9 +5,9 @@ import type { ChatsService } from "../services/chats.service.js";
 import { CreateChatRequestMapper } from "../mappers/create-chat-request.mapper.js";
 import { UnauthorizedError, ValidationError } from "../../../core/errors/index.js";
 import { MessageReadService } from "../../messages/services/message-read.service.js";
-import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
 import { ChatsRequestValidators } from "../validators/chats-request.validators.js";
 import { requireId } from "../../../core/http/validators/index.js";
+import { SocketEventPublisher } from "../../../core/websocket/publishers/socket-event.publisher.js";
 
 export class ChatsController {
   constructor(

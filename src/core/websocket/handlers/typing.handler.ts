@@ -2,11 +2,11 @@ import type { AuthenticatedSocket } from "../socket.types.js";
 
 import { SocketEvents } from "../socket.events.js";
 
-import type { ChatRoomService } from "../chat-room.service.js";
+import type { ChatRoomService } from "../services/chat-room.service.js";
 
-import type { SocketEventPublisher } from "../socket-event.publisher.js";
 import { SocketHandler } from "../interfaces/socket-handler.interface.js";
 import { logger } from "../../logger/logger.js";
+import { SocketEventPublisher } from "../publishers/socket-event.publisher.js";
 
 export class TypingHandler implements SocketHandler {
   constructor(

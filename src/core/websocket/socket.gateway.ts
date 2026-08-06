@@ -5,8 +5,8 @@ import type { AuthenticatedSocket } from "./socket.types.js";
 import type { SocketHandler } from "./interfaces/socket-handler.interface.js";
 
 import { logger } from "../logger/logger.js";
-import { PresenceService } from "./presence.service.js";
-import { SocketEventPublisher } from "./socket-event.publisher.js";
+import { PresenceService } from "./services/presence.service.js";
+import { SocketEventPublisher } from "./publishers/socket-event.publisher.js";
 
 export class SocketGateway {
   constructor(

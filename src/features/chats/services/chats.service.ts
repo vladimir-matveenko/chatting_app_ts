@@ -24,7 +24,7 @@ import { ChangeMemberRoleDto } from "../dto/request/change-member-role.dto.js";
 import { TransferOwnershipDto } from "../dto/transfer-ownership.dto.js";
 import { UpdateChatDto } from "../dto/update-chat.dto.js";
 
-import { PresenceService } from "../../../core/websocket/presence.service.js";
+import { PresenceService } from "../../../core/websocket/services/presence.service.js";
 import { ChatPermissionsService } from "./chat-permissions.service.js";
 import { FindUsersDto } from "../../users/dto/find-users.dto.js";
 

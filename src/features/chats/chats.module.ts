@@ -28,13 +28,13 @@ import { AddChatMembersRequestValidator } from "./validators/add-chat-members-re
 import { ChangeMemberRoleRequestValidator } from "./validators/change-member-role-request.validator.js";
 import { TransferOwnershipRequestValidator } from "./dto/transfer-ownership-request.validator.js";
 import { UpdateChatRequestValidator } from "./validators/update-chat-request.validator.js";
-import { SocketEventPublisher } from "../../core/websocket/socket-event.publisher.js";
-import { PresenceService } from "../../core/websocket/presence.service.js";
+import { PresenceService } from "../../core/websocket/services/presence.service.js";
 import { ChatPermissionsService } from "./services/chat-permissions.service.js";
 import { ChatsRequestValidators } from "./validators/chats-request.validators.js";
 import { FindChatsRequestValidator } from "./validators/find-chats.request.validator.js";
 import { ArchiveChatRequestValidator } from "./validators/archive-chat-request.validator.js";
 import { MuteChatRequestValidator } from "./validators/mute-chat-request.validator.js";
+import { SocketEventPublisher } from "../../core/websocket/publishers/socket-event.publisher.js";
 
 export function createChatsModule(
   database: Database,

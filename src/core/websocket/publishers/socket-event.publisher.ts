@@ -1,14 +1,14 @@
 import type { Server } from "socket.io";
-
-import { SocketRoomBuilder } from "./socket-room.builder.js";
-import { SocketEvents } from "./socket.events.js";
-
-import type { Message } from "../../features/messages/models/message.model.js";
-import { logger } from "../logger/logger.js";
-import { TypingEventDto } from "./dto/typing-event.dto.js";
-import { MessageReadEventDto } from "./dto/message-read-event.dto.js";
-import { PresenceEventDto } from "./dto/presence-event.dto.js";
-import { ChatChangedEventDto } from "./dto/index.js";
+import { SocketRoomBuilder } from "../socket-room.builder.js";
+import { SocketEvents } from "../socket.events.js";
+import { Message } from "../../../features/messages/models/message.model.js";
+import {
+  ChatChangedEventDto,
+  MessageReadEventDto,
+  PresenceEventDto,
+  TypingEventDto,
+} from "../dto/index.js";
+import { logger } from "../../logger/logger.js";
 
 export class SocketEventPublisher {
   private io?: Server;

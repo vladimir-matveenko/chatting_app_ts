@@ -7,10 +7,10 @@ import type { MessagesService } from "../services/messages.service.js";
 import { CreateMessageRequestMapper } from "../mappers/create-message-request.mapper.js";
 
 import { requireId } from "../../../core/http/validators/index.js";
-import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
 import { MessageReadService } from "../services/message-read.service.js";
 
 import { MessagesRequestValidators } from "../validators/messages-request.validators.js";
+import { SocketEventPublisher } from "../../../core/websocket/publishers/socket-event.publisher.js";
 
 export class MessagesController {
   constructor(

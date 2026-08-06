@@ -9,8 +9,7 @@ import type { IMessagesRepository } from "../interfaces/messages.repository.inte
 import type { IChatMembersRepository } from "../../chats/interfaces/chat-members.repository.interface.js";
 
 import type { MessageReaction } from "../models/message-reaction.model.js";
-
-import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
+import { SocketEventPublisher } from "../../../core/websocket/publishers/socket-event.publisher.js";
 
 export class MessageReactionsService {
   constructor(

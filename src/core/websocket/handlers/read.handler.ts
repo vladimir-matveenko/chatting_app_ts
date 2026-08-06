@@ -3,8 +3,9 @@ import type { AuthenticatedSocket } from "../socket.types.js";
 import { SocketEvents } from "../socket.events.js";
 
 import type { MessageReadService } from "../../../features/messages/services/message-read.service.js";
-import type { SocketEventPublisher } from "../socket-event.publisher.js";
+
 import { logger } from "../../logger/logger.js";
+import { SocketEventPublisher } from "../publishers/socket-event.publisher.js";
 
 export class ReadHandler {
   constructor(

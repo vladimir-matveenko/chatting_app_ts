@@ -27,12 +27,12 @@ import { JwtAuthMiddleware } from "../middleware/jwt-auth.middleware.js";
 import { SocketAuthMiddleware } from "../middleware/socket-auth.middleware.js";
 
 import { SocketGateway } from "../websocket/socket.gateway.js";
-import { SocketEventPublisher } from "../websocket/socket-event.publisher.js";
-import { ChatRoomService } from "../websocket/chat-room.service.js";
-import { PresenceService } from "../websocket/presence.service.js";
+import { ChatRoomService } from "../websocket/services/chat-room.service.js";
+import { PresenceService } from "../websocket/services/presence.service.js";
 
 import { ChatHandler, ReadHandler, TypingHandler } from "../websocket/handlers/index.js";
 import { ChatPermissionsService } from "../../features/chats/services/chat-permissions.service.js";
+import { SocketEventPublisher } from "../websocket/publishers/socket-event.publisher.js";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;

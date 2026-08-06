@@ -29,11 +29,11 @@ import { UpdateMessageRequestValidator } from "./validators/update-message-reque
 import { AddReactionRequestValidator } from "./validators/add-reaction-request.validator.js";
 import { ChatReadsRepository } from "./repositories/chat-reads.repository.js";
 import { MessageReadService } from "./services/message-read.service.js";
-import { SocketEventPublisher } from "../../core/websocket/socket-event.publisher.js";
 import { GetMessagesRequestValidator } from "./validators/get-messages-request.validator.js";
 import { MessageSearchRepository } from "./repositories/message-search.repository.js";
 import { MessagesSearchMapper } from "./mappers/messages-search.mapper.js";
 import { MessagesRequestValidators } from "./validators/messages-request.validators.js";
+import { SocketEventPublisher } from "../../core/websocket/publishers/socket-event.publisher.js";
 
 export function createMessagesModule(
   database: Database,

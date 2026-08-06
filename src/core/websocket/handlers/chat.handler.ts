@@ -2,7 +2,7 @@ import type { AuthenticatedSocket } from "../socket.types.js";
 
 import { SocketEvents } from "../socket.events.js";
 
-import type { ChatRoomService } from "../chat-room.service.js";
+import type { ChatRoomService } from "../services/chat-room.service.js";
 import { logger } from "../../logger/logger.js";
 import { SocketHandler } from "../interfaces/socket-handler.interface.js";
 
