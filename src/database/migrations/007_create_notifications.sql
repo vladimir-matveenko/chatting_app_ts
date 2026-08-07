@@ -1,11 +1,14 @@
 CREATE TYPE notification_type AS ENUM (
     'message',
-    'chat_created',
     'chat_updated',
-    'member_joined',
-    'member_left',
+    'admin_granted',
+    'admin_revoked',
+    'member_added',
     'member_removed',
-    'chat_invite'
+    'chat_invite',
+    'owner_changed',
+    'reaction',
+    'reply'
 );
 
 CREATE TABLE notifications (

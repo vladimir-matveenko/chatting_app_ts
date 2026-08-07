@@ -35,7 +35,7 @@ export const NotificationsQueries = {
     AND (
         $2::text IS NULL
         OR
-        type = $2
+        type = $2::notification_type
     )
     ORDER BY
         created_at DESC,
