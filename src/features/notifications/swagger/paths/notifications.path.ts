@@ -20,14 +20,14 @@ export const NotificationsPaths = {
 
       parameters: [
         {
-          name: "query",
+          name: "type",
 
           in: "query",
 
           required: false,
 
           schema: {
-            type: "string",
+            $ref: "#/components/schemas/NotificationType",
           },
         },
 
