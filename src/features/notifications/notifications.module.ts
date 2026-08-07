@@ -10,6 +10,7 @@ import { NotificationsService } from "./services/notifications.service.js";
 
 import { NotificationsController } from "./controllers/notifications.controller.js";
 import { createNotificationsRouter } from "./routes/notifications.routes.js";
+import { FindNotificationsRequestValidator } from "./validators/find-notifications.request.validator.js";
 
 export function createNotificationsModule(
   database: Database,
@@ -22,7 +23,9 @@ export function createNotificationsModule(
 
   const notificationsService = new NotificationsService(notificationsRepository, socketPublisher);
 
-  const notificationsController = new NotificationsController(notificationsService);
+  const validator = new FindNotificationsRequestValidator();
+
+  const notificationsController = new NotificationsController(notificationsService, validator);
 
   const router = createNotificationsRouter(notificationsController, jwtAuthMiddleware);
 
