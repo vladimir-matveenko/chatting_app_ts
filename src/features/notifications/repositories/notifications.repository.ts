@@ -1,5 +1,6 @@
 import { BaseRepository } from "../../../core/database/base.repository.js";
 import { Database } from "../../../core/database/database.js";
+import { FindNotificationsDto } from "../dto/find-notifications.dto.js";
 import { NotificationEntity } from "../entities/notification.entity.js";
 import { NotificationType } from "../enums/notification-type.enum.js";
 import { INotificationsRepository } from "../interfaces/notifications.repository.interface.js";
@@ -28,8 +29,13 @@ export class NotificationsRepository
     return this.findOne(NotificationsQueries.FIND_BY_ID, [id]);
   }
 
-  async findAllByUser(userId: string): Promise<NotificationModel[]> {
-    return this.findMany(NotificationsQueries.FIND_ALL_BY_USER, [userId]);
+  async findAllByUser(userId: string, dto: FindNotificationsDto): Promise<NotificationModel[]> {
+    return this.findMany(NotificationsQueries.FIND_ALL_BY_USER, [
+      userId,
+      dto.type,
+      dto.limit,
+      dto.offset,
+    ]);
   }
 
   async countUnread(userId: string): Promise<number> {

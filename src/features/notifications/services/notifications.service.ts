@@ -1,5 +1,6 @@
 import { NotFoundError } from "../../../core/errors/index.js";
 import { SocketEventPublisher } from "../../../core/websocket/publishers/socket-event.publisher.js";
+import { FindNotificationsDto } from "../dto/find-notifications.dto.js";
 import { NotificationType } from "../enums/notification-type.enum.js";
 import { INotificationsRepository } from "../interfaces/notifications.repository.interface.js";
 import { NotificationPayload } from "../models/notification-payload.model.js";
@@ -23,8 +24,8 @@ export class NotificationsService {
     return notification;
   }
 
-  async findAllByUser(userId: string): Promise<NotificationModel[]> {
-    return this.repository.findAllByUser(userId);
+  async findAllByUser(userId: string, dto: FindNotificationsDto): Promise<NotificationModel[]> {
+    return this.repository.findAllByUser(userId, dto);
   }
 
   async countUnread(userId: string): Promise<number> {

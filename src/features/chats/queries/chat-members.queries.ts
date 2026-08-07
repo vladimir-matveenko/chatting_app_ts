@@ -39,6 +39,12 @@ export const ChatMembersQueries = {
     ORDER BY joined_at;
     `,
 
+  FIND_MEMBER_IDS_BY_CHAT: `
+    SELECT user_id
+    FROM chat_members
+    WHERE chat_id = $1;
+    `,
+
   IS_MEMBER: `
     SELECT 1
 

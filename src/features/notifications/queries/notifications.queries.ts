@@ -30,9 +30,19 @@ export const NotificationsQueries = {
         created_at,
         read_at
     FROM notifications
-    WHERE user_id = $1
-    ORDER BY created_at DESC;
-    `,
+    WHERE
+        user_id = $1
+    AND (
+        $2::text IS NULL
+        OR
+        type = $2
+    )
+    ORDER BY
+        created_at DESC,
+        id DESC
+    LIMIT $3
+    OFFSET $4;
+  `,
 
   FIND_BY_ID: `
     SELECT

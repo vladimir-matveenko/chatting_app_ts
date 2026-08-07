@@ -134,6 +134,13 @@ export class ApplicationContainer {
 
     this.health = createHealthModule();
 
+    // notifications module
+    this.notifications = createNotificationsModule(
+      database,
+      jwtAuthMiddleware,
+      this.socketEventPublisher,
+    );
+
     this.messages = createMessagesModule(
       database,
       chatsRepository,
@@ -141,6 +148,7 @@ export class ApplicationContainer {
       chatReadsRepository,
       jwtAuthMiddleware,
       this.socketEventPublisher,
+      this.notifications.service,
     );
 
     const chatPermissionsService = new ChatPermissionsService(
@@ -159,13 +167,7 @@ export class ApplicationContainer {
       this.socketEventPublisher,
       this.presenceService,
       chatPermissionsService,
-    );
-
-    // notifications module
-    this.notifications = createNotificationsModule(
-      database,
-      jwtAuthMiddleware,
-      this.socketEventPublisher,
+      this.notifications.service,
     );
 
     //

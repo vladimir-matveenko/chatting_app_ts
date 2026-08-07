@@ -6,12 +6,12 @@ export class NotificationMapper implements Mapper<NotificationEntity, Notificati
   map(entity: NotificationEntity): NotificationModel {
     return {
       id: entity.id,
-      userId: entity.userId,
+      userId: entity.user_id,
       type: entity.type,
       payload: entity.payload,
-      isRead: entity.isRead,
-      createdAt: entity.createdAt,
-      readAt: entity.readAt,
+      isRead: entity.is_read,
+      createdAt: entity.created_at,
+      readAt: entity.read_at,
     };
   }
 }

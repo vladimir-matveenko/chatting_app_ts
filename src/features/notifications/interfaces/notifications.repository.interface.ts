@@ -1,3 +1,4 @@
+import { FindNotificationsDto } from "../dto/find-notifications.dto.js";
 import { NotificationType } from "../enums/notification-type.enum.js";
 import { NotificationPayload } from "../models/notification-payload.model.js";
 import { NotificationModel } from "../models/notification.model.js";
@@ -11,7 +12,7 @@ export interface INotificationsRepository {
 
   findById(id: string): Promise<NotificationModel | null>;
 
-  findAllByUser(userId: string): Promise<NotificationModel[]>;
+  findAllByUser(userId: string, dto: FindNotificationsDto): Promise<NotificationModel[]>;
 
   countUnread(userId: string): Promise<number>;
 

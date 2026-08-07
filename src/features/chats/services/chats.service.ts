@@ -27,6 +27,7 @@ import { UpdateChatDto } from "../dto/update-chat.dto.js";
 import { PresenceService } from "../../../core/websocket/services/presence.service.js";
 import { ChatPermissionsService } from "./chat-permissions.service.js";
 import { FindUsersDto } from "../../users/dto/find-users.dto.js";
+import { ChatNotificationsService } from "./chat-notifications.service.js";
 
 const PREVIOUS_OWNER_ROLE = ChatMemberRole.ADMIN;
 
@@ -47,6 +48,8 @@ export class ChatsService {
     private readonly presenceService: PresenceService,
 
     private readonly chatPermissionsService: ChatPermissionsService,
+
+    private readonly chatNotificationsService: ChatNotificationsService,
   ) {}
 
   async create(dto: CreateChatDto): Promise<Chat> {
@@ -334,6 +337,9 @@ export class ChatsService {
 
       dto.memberIds,
     );
+
+    await this.chatNotificationsService.notifyInvited(chatId, actorId, dto);
+    await this.chatNotificationsService.notifyMembersAdded(chatId, actorId, dto);
   }
 
   async removeMember(
@@ -356,6 +362,8 @@ export class ChatsService {
 
       memberId,
     );
+
+    await this.chatNotificationsService.notifyMemberRemoved(chatId, actorId, memberId);
   }
 
   async changeMemberRole(
@@ -380,6 +388,13 @@ export class ChatsService {
 
       memberId,
 
+      dto.role,
+    );
+
+    await this.chatNotificationsService.notifyMemberRoleChanged(
+      chatId,
+      actorId,
+      memberId,
       dto.role,
     );
   }
@@ -436,6 +451,8 @@ export class ChatsService {
         dto.userId,
       );
     });
+
+    await this.chatNotificationsService.notifyOwnershipTransferred(chatId, actorId, dto.userId);
   }
 
   async update(
@@ -447,10 +464,10 @@ export class ChatsService {
   ): Promise<Chat> {
     await this.chatPermissionsService.ensureCanEditChat(chatId, userId);
 
-    return this.chatsRepository.update(
-      chatId,
+    const chat = await this.chatsRepository.update(chatId, dto);
 
-      dto,
-    );
+    await this.chatNotificationsService.notifyChatUpdated(chatId, userId);
+
+    return chat;
   }
 }

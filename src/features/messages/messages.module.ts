@@ -34,6 +34,8 @@ import { MessageSearchRepository } from "./repositories/message-search.repositor
 import { MessagesSearchMapper } from "./mappers/messages-search.mapper.js";
 import { MessagesRequestValidators } from "./validators/messages-request.validators.js";
 import { SocketEventPublisher } from "../../core/websocket/publishers/socket-event.publisher.js";
+import { NotificationsService } from "../notifications/services/notifications.service.js";
+import { MessagesNotificationsService } from "./services/messages-notifications.service.js";
 
 export function createMessagesModule(
   database: Database,
@@ -47,6 +49,8 @@ export function createMessagesModule(
   jwtAuthMiddleware: JwtAuthMiddleware,
 
   socketPublisher: SocketEventPublisher,
+
+  notificationsService: NotificationsService,
 ): MessagesFeature {
   const messagesMapper = new MessagesMapper();
 
@@ -63,6 +67,11 @@ export function createMessagesModule(
     messageReactionMapper,
   );
 
+  const messagesNotificationsService = new MessagesNotificationsService(
+    notificationsService,
+    chatMembersRepository,
+  );
+
   const messagesService = new MessagesService(
     database,
 
@@ -73,6 +82,8 @@ export function createMessagesModule(
     chatsRepository,
 
     chatMembersRepository,
+
+    messagesNotificationsService,
   );
 
   const messageReactionsService = new MessageReactionsService(
@@ -80,6 +91,7 @@ export function createMessagesModule(
     messagesRepository,
     chatMembersRepository,
     socketPublisher,
+    notificationsService,
   );
 
   const messagesValidators = new MessagesRequestValidators(

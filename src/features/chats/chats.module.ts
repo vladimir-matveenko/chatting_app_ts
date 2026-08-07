@@ -35,6 +35,8 @@ import { FindChatsRequestValidator } from "./validators/find-chats.request.valid
 import { ArchiveChatRequestValidator } from "./validators/archive-chat-request.validator.js";
 import { MuteChatRequestValidator } from "./validators/mute-chat-request.validator.js";
 import { SocketEventPublisher } from "../../core/websocket/publishers/socket-event.publisher.js";
+import { NotificationsService } from "../notifications/services/notifications.service.js";
+import { ChatNotificationsService } from "./services/chat-notifications.service.js";
 
 export function createChatsModule(
   database: Database,
@@ -56,8 +58,14 @@ export function createChatsModule(
   presenceService: PresenceService,
 
   chatPermissionsService: ChatPermissionsService,
+
+  notificationsService: NotificationsService,
 ): ChatsFeature {
   const fingerprintService = new ChatFingerprintService();
+  const chatNotificationsService = new ChatNotificationsService(
+    notificationsService,
+    chatMembersRepository,
+  );
 
   const service = new ChatsService(
     database,
@@ -75,6 +83,8 @@ export function createChatsModule(
     presenceService,
 
     chatPermissionsService,
+
+    chatNotificationsService,
   );
 
   const validators = new ChatsRequestValidators(

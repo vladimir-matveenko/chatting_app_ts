@@ -1,15 +1,21 @@
 export enum NotificationType {
-  Message = "message",
+  Message = "MESSAGE",
 
-  ChatCreated = "chat_created",
+  ChatUpdated = "CHAT_UPDATED",
 
-  ChatUpdated = "chat_updated",
+  AdminGranted = "ADMIN_GRANTED",
 
-  MemberJoined = "member_joined",
+  AdminRevoked = "ADMIN_REVOKED",
 
-  MemberLeft = "member_left",
+  MemberAdded = "MEMBER_ADDED",
 
-  MemberRemoved = "member_removed",
+  MemberRemoved = "MEMBER_REMOVED",
 
-  ChatInvite = "chat_invite",
+  ChatInvite = "CHAT_INVITE",
+
+  OwnerChanged = "OWNER_CHANGED",
+
+  Reaction = "REACTION",
+
+  Reply = "REPLY",
 }

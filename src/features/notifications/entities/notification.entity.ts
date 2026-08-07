@@ -4,15 +4,15 @@ import { NotificationPayload } from "../models/notification-payload.model.js";
 export interface NotificationEntity {
   id: string;
 
-  userId: string;
+  user_id: string;
 
   type: NotificationType;
 
   payload: NotificationPayload;
 
-  isRead: boolean;
+  is_read: boolean;
 
-  createdAt: Date;
+  created_at: Date;
 
-  readAt: Date | null;
+  read_at: Date | null;
 }
