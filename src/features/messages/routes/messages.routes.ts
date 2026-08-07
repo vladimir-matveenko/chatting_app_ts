@@ -35,7 +35,11 @@ export function createMessagesRouter(
   );
 
   // search messages
-  router.get("/chat/:id/search", jwtAuthMiddleware.handler, controller.search.bind(controller));
+  router.get(
+    "/chat/:id/search",
+    jwtAuthMiddleware.handler,
+    asyncHandler(controller.search.bind(controller)),
+  );
 
   // get message
   router.get(
@@ -110,7 +114,11 @@ export function createMessagesRouter(
   );
 
   // mark message as read
-  router.post("/:id/read", jwtAuthMiddleware.handler, controller.markRead.bind(controller));
+  router.post(
+    "/:id/read",
+    jwtAuthMiddleware.handler,
+    asyncHandler(controller.markRead.bind(controller)),
+  );
 
   return router;
 }

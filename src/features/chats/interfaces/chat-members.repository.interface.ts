@@ -14,6 +14,8 @@ export interface IChatMembersRepository {
 
   findByChat(chatId: string): Promise<ChatMember[]>;
 
+  findMembersIdsByChat(chatId: string): Promise<string[]>;
+
   isMember(
     chatId: string,
 

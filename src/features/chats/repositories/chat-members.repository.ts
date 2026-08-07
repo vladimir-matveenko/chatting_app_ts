@@ -75,6 +75,14 @@ export class ChatMembersRepository
     );
   }
 
+  async findMembersIdsByChat(chatId: string): Promise<string[]> {
+    return this.queryManyPrimitive<{ user_id: string }, string>(
+      ChatMembersQueries.FIND_MEMBER_IDS_BY_CHAT,
+      [chatId],
+      (row) => row.user_id,
+    );
+  }
+
   async findByChatAndUser(
     chatId: string,
 

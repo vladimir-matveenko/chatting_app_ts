@@ -28,6 +28,8 @@ export function createApp(container: ApplicationContainer) {
 
   app.use("/messages", container.messages.router);
 
+  app.use("/notifications", container.notifications.router);
+
   app.use(errorHandler);
 
   app.use(

@@ -198,4 +198,14 @@ export abstract class BaseRepository<TEntity extends QueryResultRow, TModel> {
 
     return result.rows.map((row) => mapper.map(row));
   }
+
+  protected async queryManyPrimitive<TEntity extends QueryResultRow, TValue>(
+    sql: string,
+    params: readonly unknown[],
+    selector: (row: TEntity) => TValue,
+  ): Promise<TValue[]> {
+    const result = await this.db.query<TEntity>(sql, params);
+
+    return result.rows.map(selector);
+  }
 }

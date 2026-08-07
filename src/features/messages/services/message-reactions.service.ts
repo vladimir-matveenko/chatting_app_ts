@@ -9,8 +9,9 @@ import type { IMessagesRepository } from "../interfaces/messages.repository.inte
 import type { IChatMembersRepository } from "../../chats/interfaces/chat-members.repository.interface.js";
 
 import type { MessageReaction } from "../models/message-reaction.model.js";
-
-import { SocketEventPublisher } from "../../../core/websocket/socket-event.publisher.js";
+import { SocketEventPublisher } from "../../../core/websocket/publishers/socket-event.publisher.js";
+import { NotificationType } from "../../notifications/enums/notification-type.enum.js";
+import { NotificationsService } from "../../notifications/services/notifications.service.js";
 
 export class MessageReactionsService {
   constructor(
@@ -21,6 +22,8 @@ export class MessageReactionsService {
     private readonly chatMembersRepository: IChatMembersRepository,
 
     private readonly socketPublisher: SocketEventPublisher,
+
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async add(dto: AddReactionDto): Promise<MessageReaction> {
@@ -61,6 +64,15 @@ export class MessageReactionsService {
     }
 
     await this.publishUpdatedMessage(dto.messageId);
+
+    if (message.sender.id !== member.userId) {
+      await this.notificationsService.create(message.sender.id, NotificationType.Reaction, {
+        chatId: message.chatId,
+        messageId: message.id,
+        senderId: message.sender.id,
+        reaction: reaction.type,
+      });
+    }
 
     return reaction;
   }

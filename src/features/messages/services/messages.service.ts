@@ -22,6 +22,7 @@ import { MessagesMode } from "../enums/message-mode.enum.js";
 import { MessagesPage } from "../models/messages-page.model.js";
 import { MessageSearchResult } from "../models/message-search.model.js";
 import { IMessageSearchRepository } from "../interfaces/message-search.repository.interface.js";
+import { MessagesNotificationsService } from "./messages-notifications.service.js";
 
 export class MessagesService {
   constructor(
@@ -34,6 +35,8 @@ export class MessagesService {
     private readonly chatsRepository: IChatsRepository,
 
     private readonly chatMembersRepository: IChatMembersRepository,
+
+    private readonly messagesNotificationsService: MessagesNotificationsService,
   ) {}
 
   async create(dto: CreateMessageDto): Promise<Message> {
@@ -45,23 +48,19 @@ export class MessagesService {
       dto.senderId,
     );
 
-    await this.ensureReplyExists(dto);
+    const repliedMessage = await this.ensureReplyExists(dto);
 
-    return this.database.transaction(async (client: PoolClient) => {
-      const message = await this.messagesRepository.createTx(
-        client,
+    const message = await this.database.transaction(async (client: PoolClient) => {
+      const message = await this.messagesRepository.createTx(client, dto);
 
-        dto,
-      );
-
-      await this.chatsRepository.updateActivityTx(
-        client,
-
-        dto.chatId,
-      );
+      await this.chatsRepository.updateActivityTx(client, dto.chatId);
 
       return message;
     });
+
+    await this.messagesNotificationsService.notifyMessagesCreated(message, repliedMessage);
+
+    return message;
   }
 
   async findById(
@@ -268,28 +267,22 @@ export class MessagesService {
     }
   }
 
-  private async ensureReplyExists(dto: CreateMessageDto): Promise<void> {
+  private async ensureReplyExists(dto: CreateMessageDto): Promise<Message | null> {
     if (!dto.replyToId) {
-      return;
+      return null;
     }
 
     const reply = await this.messagesRepository.findById(dto.replyToId);
 
     if (!reply) {
-      throw new NotFoundError(
-        "Reply message not found.",
-
-        "MESSAGE_NOT_FOUND",
-      );
+      throw new NotFoundError("Reply message not found.", "MESSAGE_NOT_FOUND");
     }
 
     if (reply.chatId !== dto.chatId) {
-      throw new ForbiddenError(
-        "Reply message belongs to another chat.",
-
-        "INVALID_REPLY",
-      );
+      throw new ForbiddenError("Reply message belongs to another chat.", "INVALID_REPLY");
     }
+
+    return reply;
   }
 
   async update(

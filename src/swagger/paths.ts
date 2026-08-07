@@ -7,6 +7,7 @@ import { chatsPaths } from "../features/chats/swagger/index.js";
 import { messagesPaths } from "../features/messages/swagger/index.js";
 
 import { healthPaths } from "../features/health/swagger/index.js";
+import { NotificationsPaths } from "../features/notifications/swagger/paths/notifications.path.js";
 
 export const paths = {
   ...authPaths,
@@ -18,4 +19,6 @@ export const paths = {
   ...messagesPaths,
 
   ...healthPaths,
+
+  ...NotificationsPaths,
 };

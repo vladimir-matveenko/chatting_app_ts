@@ -1,10 +1,10 @@
-import type { AuthenticatedSocket } from "./socket.types.js";
+import type { AuthenticatedSocket } from "../socket.types.js";
 
-import { ForbiddenError } from "../errors/index.js";
+import { ForbiddenError } from "../../errors/index.js";
 
-import { SocketRoomBuilder } from "./socket-room.builder.js";
+import { SocketRoomBuilder } from "../socket-room.builder.js";
 
-import type { IChatMembersRepository } from "../../features/chats/interfaces/chat-members.repository.interface.js";
+import type { IChatMembersRepository } from "../../../features/chats/interfaces/chat-members.repository.interface.js";
 
 export class ChatRoomService {
   constructor(private readonly chatMembersRepository: IChatMembersRepository) {}
