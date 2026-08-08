@@ -47,7 +47,7 @@ export class NotificationsRepository
   }
 
   async markRead(userId: string, notificationId: string): Promise<NotificationModel | null> {
-    return this.findOne(NotificationsQueries.MARK_READ, [userId, notificationId]);
+    return this.findOne(NotificationsQueries.MARK_READ, [notificationId, userId]);
   }
 
   async markAllRead(userId: string): Promise<void> {
