@@ -132,6 +132,53 @@ export const ChatMembersPath = {
   },
 
   "/chats/{id}/members/{userId}": {
+    get: {
+      tags: ["Chats"],
+
+      summary: "Get member of chat",
+
+      description: "Get member of chat",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          name: "id",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "userId",
+
+          in: "path",
+
+          required: true,
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      responses: {
+        200: okResponse("Chat members.", "#/components/schemas/ChatMember"),
+
+        401: unauthorizedResponse,
+
+        404: notFoundResponse,
+      },
+    },
+
     delete: {
       tags: ["Chats"],
 
