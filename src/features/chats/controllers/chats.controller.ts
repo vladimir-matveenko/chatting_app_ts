@@ -8,6 +8,7 @@ import { MessageReadService } from "../../messages/services/message-read.service
 import { ChatsRequestValidators } from "../validators/chats-request.validators.js";
 import { requireId } from "../../../core/http/validators/index.js";
 import { SocketEventPublisher } from "../../../core/websocket/publishers/socket-event.publisher.js";
+import { logger } from "../../../core/logger/logger.js";
 
 export class ChatsController {
   constructor(
@@ -130,13 +131,35 @@ export class ChatsController {
     const userId = request.params.userId;
 
     if (typeof userId !== "string") {
-      throw new ValidationError("Chat id is required.");
+      throw new ValidationError("User id is required.");
     }
 
     const member = await this.service.findMemberById(
       id,
 
       userId,
+    );
+
+    response.json(member);
+  }
+
+  async getMefromChat(
+    request: Request,
+
+    response: Response,
+  ): Promise<void> {
+    const id = request.params.id;
+
+    if (typeof id !== "string") {
+      throw new ValidationError("Chat id is required.");
+    }
+
+    logger.error(request.user!.userId);
+
+    const member = await this.service.findMemberById(
+      id,
+
+      request.user!.userId,
     );
 
     response.json(member);
