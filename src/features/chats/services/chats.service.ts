@@ -230,6 +230,20 @@ export class ChatsService {
     }));
   }
 
+  async findMemberById(
+    chatId: string,
+
+    userId: string,
+  ): Promise<ChatMember | null> {
+    await this.chatPermissionsService.ensureMember(
+      chatId,
+
+      userId,
+    );
+
+    return await this.chatMembersRepository.findByChatAndUser(chatId, userId);
+  }
+
   async archive(
     chatId: string,
 

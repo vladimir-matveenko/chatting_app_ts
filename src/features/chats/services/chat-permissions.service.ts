@@ -83,9 +83,16 @@ export class ChatPermissionsService {
     const owner = await this.getMemberOrThrow(chatId, ownerId);
     const newOwner = await this.getMemberOrThrow(chatId, newOwnerId);
 
-    if (!TransferOwnershipPermissions[owner.role].includes(newOwner.role)) {
+    if (TransferOwnershipPermissions[owner.role].length === 0) {
       throw new ForbiddenError(
         "You don't have permission to transfer ownership.",
+        "TRANSFER_OWNERSHIP_DENIED",
+      );
+    }
+
+    if (!TransferOwnershipPermissions[owner.role].includes(newOwner.role)) {
+      throw new ForbiddenError(
+        "The new user don't have permission to get ownership.",
         "TRANSFER_OWNERSHIP_DENIED",
       );
     }

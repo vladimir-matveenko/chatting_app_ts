@@ -58,6 +58,24 @@ export function createChatsRouter(
     controller.findMembers.bind(controller),
   );
 
+  // get current user from chat
+  router.get(
+    "/:id/members/me",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.getMefromChat.bind(controller)),
+  );
+
+  // get chat member by id
+  router.get(
+    "/:id/members/:userId",
+
+    jwtAuthMiddleware.handler,
+
+    asyncHandler(controller.findMemberById.bind(controller)),
+  );
+
   // mark message as read
   router.post(
     "/:id/read",
