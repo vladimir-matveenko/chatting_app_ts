@@ -2,6 +2,7 @@ import type { CreateChatMemberDto } from "../dto/create-chat-member.dto.js";
 import type { PoolClient } from "pg";
 import { ChatMember } from "../models/chat-member.model.js";
 import { ChatMemberRole } from "../enums/chat-member-role.enum.js";
+import { FindUsersDto } from "../../users/dto/find-users.dto.js";
 
 export interface IChatMembersRepository {
   add(dto: CreateChatMemberDto): Promise<ChatMember>;
@@ -12,7 +13,7 @@ export interface IChatMembersRepository {
     dto: CreateChatMemberDto,
   ): Promise<ChatMember>;
 
-  findByChat(chatId: string): Promise<ChatMember[]>;
+  findByChat(chatId: string, dto: FindUsersDto): Promise<ChatMember[]>;
 
   findMembersIdsByChat(chatId: string): Promise<string[]>;
 

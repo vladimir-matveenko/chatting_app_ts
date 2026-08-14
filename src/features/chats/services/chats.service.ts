@@ -214,6 +214,8 @@ export class ChatsService {
     chatId: string,
 
     userId: string,
+
+    dto: FindUsersDto,
   ): Promise<ChatMember[]> {
     await this.chatPermissionsService.ensureMember(
       chatId,
@@ -221,7 +223,7 @@ export class ChatsService {
       userId,
     );
 
-    const members = await this.chatMembersRepository.findByChat(chatId);
+    const members = await this.chatMembersRepository.findByChat(chatId, dto);
 
     return members.map((member) => ({
       ...member,

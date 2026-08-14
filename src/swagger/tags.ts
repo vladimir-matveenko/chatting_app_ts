@@ -22,4 +22,16 @@ export const tags = [
 
     description: "Health check",
   },
+
+  {
+    name: "Messages",
+
+    description: "Messages",
+  },
+
+  {
+    name: "Notifications",
+
+    description: "Notifications",
+  },
 ];
