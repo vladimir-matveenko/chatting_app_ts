@@ -33,6 +33,51 @@ export const ChatMembersPath = {
             type: "string",
           },
         },
+        {
+          name: "query",
+
+          in: "query",
+
+          required: false,
+
+          schema: {
+            type: "string",
+          },
+        },
+
+        {
+          name: "limit",
+
+          in: "query",
+
+          required: false,
+
+          schema: {
+            type: "integer",
+
+            minimum: 1,
+
+            maximum: 100,
+
+            default: 20,
+          },
+        },
+
+        {
+          name: "offset",
+
+          in: "query",
+
+          required: false,
+
+          schema: {
+            type: "integer",
+
+            minimum: 0,
+
+            default: 0,
+          },
+        },
       ],
 
       responses: {

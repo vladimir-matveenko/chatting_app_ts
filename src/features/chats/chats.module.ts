@@ -37,6 +37,7 @@ import { MuteChatRequestValidator } from "./validators/mute-chat-request.validat
 import { SocketEventPublisher } from "../../core/websocket/publishers/socket-event.publisher.js";
 import { NotificationsService } from "../notifications/services/notifications.service.js";
 import { ChatNotificationsService } from "./services/chat-notifications.service.js";
+import { FindUsersRequestValidator } from "../users/validators/find-users.request.validator.js";
 
 export function createChatsModule(
   database: Database,
@@ -91,6 +92,7 @@ export function createChatsModule(
     new CreateChatRequestValidator(),
     new UpdateChatRequestValidator(),
     new FindChatsRequestValidator(),
+    new FindUsersRequestValidator(),
     new AddChatMembersRequestValidator(),
     new ChangeMemberRoleRequestValidator(),
     new TransferOwnershipRequestValidator(),

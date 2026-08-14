@@ -18,6 +18,7 @@ import type { IChatMembersRepository } from "../interfaces/chat-members.reposito
 
 import type { PoolClient } from "pg";
 import { ChatMemberRole } from "../enums/chat-member-role.enum.js";
+import { FindUsersDto } from "../../users/dto/find-users.dto.js";
 
 export class ChatMembersRepository
   extends BaseRepository<ChatMemberEntity, ChatMember>
@@ -67,11 +68,11 @@ export class ChatMembersRepository
     );
   }
 
-  async findByChat(chatId: string): Promise<ChatMember[]> {
+  async findByChat(chatId: string, dto: FindUsersDto): Promise<ChatMember[]> {
     return this.findMany(
       ChatMembersQueries.FIND_BY_CHAT,
 
-      [chatId],
+      [chatId, dto.query ?? null, dto.limit, dto.offset],
     );
   }
 

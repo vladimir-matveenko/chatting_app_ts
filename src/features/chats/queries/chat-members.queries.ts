@@ -30,13 +30,31 @@ export const ChatMembersQueries = {
 
     FROM chat_members cm
 
-    JOIN users u
+    INNER JOIN users u
         ON u.id = cm.user_id
 
     WHERE
         cm.chat_id = $1
 
-    ORDER BY joined_at;
+    AND (
+        $2::text IS NULL
+
+        OR
+
+        u.user_name ILIKE '%' || $2 || '%'
+
+        OR
+
+        u.display_name ILIKE '%' || $2 || '%'
+    )
+
+    ORDER BY
+        u.display_name NULLS LAST,
+        u.user_name,
+        cm.user_id
+
+    LIMIT $3
+    OFFSET $4;
     `,
 
   FIND_MEMBER_IDS_BY_CHAT: `

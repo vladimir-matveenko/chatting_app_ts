@@ -1,3 +1,4 @@
+import { FindUsersRequestValidator } from "../../users/validators/find-users.request.validator.js";
 import { TransferOwnershipRequestValidator } from "../dto/transfer-ownership-request.validator.js";
 import { AddChatMembersRequestValidator } from "./add-chat-members-request.validator.js";
 import { ArchiveChatRequestValidator } from "./archive-chat-request.validator.js";
@@ -12,6 +13,7 @@ export class ChatsRequestValidators {
     public readonly create: CreateChatRequestValidator,
     public readonly update: UpdateChatRequestValidator,
     public readonly findChats: FindChatsRequestValidator,
+    public readonly findMembers: FindUsersRequestValidator,
     public readonly addMembers: AddChatMembersRequestValidator,
     public readonly changeRole: ChangeMemberRoleRequestValidator,
     public readonly transferOwnership: TransferOwnershipRequestValidator,

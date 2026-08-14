@@ -108,10 +108,14 @@ export class ChatsController {
       throw new ValidationError("Chat id is required.");
     }
 
+    const dto = this.validators.findMembers.validate(request.query);
+
     const members = await this.service.findMembers(
       id,
 
       request.user!.userId,
+
+      dto,
     );
 
     response.json(members);
