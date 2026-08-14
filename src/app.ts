@@ -30,7 +30,9 @@ export function createApp(container: ApplicationContainer) {
 
   app.use("/notifications", container.notifications.router);
 
-  app.use(errorHandler);
+  app.get("/docs.json", (_req, res) => {
+    res.json(swaggerSpec);
+  });
 
   app.use(
     "/docs",
@@ -41,6 +43,8 @@ export function createApp(container: ApplicationContainer) {
   );
 
   app.use(container.health.router);
+
+  app.use(errorHandler);
 
   return app;
 }
