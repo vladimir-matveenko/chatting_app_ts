@@ -35,6 +35,8 @@ import { ChatPermissionsService } from "../../features/chats/services/chat-permi
 import { SocketEventPublisher } from "../websocket/publishers/socket-event.publisher.js";
 import { NotificationsFeature } from "../../features/notifications/notifications.module.interface.js";
 import { createNotificationsModule } from "../../features/notifications/notifications.module.js";
+import { LocalFileStorage } from "../storage/local-file-storage.js";
+import path from "node:path";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;
@@ -112,6 +114,8 @@ export class ApplicationContainer {
 
     this.presenceService = new PresenceService();
 
+    const fileStorage = new LocalFileStorage(path.resolve("uploads"));
+
     //
     // Features
     //
@@ -121,6 +125,7 @@ export class ApplicationContainer {
       jwtAuthMiddleware,
       passwordHasher,
       refreshTokensRepository,
+      fileStorage,
     );
 
     this.auth = createAuthModule(

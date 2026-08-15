@@ -4,6 +4,7 @@ import { asyncHandler } from "../../../core/middleware/async-handler.js";
 
 import { UsersController } from "../controllers/users.controller.js";
 import { JwtAuthMiddleware } from "../../../core/middleware/jwt-auth.middleware.js";
+import { avatarUpload } from "../../../core/middleware/avatar-upload.middleware.js";
 
 export function createUsersRouter(
   controller: UsersController,
@@ -67,6 +68,19 @@ export function createUsersRouter(
     jwtAuthMiddleware.handler,
 
     controller.search.bind(controller),
+  );
+
+  router.post(
+    "/me/avatar",
+    jwtAuthMiddleware.handler,
+    avatarUpload.single("file"),
+    asyncHandler(controller.uploadAvatar.bind(controller)),
+  );
+
+  router.delete(
+    "/me/avatar",
+    jwtAuthMiddleware.handler,
+    asyncHandler(controller.deleteAvatar.bind(controller)),
   );
 
   return router;

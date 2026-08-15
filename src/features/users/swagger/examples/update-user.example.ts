@@ -4,6 +4,4 @@ export const updateUserExample = {
   displayName: "John Smith",
 
   email: "john@example.com",
-
-  avatarUrl: "https://example.com/avatar.png",
 };

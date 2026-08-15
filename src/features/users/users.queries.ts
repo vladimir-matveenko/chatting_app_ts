@@ -35,9 +35,7 @@ export const UsersQueries = {
         user_name =
             COALESCE($3, user_name),
         display_name = 
-            COALESCE($4, display_name),
-        avatar_url = 
-            COALESCE($5, avatar_url)
+            COALESCE($4, display_name)
     WHERE id = $1
     RETURNING *;
     `,
@@ -128,5 +126,13 @@ export const UsersQueries = {
     LIMIT $3
 
     OFFSET $4;
+    `,
+
+  UPDATE_AVATAR: `
+  UPDATE users
+  SET
+    avatar_url = $2
+  WHERE id = $1
+  RETURNING *
     `,
 };

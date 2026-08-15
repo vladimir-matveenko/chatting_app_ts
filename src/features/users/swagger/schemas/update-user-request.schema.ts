@@ -15,12 +15,6 @@ export const UpdateUserRequestSchema = {
         example: "John Smith",
       },
 
-      avatarUrl: {
-        type: "string",
-
-        example: "https://example.com/avatar.png",
-      },
-
       email: {
         type: "string",
 

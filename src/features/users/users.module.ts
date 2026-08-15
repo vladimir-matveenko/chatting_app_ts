@@ -20,12 +20,14 @@ import { UpdatePasswordRequestValidator } from "./validators/update-password-req
 import { RefreshTokensRepository } from "../auth/repositories/refresh-tokens.repository.js";
 import { FindUsersRequestValidator } from "./validators/find-users.request.validator.js";
 import { UserListRepository } from "./repositories/user-list.repository.js";
+import { FileStorage } from "../../core/storage/file-storage.interface.js";
 
 export function createUsersModule(
   database: Database,
   jwtAuthMiddleware: JwtAuthMiddleware,
   passwordHasher: PasswordHasher,
   refreshTokensRepository: RefreshTokensRepository,
+  fileStorage: FileStorage,
 ): UsersFeature {
   const mappers = new UsersMappers();
 
@@ -38,6 +40,7 @@ export function createUsersModule(
     userListRepository,
     refreshTokensRepository,
     passwordHasher,
+    fileStorage,
   );
 
   const validators = new UsersRequestValidators(

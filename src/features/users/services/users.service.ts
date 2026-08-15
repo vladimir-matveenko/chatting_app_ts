@@ -19,6 +19,9 @@ import { IRefreshTokensRepository } from "../../auth/interfaces/refresh-tokens.r
 import { FindUsersDto } from "../dto/find-users.dto.js";
 import { UserListItem } from "../models/user-list-item.model.js";
 import { IUserListRepository } from "../interfaces/user-list.repository.interface.js";
+import { FileStorage } from "../../../core/storage/file-storage.interface.js";
+import { detectImageType } from "../../../core/storage/image-file.utils.js";
+import { env } from "../../../core/config/env.js";
 
 export class UsersService {
   constructor(
@@ -29,6 +32,8 @@ export class UsersService {
     private readonly refreshTokensRepository: IRefreshTokensRepository,
 
     private readonly passwordHasher: PasswordHasher,
+
+    private readonly fileStorage: FileStorage,
   ) {}
 
   async createUser(dto: CreateUserRequestDto): Promise<User> {
@@ -222,5 +227,47 @@ export class UsersService {
 
   async search(currentUserId: string, dto: FindUsersDto): Promise<UserListItem[]> {
     return this.userListRepository.search(currentUserId, dto);
+  }
+
+  async uploadAvatar(id: string, file: Buffer): Promise<User> {
+    const imageType = detectImageType(file);
+
+    if (!imageType) {
+      throw new BadRequestError("Invalid image format.", "INVALID_IMAGE_FORMAT");
+    }
+
+    const user = await this.requireById(id);
+
+    const fileName = `${crypto.randomUUID()}.${imageType.extension}`;
+
+    const avatarPath = await this.fileStorage.save(file, "avatars", fileName);
+
+    const avatarUrl = `${env.apiUrl}/uploads/${avatarPath}`;
+
+    try {
+      const updatedUser = await this.usersRepository.updateAvatar(id, avatarUrl);
+
+      if (user.avatarUrl) {
+        await this.fileStorage.delete(user.avatarUrl.replace("/uploads/", ""));
+      }
+
+      return updatedUser;
+    } catch (error) {
+      await this.fileStorage.delete(avatarPath);
+
+      throw error;
+    }
+  }
+
+  async deleteAvatar(id: string): Promise<void> {
+    const user = await this.requireById(id);
+
+    if (!user.avatarUrl) {
+      return;
+    }
+
+    await this.usersRepository.updateAvatar(id, null);
+
+    await this.fileStorage.delete(user.avatarUrl.replace("/uploads/", ""));
   }
 }
