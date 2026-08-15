@@ -73,7 +73,7 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
     return this.saveOne(
       UsersQueries.UPDATE_USER,
 
-      [id, dto.email ?? null, dto.userName ?? null, dto.displayName ?? null, dto.avatarUrl ?? null],
+      [id, dto.email ?? null, dto.userName ?? null, dto.displayName ?? null],
     );
   }
 
@@ -95,5 +95,9 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
 
       [ids],
     );
+  }
+
+  async updateAvatar(id: string, avatarUrl: string | null): Promise<User> {
+    return this.saveOne(UsersQueries.UPDATE_AVATAR, [id, avatarUrl]);
   }
 }

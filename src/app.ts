@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "node:path";
 
 import { ApplicationContainer } from "./core/container/application-container.js";
 
@@ -15,6 +16,8 @@ export function createApp(container: ApplicationContainer) {
   app.use(cors());
 
   app.use(express.json());
+
+  app.use("/uploads", express.static(path.resolve("uploads")));
 
   app.use("/auth", container.auth.router);
 

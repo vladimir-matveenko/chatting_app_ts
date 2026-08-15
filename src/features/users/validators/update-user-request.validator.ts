@@ -26,16 +26,7 @@ export class UpdateUserRequestValidator implements RequestValidator<UpdateUserRe
       dto.displayName = requireString(request.body.displayName, "displayName");
     }
 
-    if (request.body.avatarUrl !== undefined) {
-      dto.avatarUrl = requireString(request.body.avatarUrl, "avatarUrl");
-    }
-
-    if (
-      dto.email === undefined &&
-      dto.userName === undefined &&
-      dto.avatarUrl === undefined &&
-      dto.displayName === undefined
-    ) {
+    if (dto.email === undefined && dto.userName === undefined && dto.displayName === undefined) {
       throw new ValidationError("At least one field must be provided.");
     }
 
