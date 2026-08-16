@@ -22,6 +22,7 @@ import { IUserListRepository } from "../interfaces/user-list.repository.interfac
 import { FileStorage } from "../../../core/storage/file-storage.interface.js";
 import { detectImageType } from "../../../core/storage/image-file.utils.js";
 import { env } from "../../../core/config/env.js";
+import { getStoragePathFromUrl } from "../../../core/storage/file-url.utils.js";
 
 export class UsersService {
   constructor(
@@ -248,7 +249,8 @@ export class UsersService {
       const updatedUser = await this.usersRepository.updateAvatar(id, avatarUrl);
 
       if (user.avatarUrl) {
-        await this.fileStorage.delete(user.avatarUrl.replace("/uploads/", ""));
+        const oldAvatarPath = getStoragePathFromUrl(user.avatarUrl);
+        await this.fileStorage.delete(oldAvatarPath);
       }
 
       return updatedUser;
