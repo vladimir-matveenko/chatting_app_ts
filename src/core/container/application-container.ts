@@ -37,6 +37,9 @@ import { NotificationsFeature } from "../../features/notifications/notifications
 import { createNotificationsModule } from "../../features/notifications/notifications.module.js";
 import { LocalFileStorage } from "../storage/local-file-storage.js";
 import path from "node:path";
+import { PasswordResetCodeMapper } from "../../features/auth/mappers/password-reset-code.mapper.js";
+import { ResetPasswordRepository } from "../../features/auth/repositories/reset-password.repository.js";
+import { NodemailerMailService } from "../mail/nodemailer-mail.service.js";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;
@@ -78,6 +81,8 @@ export class ApplicationContainer {
 
     this.socketAuthMiddleware = new SocketAuthMiddleware(this.jwtService);
 
+    const mailService = new NodemailerMailService();
+
     //
     // Auth repositories
     //
@@ -85,6 +90,10 @@ export class ApplicationContainer {
     const refreshTokenMapper = new RefreshTokenMapper();
 
     const refreshTokensRepository = new RefreshTokensRepository(database, refreshTokenMapper);
+
+    const passwordResetMapper = new PasswordResetCodeMapper();
+
+    const resetPasswordRepository = new ResetPasswordRepository(database, passwordResetMapper);
 
     //
     // Chat repositories
@@ -135,6 +144,8 @@ export class ApplicationContainer {
       this.jwtService,
       jwtAuthMiddleware,
       refreshTokensRepository,
+      resetPasswordRepository,
+      mailService,
     );
 
     this.health = createHealthModule();
