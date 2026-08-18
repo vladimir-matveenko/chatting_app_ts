@@ -57,4 +57,24 @@ export class ResetPasswordRepository
   async completePasswordReset(id: string): Promise<void> {
     await this.query(ResetPasswordQueries.COMPLETE_PASSWORD_RESET, [id]);
   }
+
+  async getPasswordResetRequestStats(
+    userId: string,
+    since: Date,
+  ): Promise<{
+    requestCount: number;
+    lastRequestedAt: Date | null;
+  }> {
+    const result = await this.db.query(ResetPasswordQueries.GET_PASSWORD_RESET_REQUEST_STATS, [
+      userId,
+      since,
+    ]);
+
+    const row = result.rows[0]!;
+
+    return {
+      requestCount: row.request_count,
+      lastRequestedAt: row.last_requested_at,
+    };
+  }
 }

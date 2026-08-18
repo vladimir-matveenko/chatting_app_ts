@@ -22,4 +22,12 @@ export interface IResetPasswordRepository {
   findPasswordResetByToken(resetTokenHash: string): Promise<PasswordResetCode | null>;
 
   completePasswordReset(id: string): Promise<void>;
+
+  getPasswordResetRequestStats(
+    userId: string,
+    since: Date,
+  ): Promise<{
+    requestCount: number;
+    lastRequestedAt: Date | null;
+  }>;
 }

@@ -93,4 +93,13 @@ export const ResetPasswordQueries = {
       AND used_at IS NULL
     RETURNING id
   `,
+
+  GET_PASSWORD_RESET_REQUEST_STATS: `
+    SELECT
+      COUNT(*)::int AS request_count,
+      MAX(created_at) AS last_requested_at
+    FROM password_reset_codes
+    WHERE user_id = $1
+      AND created_at >= $2
+  `,
 };
