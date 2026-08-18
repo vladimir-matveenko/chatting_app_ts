@@ -11,8 +11,6 @@ export interface IResetPasswordRepository {
 
   findPasswordResetCode(userId: string): Promise<PasswordResetCode | null>;
 
-  incrementPasswordResetAttempts(id: string): Promise<void>;
-
   verifyPasswordResetCode(
     id: string,
     resetTokenHash: string,

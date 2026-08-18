@@ -4,7 +4,6 @@ CREATE TABLE password_reset_codes (
     code_hash TEXT NOT NULL,
     reset_token_hash TEXT,
     expires_at TIMESTAMPTZ NOT NULL,
-    attempts INTEGER NOT NULL DEFAULT 0 CHECK (attempts >= 0),
     verified_at TIMESTAMPTZ,
     used_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

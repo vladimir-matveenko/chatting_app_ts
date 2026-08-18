@@ -14,11 +14,7 @@ const PASSWORD_RESET_CODE_TTL_MS = 3 * 60 * 1000;
 
 const PASSWORD_RESET_TOKEN_TTL_MS = 10 * 60 * 1000;
 
-const PASSWORD_RESET_MAX_ATTEMPTS = 5; // attempts for one code
-
 export const PASSWORD_RESET_REQUEST_COOLDOWN_MS = 60 * 1000;
-
-export const PASSWORD_RESET_MAX_REQUESTS = 5; // requests count inside REQUEST_WINDOW (5 attempts for 15 min)
 
 export const PASSWORD_RESET_REQUEST_WINDOW_MS = 15 * 60 * 1000;
 
@@ -64,13 +60,6 @@ export class ResetPasswordService {
       }
     }
 
-    if (stats.requestCount >= PASSWORD_RESET_MAX_REQUESTS) {
-      throw new BadRequestError(
-        `Too many reset code requests. Please try again later.`,
-        "RESET_CODE_TOO_MANY_REQUESTS",
-      );
-    }
-
     await this.resetPasswordRepository.invalidatePasswordResetCodes(credentials.id);
 
     const code = this.generateCode();
@@ -101,15 +90,16 @@ export class ResetPasswordService {
       throw new BadRequestError("Reset code has expired.", "RESET_CODE_EXPIRED");
     }
 
-    if (resetCode.attempts >= PASSWORD_RESET_MAX_ATTEMPTS) {
-      throw new BadRequestError("Too many attempts.", "RESET_CODE_TOO_MANY_ATTEMPTS");
+    if (resetCode.verifiedAt) {
+      throw new BadRequestError(
+        "Reset code has already been verified.",
+        "RESET_CODE_ALREADY_VERIFIED",
+      );
     }
 
     const codeHash = this.tokenHasher.hash(code);
 
     if (codeHash !== resetCode.codeHash) {
-      await this.resetPasswordRepository.incrementPasswordResetAttempts(resetCode.id);
-
       throw new BadRequestError("Invalid reset code.", "INVALID_RESET_CODE");
     }
 

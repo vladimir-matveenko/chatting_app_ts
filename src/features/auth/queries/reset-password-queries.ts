@@ -19,7 +19,6 @@ export const ResetPasswordQueries = {
       code_hash,
       reset_token_hash,
       expires_at,
-      attempts,
       verified_at,
       used_at,
       created_at,
@@ -33,7 +32,6 @@ export const ResetPasswordQueries = {
       code_hash,
       reset_token_hash,
       expires_at,
-      attempts,
       verified_at,
       used_at,
       created_at,
@@ -41,15 +39,9 @@ export const ResetPasswordQueries = {
     FROM password_reset_codes
     WHERE user_id = $1
       AND used_at IS NULL
-      AND expires_at > NOW()
+      AND verified_at IS NULL
     ORDER BY created_at DESC
     LIMIT 1
-  `,
-
-  INCREMENT_PASSWORD_RESET_ATTEMPTS: `
-    UPDATE password_reset_codes
-    SET attempts = attempts + 1
-    WHERE id = $1
   `,
 
   VERIFY_PASSWORD_RESET_CODE: `
