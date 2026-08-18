@@ -14,7 +14,13 @@ const PASSWORD_RESET_CODE_TTL_MS = 3 * 60 * 1000;
 
 const PASSWORD_RESET_TOKEN_TTL_MS = 10 * 60 * 1000;
 
-const PASSWORD_RESET_MAX_ATTEMPTS = 5;
+const PASSWORD_RESET_MAX_ATTEMPTS = 5; // attempts for one code
+
+export const PASSWORD_RESET_REQUEST_COOLDOWN_MS = 60 * 1000;
+
+export const PASSWORD_RESET_MAX_REQUESTS = 5; // requests count inside REQUEST_WINDOW (5 attempts for 15 min)
+
+export const PASSWORD_RESET_REQUEST_WINDOW_MS = 15 * 60 * 1000;
 
 export class ResetPasswordService {
   constructor(
@@ -34,6 +40,35 @@ export class ResetPasswordService {
 
     if (!credentials) {
       return;
+    }
+
+    const now = Date.now();
+
+    const requestWindowStartedAt = new Date(now - PASSWORD_RESET_REQUEST_WINDOW_MS);
+
+    const stats = await this.resetPasswordRepository.getPasswordResetRequestStats(
+      credentials.id,
+      requestWindowStartedAt,
+    );
+
+    if (stats.lastRequestedAt) {
+      const cooldownEndsAt = stats.lastRequestedAt.getTime() + PASSWORD_RESET_REQUEST_COOLDOWN_MS;
+
+      if (cooldownEndsAt > now) {
+        const retryAfterSeconds = Math.ceil((cooldownEndsAt - now) / 1000);
+
+        throw new BadRequestError(
+          `Please wait ${retryAfterSeconds} seconds before requesting another reset code.`,
+          "RESET_CODE_REQUEST_TOO_SOON",
+        );
+      }
+    }
+
+    if (stats.requestCount >= PASSWORD_RESET_MAX_REQUESTS) {
+      throw new BadRequestError(
+        `Too many reset code requests. Please try again later.`,
+        "RESET_CODE_TOO_MANY_REQUESTS",
+      );
     }
 
     await this.resetPasswordRepository.invalidatePasswordResetCodes(credentials.id);
