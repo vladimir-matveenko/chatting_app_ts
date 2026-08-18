@@ -34,10 +34,6 @@ export class ResetPasswordRepository
     return this.findOne(ResetPasswordQueries.FIND_PASSWORD_RESET_CODE, [userId]);
   }
 
-  async incrementPasswordResetAttempts(id: string): Promise<void> {
-    await this.query(ResetPasswordQueries.INCREMENT_PASSWORD_RESET_ATTEMPTS, [id]);
-  }
-
   async verifyPasswordResetCode(
     id: string,
     resetTokenHash: string,
