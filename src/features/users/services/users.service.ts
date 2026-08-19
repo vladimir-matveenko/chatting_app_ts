@@ -270,6 +270,7 @@ export class UsersService {
 
     await this.usersRepository.updateAvatar(id, null);
 
-    await this.fileStorage.delete(user.avatarUrl.replace("/uploads/", ""));
+    const oldAvatarPath = getStoragePathFromUrl(user.avatarUrl);
+    await this.fileStorage.delete(oldAvatarPath);
   }
 }
