@@ -86,6 +86,12 @@ export class ResetPasswordService {
       throw new BadRequestError("Invalid reset code.", "INVALID_RESET_CODE");
     }
 
+    const codeHash = this.tokenHasher.hash(code);
+
+    if (codeHash !== resetCode.codeHash) {
+      throw new BadRequestError("Invalid reset code.", "INVALID_RESET_CODE");
+    }
+
     if (resetCode.expiresAt.getTime() <= Date.now()) {
       throw new BadRequestError("Reset code has expired.", "RESET_CODE_EXPIRED");
     }
@@ -95,12 +101,6 @@ export class ResetPasswordService {
         "Reset code has already been verified.",
         "RESET_CODE_ALREADY_VERIFIED",
       );
-    }
-
-    const codeHash = this.tokenHasher.hash(code);
-
-    if (codeHash !== resetCode.codeHash) {
-      throw new BadRequestError("Invalid reset code.", "INVALID_RESET_CODE");
     }
 
     const resetToken = crypto.randomBytes(32).toString("hex");
