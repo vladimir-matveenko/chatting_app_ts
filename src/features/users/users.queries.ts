@@ -131,7 +131,9 @@ export const UsersQueries = {
   UPDATE_AVATAR: `
   UPDATE users
   SET
-    avatar_url = $2
+    avatar_url = $2,
+    avatar_public_id = $3,
+    updated_at = NOW()
   WHERE id = $1
   RETURNING *
     `,

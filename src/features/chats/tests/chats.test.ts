@@ -32,6 +32,7 @@ import type { ChatMember } from "../models/chat-member.model.js";
 import type { ChatListItem } from "../models/chat-list-item.model.js";
 
 import type { FindUsersDto } from "../../users/dto/find-users.dto.js";
+import { User } from "../../users/models/user.model.js";
 
 type TransactionMock = jest.MockedFunction<
   <T>(callback: (client: PoolClient) => Promise<T>) => Promise<T>
@@ -102,6 +103,20 @@ describe("ChatsService", () => {
       ownerId: "user123",
       ...overrides,
     }) as Chat;
+
+  const createUser = (overrides: Partial<User> = {}): User =>
+    ({
+      id: "user123",
+      email: "user@example.com",
+      userName: "Test User",
+      displayName: null,
+      avatarUrl: null,
+      avatarPublicId: null,
+      passwordHash: "hashedPassword",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      ...overrides,
+    }) as User;
 
   const createChatMember = (overrides: Partial<ChatMember> = {}): ChatMember =>
     ({
@@ -222,7 +237,11 @@ describe("ChatsService", () => {
         ownerId: "user123",
       });
 
-      mockUsersRepository.findByIds.mockResolvedValue([{} as any, {} as any, {} as any]);
+      mockUsersRepository.findByIds.mockResolvedValue([
+        createUser({ id: "user456" }),
+        createUser({ id: "user789" }),
+        createUser({ id: "user123" }),
+      ]);
 
       mockChatsRepository.findByFingerprintTx.mockResolvedValue(null);
 
@@ -285,7 +304,11 @@ describe("ChatsService", () => {
 
       const expectedChat = createChat();
 
-      mockUsersRepository.findByIds.mockResolvedValue([{} as any, {} as any, {} as any]);
+      mockUsersRepository.findByIds.mockResolvedValue([
+        createUser({ id: "user456" }),
+        createUser({ id: "user789" }),
+        createUser({ id: "user123" }),
+      ]);
 
       mockChatsRepository.findByFingerprintTx.mockResolvedValue(null);
       mockChatsRepository.createTx.mockResolvedValue(expectedChat);
@@ -311,7 +334,11 @@ describe("ChatsService", () => {
 
       const expectedChat = createChat();
 
-      mockUsersRepository.findByIds.mockResolvedValue([{} as any, {} as any, {} as any]);
+      mockUsersRepository.findByIds.mockResolvedValue([
+        createUser({ id: "user123" }),
+        createUser({ id: "user789" }),
+        createUser({ id: "user123" }),
+      ]);
 
       mockChatsRepository.findByFingerprintTx.mockResolvedValue(null);
       mockChatsRepository.createTx.mockResolvedValue(expectedChat);
@@ -333,7 +360,10 @@ describe("ChatsService", () => {
         type: ChatType.PRIVATE,
       });
 
-      mockUsersRepository.findByIds.mockResolvedValue([{} as any, {} as any]);
+      mockUsersRepository.findByIds.mockResolvedValue([
+        createUser({ id: "user456" }),
+        createUser({ id: "user123" }),
+      ]);
 
       mockChatsRepository.findByFingerprintTx.mockResolvedValue(existingChat);
 
@@ -352,7 +382,7 @@ describe("ChatsService", () => {
         memberIds: ["user456", "user789"],
       });
 
-      mockUsersRepository.findByIds.mockResolvedValue([{} as any]);
+      mockUsersRepository.findByIds.mockResolvedValue([createUser({ id: "user456" })]);
 
       await expect(chatsService.create(dto)).rejects.toThrow(ValidationError);
 
@@ -673,7 +703,10 @@ describe("ChatsService", () => {
         }),
       );
 
-      mockUsersRepository.findByIds.mockResolvedValue([{} as any, {} as any]);
+      mockUsersRepository.findByIds.mockResolvedValue([
+        createUser({ id: "user456" }),
+        createUser({ id: "user789" }),
+      ]);
 
       await chatsService.addMembers(chatId, actorId, dto);
 
@@ -744,7 +777,7 @@ describe("ChatsService", () => {
         }),
       );
 
-      mockUsersRepository.findByIds.mockResolvedValue([{} as any]);
+      mockUsersRepository.findByIds.mockResolvedValue([createUser({ id: "user456" })]);
 
       await expect(chatsService.addMembers(chatId, actorId, dto)).rejects.toThrow(ValidationError);
 

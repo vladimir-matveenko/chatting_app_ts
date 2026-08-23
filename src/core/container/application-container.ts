@@ -35,11 +35,10 @@ import { ChatPermissionsService } from "../../features/chats/services/chat-permi
 import { SocketEventPublisher } from "../websocket/publishers/socket-event.publisher.js";
 import { NotificationsFeature } from "../../features/notifications/notifications.module.interface.js";
 import { createNotificationsModule } from "../../features/notifications/notifications.module.js";
-import { LocalFileStorage } from "../storage/local-file-storage.js";
-import path from "node:path";
 import { PasswordResetCodeMapper } from "../../features/auth/mappers/password-reset-code.mapper.js";
 import { ResetPasswordRepository } from "../../features/auth/repositories/reset-password.repository.js";
 import { NodemailerMailService } from "../mail/nodemailer-mail.service.js";
+import { CloudinaryFileStorage } from "../storage/cloudinary-file-storage.js";
 
 export class ApplicationContainer {
   readonly users: UsersFeature;
@@ -123,7 +122,7 @@ export class ApplicationContainer {
 
     this.presenceService = new PresenceService();
 
-    const fileStorage = new LocalFileStorage(path.resolve("uploads"));
+    const fileStorage = new CloudinaryFileStorage();
 
     //
     // Features
