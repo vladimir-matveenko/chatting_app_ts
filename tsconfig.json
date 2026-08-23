@@ -17,8 +17,7 @@
     // Compatibility
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*", "scripts"],
   "exclude": ["node_modules", "dist"]
