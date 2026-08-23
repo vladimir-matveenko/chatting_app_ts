@@ -21,8 +21,6 @@ import { UserListItem } from "../models/user-list-item.model.js";
 import { IUserListRepository } from "../interfaces/user-list.repository.interface.js";
 import { FileStorage } from "../../../core/storage/file-storage.interface.js";
 import { detectImageType } from "../../../core/storage/image-file.utils.js";
-import { env } from "../../../core/config/env.js";
-import { getStoragePathFromUrl } from "../../../core/storage/file-url.utils.js";
 
 export class UsersService {
   constructor(
@@ -241,21 +239,26 @@ export class UsersService {
 
     const fileName = `${crypto.randomUUID()}.${imageType.extension}`;
 
-    const avatarPath = await this.fileStorage.save(file, "avatars", fileName);
-
-    const avatarUrl = `${env.apiUrl}/uploads/${avatarPath}`;
+    const storedFile = await this.fileStorage.save(file, "avatars", fileName);
 
     try {
-      const updatedUser = await this.usersRepository.updateAvatar(id, avatarUrl);
+      const updatedUser = await this.usersRepository.updateAvatar(
+        id,
+        storedFile.url,
+        storedFile.publicId,
+      );
 
-      if (user.avatarUrl) {
-        const oldAvatarPath = getStoragePathFromUrl(user.avatarUrl);
-        await this.fileStorage.delete(oldAvatarPath);
+      if (user.avatarPublicId) {
+        try {
+          await this.fileStorage.delete(user.avatarPublicId);
+        } catch (error) {
+          console.error("Failed to delete old avatar:", error);
+        }
       }
 
       return updatedUser;
     } catch (error) {
-      await this.fileStorage.delete(avatarPath);
+      await this.fileStorage.delete(storedFile.publicId);
 
       throw error;
     }
@@ -264,13 +267,16 @@ export class UsersService {
   async deleteAvatar(id: string): Promise<void> {
     const user = await this.requireById(id);
 
-    if (!user.avatarUrl) {
+    if (!user.avatarPublicId) {
       return;
     }
 
-    await this.usersRepository.updateAvatar(id, null);
+    await this.usersRepository.updateAvatar(id, null, null);
 
-    const oldAvatarPath = getStoragePathFromUrl(user.avatarUrl);
-    await this.fileStorage.delete(oldAvatarPath);
+    try {
+      await this.fileStorage.delete(user.avatarPublicId);
+    } catch (error) {
+      console.error("Failed to delete avatar from storage:", error);
+    }
   }
 }

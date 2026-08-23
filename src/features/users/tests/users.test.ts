@@ -64,6 +64,7 @@ describe("UsersService", () => {
     userName: "Test User",
     displayName: null,
     avatarUrl: null,
+    avatarPublicId: null,
     passwordHash: "hashedPassword",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -574,11 +575,15 @@ describe("UsersService", () => {
       const existingUser = createUser();
 
       const updatedUser = createUser({
-        avatarUrl: "https://api.example.com/uploads/avatars/uuid.png",
+        avatarUrl: "https://res.cloudinary.com/demo/image/upload/v123/avatars/uuid.png",
+        avatarPublicId: "avatars/uuid",
       });
 
       mockUsersRepository.findById.mockResolvedValue(existingUser);
-      mockFileStorage.save.mockResolvedValue("avatars/uuid.png");
+      mockFileStorage.save.mockResolvedValue({
+        url: "https://res.cloudinary.com/demo/image/upload/v123/avatars/uuid.png",
+        publicId: "avatars/uuid",
+      });
       mockUsersRepository.updateAvatar.mockResolvedValue(updatedUser);
 
       const result = await usersService.uploadAvatar(userId, validPng);
@@ -591,7 +596,8 @@ describe("UsersService", () => {
 
       expect(mockUsersRepository.updateAvatar).toHaveBeenCalledWith(
         userId,
-        expect.stringContaining("/uploads/avatars/"),
+        "https://res.cloudinary.com/demo/image/upload/v123/avatars/uuid.png",
+        "avatars/uuid",
       );
     });
 
@@ -620,22 +626,27 @@ describe("UsersService", () => {
       const userId = "user123";
 
       const existingUser = createUser({
-        avatarUrl: "https://api.example.com/uploads/avatars/old-avatar.png",
+        avatarUrl: "https://res.cloudinary.com/demo/image/upload/v123/avatars/old-avatar.png",
+        avatarPublicId: "avatars/old-avatar",
       });
 
       const updatedUser = createUser({
-        avatarUrl: "https://api.example.com/uploads/avatars/new-avatar.png",
+        avatarUrl: "https://res.cloudinary.com/demo/image/upload/v123/avatars/new-avatar.png",
+        avatarPublicId: "avatars/new-avatar",
       });
 
       mockUsersRepository.findById.mockResolvedValue(existingUser);
-      mockFileStorage.save.mockResolvedValue("avatars/new-avatar.png");
+      mockFileStorage.save.mockResolvedValue({
+        url: "https://res.cloudinary.com/demo/image/upload/v123/avatars/new-avatar.png",
+        publicId: "avatars/new-avatar",
+      });
       mockUsersRepository.updateAvatar.mockResolvedValue(updatedUser);
 
       const result = await usersService.uploadAvatar(userId, validPng);
 
       expect(result).toEqual(updatedUser);
 
-      expect(mockFileStorage.delete).toHaveBeenCalledWith("avatars/old-avatar.png");
+      expect(mockFileStorage.delete).toHaveBeenCalledWith("avatars/old-avatar");
     });
 
     it("should delete uploaded file on updateAvatar failure", async () => {
@@ -645,13 +656,16 @@ describe("UsersService", () => {
 
       mockUsersRepository.findById.mockResolvedValue(existingUser);
 
-      mockFileStorage.save.mockResolvedValue("avatars/uuid.png");
+      mockFileStorage.save.mockResolvedValue({
+        url: "https://res.cloudinary.com/demo/image/upload/v123/avatars/uuid.png",
+        publicId: "avatars/uuid",
+      });
 
       mockUsersRepository.updateAvatar.mockRejectedValue(new Error("Database error"));
 
       await expect(usersService.uploadAvatar(userId, validPng)).rejects.toThrow("Database error");
 
-      expect(mockFileStorage.delete).toHaveBeenCalledWith("avatars/uuid.png");
+      expect(mockFileStorage.delete).toHaveBeenCalledWith("avatars/uuid");
     });
   });
 
@@ -660,7 +674,8 @@ describe("UsersService", () => {
       const userId = "user123";
 
       const existingUser = createUser({
-        avatarUrl: "https://api.example.com/uploads/avatars/avatar.png",
+        avatarUrl: "https://res.cloudinary.com/demo/image/upload/v123/avatars/avatar.png",
+        avatarPublicId: "avatars/avatar",
       });
 
       mockUsersRepository.findById.mockResolvedValue(existingUser);
@@ -668,15 +683,16 @@ describe("UsersService", () => {
       mockUsersRepository.updateAvatar.mockResolvedValue({
         ...existingUser,
         avatarUrl: null,
+        avatarPublicId: null,
       });
 
       await usersService.deleteAvatar(userId);
 
       expect(mockUsersRepository.findById).toHaveBeenCalledWith(userId);
 
-      expect(mockUsersRepository.updateAvatar).toHaveBeenCalledWith(userId, null);
+      expect(mockUsersRepository.updateAvatar).toHaveBeenCalledWith(userId, null, null);
 
-      expect(mockFileStorage.delete).toHaveBeenCalledWith("avatars/avatar.png");
+      expect(mockFileStorage.delete).toHaveBeenCalledWith("avatars/avatar");
     });
 
     it("should do nothing when user has no avatar", async () => {

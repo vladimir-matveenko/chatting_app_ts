@@ -97,7 +97,11 @@ export class UsersRepository extends BaseRepository<UserEntity, User> implements
     );
   }
 
-  async updateAvatar(id: string, avatarUrl: string | null): Promise<User> {
-    return this.saveOne(UsersQueries.UPDATE_AVATAR, [id, avatarUrl]);
+  async updateAvatar(
+    id: string,
+    avatarUrl: string | null,
+    avatarPublicId: string | null,
+  ): Promise<User> {
+    return this.saveOne(UsersQueries.UPDATE_AVATAR, [id, avatarUrl, avatarPublicId]);
   }
 }

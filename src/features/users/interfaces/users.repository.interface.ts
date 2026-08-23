@@ -22,5 +22,5 @@ export interface IUsersRepository {
 
   findByIds(ids: string[]): Promise<User[]>;
 
-  updateAvatar(id: string, avatarUrl: string | null): Promise<User>;
+  updateAvatar(id: string, avatarUrl: string | null, avatarPublicId: string | null): Promise<User>;
 }
