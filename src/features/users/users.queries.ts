@@ -132,8 +132,7 @@ export const UsersQueries = {
   UPDATE users
   SET
     avatar_url = $2,
-    avatar_public_id = $3,
-    updated_at = NOW()
+    avatar_public_id = $3
   WHERE id = $1
   RETURNING *
     `,
