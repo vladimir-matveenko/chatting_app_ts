@@ -579,6 +579,333 @@ describe("MessagesService", () => {
       );
       expect(mockMessagesRepository.findLatest).not.toHaveBeenCalled();
     });
+
+    it("should load messages after when mode is AFTER", async () => {
+      const chatId = "chat123";
+      const currentUserId = "user123";
+      const dto = createGetMessagesRequestDto({
+        mode: MessagesMode.AFTER,
+        limit: 50,
+        anchorMessageId: "message456",
+      });
+
+      const member = {
+        id: "member123",
+        chatId: chatId,
+        userId: currentUserId,
+        role: ChatMemberRole.MEMBER,
+      } as any;
+
+      const messages = [
+        createMessage({
+          id: "message1",
+          chatId: chatId,
+          sender: {
+            id: "user123",
+            userName: "testuser",
+            displayName: "Test User",
+            avatarUrl: null,
+          },
+        }),
+        createMessage({
+          id: "message2",
+          chatId: chatId,
+          sender: {
+            id: "user123",
+            userName: "testuser",
+            displayName: "Test User",
+            avatarUrl: null,
+          },
+        }),
+      ];
+
+      const expectedResult: MessagesPage = {
+        messages,
+        hasPrevious: true,
+        hasNext: false,
+      };
+
+      mockChatMembersRepository.findByChatAndUser.mockResolvedValue(member);
+      mockMessagesRepository.findAfter.mockResolvedValue(messages);
+      mockMessagesRepository.hasMessagesAfter.mockResolvedValue(false);
+
+      const result = await messagesService.getMessages(chatId, currentUserId, dto);
+
+      expect(result).toEqual(expectedResult);
+      expect(mockChatMembersRepository.findByChatAndUser).toHaveBeenCalledWith(
+        chatId,
+        currentUserId,
+      );
+      expect(mockMessagesRepository.findAfter).toHaveBeenCalledWith(
+        chatId,
+        currentUserId,
+        "message456",
+        50,
+      );
+      expect(mockMessagesRepository.hasMessagesAfter).toHaveBeenCalledWith(chatId, "message1");
+    });
+
+    it("should load messages after with hasNext true when more messages exist", async () => {
+      const chatId = "chat123";
+      const currentUserId = "user123";
+      const dto = createGetMessagesRequestDto({
+        mode: MessagesMode.AFTER,
+        limit: 50,
+        anchorMessageId: "message456",
+      });
+
+      const member = {
+        id: "member123",
+        chatId: chatId,
+        userId: currentUserId,
+        role: ChatMemberRole.MEMBER,
+      } as any;
+
+      const messages = [
+        createMessage({
+          id: "message1",
+          chatId: chatId,
+          sender: {
+            id: "user123",
+            userName: "testuser",
+            displayName: "Test User",
+            avatarUrl: null,
+          },
+        }),
+      ];
+
+      const expectedResult: MessagesPage = {
+        messages,
+        hasPrevious: true,
+        hasNext: true,
+      };
+
+      mockChatMembersRepository.findByChatAndUser.mockResolvedValue(member);
+      mockMessagesRepository.findAfter.mockResolvedValue(messages);
+      mockMessagesRepository.hasMessagesAfter.mockResolvedValue(true);
+
+      const result = await messagesService.getMessages(chatId, currentUserId, dto);
+
+      expect(result).toEqual(expectedResult);
+      expect(mockMessagesRepository.hasMessagesAfter).toHaveBeenCalledWith(chatId, "message1");
+    });
+
+    it("should load messages after with empty result", async () => {
+      const chatId = "chat123";
+      const currentUserId = "user123";
+      const dto = createGetMessagesRequestDto({
+        mode: MessagesMode.AFTER,
+        limit: 50,
+        anchorMessageId: "message456",
+      });
+
+      const member = {
+        id: "member123",
+        chatId: chatId,
+        userId: currentUserId,
+        role: ChatMemberRole.MEMBER,
+      } as any;
+
+      const expectedResult: MessagesPage = {
+        messages: [],
+        hasPrevious: true,
+        hasNext: false,
+      };
+
+      mockChatMembersRepository.findByChatAndUser.mockResolvedValue(member);
+      mockMessagesRepository.findAfter.mockResolvedValue([]);
+
+      const result = await messagesService.getMessages(chatId, currentUserId, dto);
+
+      expect(result).toEqual(expectedResult);
+      expect(mockMessagesRepository.findAfter).toHaveBeenCalledWith(
+        chatId,
+        currentUserId,
+        "message456",
+        50,
+      );
+      expect(mockMessagesRepository.hasMessagesAfter).not.toHaveBeenCalled();
+    });
+
+    it("should load around messages when mode is AROUND", async () => {
+      const chatId = "chat123";
+      const currentUserId = "user123";
+      const dto = createGetMessagesRequestDto({
+        mode: MessagesMode.AROUND,
+        limit: 50,
+        anchorMessageId: "message456",
+        before: 10,
+        after: 10,
+      });
+
+      const member = {
+        id: "member123",
+        chatId: chatId,
+        userId: currentUserId,
+        role: ChatMemberRole.MEMBER,
+      } as any;
+
+      const targetMessage = createMessage({
+        id: "message456",
+        chatId: chatId,
+        sender: createMessageSender(),
+      });
+
+      const messages = [
+        createMessage({
+          id: "message1",
+          chatId: chatId,
+          sender: createMessageSender(),
+        }),
+        createMessage({
+          id: "message2",
+          chatId: chatId,
+          sender: createMessageSender(),
+        }),
+      ];
+
+      const expectedResult: MessagesPage = {
+        messages,
+        hasPrevious: false,
+        hasNext: false,
+      };
+
+      mockChatMembersRepository.findByChatAndUser.mockResolvedValue(member);
+      mockMessagesRepository.findById.mockResolvedValue(targetMessage);
+      mockMessagesRepository.findAroundMessage.mockResolvedValue(messages);
+      mockMessagesRepository.hasMessagesBefore.mockResolvedValue(false);
+      mockMessagesRepository.hasMessagesAfter.mockResolvedValue(false);
+
+      const result = await messagesService.getMessages(chatId, currentUserId, dto);
+
+      expect(result).toEqual(expectedResult);
+      expect(mockChatMembersRepository.findByChatAndUser).toHaveBeenCalledWith(
+        chatId,
+        currentUserId,
+      );
+      expect(mockMessagesRepository.findById).toHaveBeenCalledWith("message456");
+      expect(mockMessagesRepository.findAroundMessage).toHaveBeenCalledWith(
+        chatId,
+        "message456",
+        currentUserId,
+        10,
+        10,
+      );
+      expect(mockMessagesRepository.hasMessagesBefore).toHaveBeenCalledWith(chatId, "message2");
+      expect(mockMessagesRepository.hasMessagesAfter).toHaveBeenCalledWith(chatId, "message1");
+    });
+
+    it("should throw NotFoundError when anchor message not found in AROUND mode", async () => {
+      const chatId = "chat123";
+      const currentUserId = "user123";
+      const dto = createGetMessagesRequestDto({
+        mode: MessagesMode.AROUND,
+        limit: 50,
+        anchorMessageId: "nonexistent",
+        before: 10,
+        after: 10,
+      });
+
+      const member = {
+        id: "member123",
+        chatId: chatId,
+        userId: currentUserId,
+        role: ChatMemberRole.MEMBER,
+      } as any;
+
+      mockChatMembersRepository.findByChatAndUser.mockResolvedValue(member);
+      mockMessagesRepository.findById.mockResolvedValue(null);
+
+      await expect(messagesService.getMessages(chatId, currentUserId, dto)).rejects.toThrow(
+        NotFoundError,
+      );
+
+      expect(mockMessagesRepository.findById).toHaveBeenCalledWith("nonexistent");
+      expect(mockMessagesRepository.findAroundMessage).not.toHaveBeenCalled();
+    });
+
+    it("should throw ValidationError when anchor message belongs to different chat in AROUND mode", async () => {
+      const chatId = "chat123";
+      const currentUserId = "user123";
+      const dto = createGetMessagesRequestDto({
+        mode: MessagesMode.AROUND,
+        limit: 50,
+        anchorMessageId: "message456",
+        before: 10,
+        after: 10,
+      });
+
+      const member = {
+        id: "member123",
+        chatId: chatId,
+        userId: currentUserId,
+        role: ChatMemberRole.MEMBER,
+      } as any;
+
+      const targetMessage = createMessage({
+        id: "message456",
+        chatId: "different-chat",
+        sender: createMessageSender(),
+      });
+
+      mockChatMembersRepository.findByChatAndUser.mockResolvedValue(member);
+      mockMessagesRepository.findById.mockResolvedValue(targetMessage);
+
+      await expect(messagesService.getMessages(chatId, currentUserId, dto)).rejects.toThrow(
+        ValidationError,
+      );
+
+      expect(mockMessagesRepository.findById).toHaveBeenCalledWith("message456");
+      expect(mockMessagesRepository.findAroundMessage).not.toHaveBeenCalled();
+    });
+
+    it("should return empty result when no messages found in AROUND mode", async () => {
+      const chatId = "chat123";
+      const currentUserId = "user123";
+      const dto = createGetMessagesRequestDto({
+        mode: MessagesMode.AROUND,
+        limit: 50,
+        anchorMessageId: "message456",
+        before: 10,
+        after: 10,
+      });
+
+      const member = {
+        id: "member123",
+        chatId: chatId,
+        userId: currentUserId,
+        role: ChatMemberRole.MEMBER,
+      } as any;
+
+      const targetMessage = createMessage({
+        id: "message456",
+        chatId: chatId,
+        sender: createMessageSender(),
+      });
+
+      const expectedResult: MessagesPage = {
+        messages: [],
+        hasPrevious: false,
+        hasNext: false,
+      };
+
+      mockChatMembersRepository.findByChatAndUser.mockResolvedValue(member);
+      mockMessagesRepository.findById.mockResolvedValue(targetMessage);
+      mockMessagesRepository.findAroundMessage.mockResolvedValue([]);
+
+      const result = await messagesService.getMessages(chatId, currentUserId, dto);
+
+      expect(result).toEqual(expectedResult);
+      expect(mockMessagesRepository.findAroundMessage).toHaveBeenCalledWith(
+        chatId,
+        "message456",
+        currentUserId,
+        10,
+        10,
+      );
+      expect(mockMessagesRepository.hasMessagesBefore).not.toHaveBeenCalled();
+      expect(mockMessagesRepository.hasMessagesAfter).not.toHaveBeenCalled();
+    });
   });
 
   describe("update", () => {
