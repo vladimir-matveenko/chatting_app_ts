@@ -72,7 +72,7 @@ export class AuthService {
     const payload = this.jwtService.verifyRefreshToken(refreshToken);
     const storedToken = await this.refreshTokensRepository.findByUserId(payload.userId);
     if (!storedToken) {
-      throw new UnauthorizedError("Refresh token not found.", "INVALID_REFRESH_TOKEN");
+      throw new UnauthorizedError("Refresh token not found.", "REFRESH_TOKEN_NOT_FOUND");
     }
     this.ensureRefreshTokenNotExpired(storedToken.expiresAt);
     const incomingHash = this.tokenHasher.hash(refreshToken);
