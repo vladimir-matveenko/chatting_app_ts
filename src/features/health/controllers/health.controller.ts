@@ -8,13 +8,13 @@ import type { HealthResponseDto } from "../dto/response/health-response.dto.js";
 
 export class HealthController extends BaseController {
   async health(_req: Request, res: Response<HealthResponseDto>): Promise<void> {
-    this.ok(
-      res,
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
 
-      {
-        status: "ok",
-        version: env.appVersion,
-      },
-    );
+    this.ok(res, {
+      status: "ok",
+      version: env.appVersion,
+    });
   }
 }
