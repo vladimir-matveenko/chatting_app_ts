@@ -42,6 +42,10 @@ export class AuthService {
       return;
     }
     await this.refreshTokensRepository.create(userId, tokenHash, expiresAt);
+    console.log("SAVE_REFRESH_TOKEN", {
+      userId,
+      tokenHash: tokenHash.slice(0, 12),
+    });
   }
 
   async login(dto: LoginRequestDto): Promise<AuthResult> {
@@ -77,6 +81,11 @@ export class AuthService {
     this.ensureRefreshTokenNotExpired(storedToken.expiresAt);
     const incomingHash = this.tokenHasher.hash(refreshToken);
     if (incomingHash !== storedToken.tokenHash) {
+      console.log("INVALID_REFRESH_TOKEN", {
+        userId: payload.userId,
+        incomingHash: incomingHash.slice(0, 12),
+        storedHash: storedToken.tokenHash.slice(0, 12),
+      });
       throw new UnauthorizedError("Invalid refresh token.", "INVALID_REFRESH_TOKEN");
     }
     const user = await this.usersRepository.findById(payload.userId);
