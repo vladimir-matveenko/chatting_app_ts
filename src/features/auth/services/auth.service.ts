@@ -82,6 +82,7 @@ export class AuthService {
     this.ensureRefreshTokenNotExpired(storedToken.expiresAt);
     const incomingHash = this.tokenHasher.hash(refreshToken);
     if (incomingHash !== storedToken.tokenHash) {
+      console.warn("🔥🔥🔥 INVALID REFRESH TOKEN HAPENNED");
       logger.warn("INVALID_REFRESH_TOKEN", {
         userId: payload.userId,
         incomingHash: incomingHash.slice(0, 12),
