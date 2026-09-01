@@ -11,6 +11,7 @@ import { User } from "../../users/models/user.model.js";
 import type { IRefreshTokensRepository } from "../interfaces/refresh-tokens.repository.interface.js";
 import { PasswordHasher } from "../../../core/security/password/index.js";
 import { TokenHasher } from "../../../core/security/index.js";
+import { logger } from "../../../core/logger/logger.js";
 
 export class AuthService {
   constructor(
@@ -42,6 +43,10 @@ export class AuthService {
       return;
     }
     await this.refreshTokensRepository.create(userId, tokenHash, expiresAt);
+    logger.info("SAVE_REFRESH_TOKEN", {
+      userId,
+      tokenHash: tokenHash.slice(0, 12),
+    });
   }
 
   async login(dto: LoginRequestDto): Promise<AuthResult> {
@@ -77,6 +82,12 @@ export class AuthService {
     this.ensureRefreshTokenNotExpired(storedToken.expiresAt);
     const incomingHash = this.tokenHasher.hash(refreshToken);
     if (incomingHash !== storedToken.tokenHash) {
+      console.warn("🔥🔥🔥 INVALID REFRESH TOKEN HAPENNED");
+      logger.warn("INVALID_REFRESH_TOKEN", {
+        userId: payload.userId,
+        incomingHash: incomingHash.slice(0, 12),
+        storedHash: storedToken.tokenHash.slice(0, 12),
+      });
       throw new UnauthorizedError("Invalid refresh token.", "INVALID_REFRESH_TOKEN");
     }
     const user = await this.usersRepository.findById(payload.userId);

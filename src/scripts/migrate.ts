@@ -59,7 +59,7 @@ async function migrate() {
 }
 
 migrate().catch(async (err) => {
-  console.error(err);
+  logger.error(err);
 
   await client.end();
 

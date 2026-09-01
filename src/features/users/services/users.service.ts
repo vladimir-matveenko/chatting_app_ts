@@ -21,6 +21,7 @@ import { UserListItem } from "../models/user-list-item.model.js";
 import { IUserListRepository } from "../interfaces/user-list.repository.interface.js";
 import { FileStorage } from "../../../core/storage/file-storage.interface.js";
 import { detectImageType } from "../../../core/storage/image-file.utils.js";
+import { logger } from "../../../core/logger/logger.js";
 
 export class UsersService {
   constructor(
@@ -252,7 +253,7 @@ export class UsersService {
         try {
           await this.fileStorage.delete(user.avatarPublicId);
         } catch (error) {
-          console.error("Failed to delete old avatar:", error);
+          logger.error("Failed to delete old avatar:", error);
         }
       }
 
@@ -276,7 +277,7 @@ export class UsersService {
     try {
       await this.fileStorage.delete(user.avatarPublicId);
     } catch (error) {
-      console.error("Failed to delete avatar from storage:", error);
+      logger.error("Failed to delete avatar from storage:", error);
     }
   }
 }

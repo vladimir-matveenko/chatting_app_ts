@@ -16,7 +16,7 @@ export class JwtServiceImpl implements JwtService {
       env.jwtSecret,
 
       {
-        expiresIn: "15m",
+        expiresIn: "10m",
       },
     );
   }
