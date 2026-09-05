@@ -226,6 +226,15 @@ PORT=3000
 DATABASE_URL=postgres://user:password@localhost:5432/chatting_app
 JWT_SECRET=your-secret
 API_URL=http://localhost:3000
+SMTP_HOST=sandbox.smtp.mailtrap.io
+SMTP_PORT=2525
+SMTP_SECURE=false
+SMTP_USER=user-name
+SMTP_PASSWORD=password
+SMTP_FROM=Chatting App <noreply@chatting-app.local>
+CLOUDINARY_CLOUD_NAME=name
+CLOUDINARY_API_KEY=key
+CLOUDINARY_API_SECRET=secret
 ```
 
 ### Run database migrations
