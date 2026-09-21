@@ -49,6 +49,12 @@ export class SocketEventPublisher {
   // notifications events
 
   notificationCreated(notification: NotificationModel): void {
+    logger.info(
+      "Notification created for ",
+
+      notification.type,
+    );
+
     this.emitToUser(notification.userId, SocketEvents.NotificationCreated, notification);
   }
 
