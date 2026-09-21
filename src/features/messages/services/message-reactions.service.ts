@@ -94,8 +94,6 @@ export class MessageReactionsService {
 
     await this.reactionsRepository.delete(reaction.id);
 
-    await this.reactionsRepository.delete(reaction.id);
-
     await this.publishUpdatedMessage(messageId);
   }
 
