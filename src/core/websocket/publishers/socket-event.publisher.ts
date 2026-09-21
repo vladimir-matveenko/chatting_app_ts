@@ -50,7 +50,7 @@ export class SocketEventPublisher {
 
   notificationCreated(notification: NotificationModel): void {
     logger.info(
-      "Notification created for ",
+      "Publishing notification.created",
 
       notification.type,
     );
