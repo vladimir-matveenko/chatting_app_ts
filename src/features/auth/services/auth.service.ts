@@ -38,6 +38,13 @@ export class AuthService {
     const tokenHash = this.tokenHasher.hash(refreshToken);
     const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     const existing = await this.refreshTokensRepository.findByUserId(userId);
+
+    logger.info("SAVE_REFRESH_TOKEN", {
+      userId,
+      tokenHash: tokenHash.slice(0, 12),
+      existing: Boolean(existing),
+    });
+
     if (existing) {
       await this.refreshTokensRepository.update(userId, tokenHash, expiresAt);
       return;
