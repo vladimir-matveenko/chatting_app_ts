@@ -23,6 +23,7 @@ import { MessagesPage } from "../models/messages-page.model.js";
 import { MessageSearchResult } from "../models/message-search.model.js";
 import { IMessageSearchRepository } from "../interfaces/message-search.repository.interface.js";
 import { MessagesNotificationsService } from "./messages-notifications.service.js";
+import { ChatType } from "../../chats/enums/chat-type.enum.js";
 
 export class MessagesService {
   constructor(
@@ -378,11 +379,21 @@ export class MessagesService {
       userId,
     );
 
-    if (!member) {
+    const chat = await this.chatsRepository.findById(
+      chatId,
+
+      userId,
+    );
+
+    if (!member || !chat) {
       throw new NotFoundError("Chat not found.");
     }
 
-    if (member.role !== ChatMemberRole.OWNER && member.role !== ChatMemberRole.ADMIN) {
+    if (
+      chat.type === ChatType.GROUP &&
+      member.role !== ChatMemberRole.OWNER &&
+      member.role !== ChatMemberRole.ADMIN
+    ) {
       throw new ForbiddenError(
         "Insufficient permissions.",
 
