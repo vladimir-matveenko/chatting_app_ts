@@ -320,6 +320,9 @@ export class ChatsController {
 
     this.socketPublisher.chatChanged(chatId);
 
+    const membersIds = await this.service.getChatParticipantIds(chatId, request.user.userId);
+    this.socketPublisher.chatListChatChanged(chatId, membersIds);
+
     response.sendStatus(204);
   }
 
@@ -357,6 +360,9 @@ export class ChatsController {
     );
 
     this.socketPublisher.chatChanged(chatId);
+
+    const membersIds = await this.service.getChatParticipantIds(chatId, request.user.userId);
+    this.socketPublisher.chatListChatChanged(chatId, membersIds);
 
     response.sendStatus(204);
   }
@@ -400,6 +406,9 @@ export class ChatsController {
 
     this.socketPublisher.chatChanged(chatId);
 
+    const membersIds = await this.service.getChatParticipantIds(chatId, request.user.userId);
+    this.socketPublisher.chatListChatChanged(chatId, membersIds);
+
     response.sendStatus(204);
   }
 
@@ -434,6 +443,9 @@ export class ChatsController {
 
     this.socketPublisher.chatChanged(chatId);
 
+    const membersIds = await this.service.getChatParticipantIds(chatId, request.user.userId);
+    this.socketPublisher.chatListChatChanged(chatId, membersIds);
+
     response.sendStatus(204);
   }
 
@@ -467,6 +479,9 @@ export class ChatsController {
     );
 
     this.socketPublisher.chatChanged(chat.id);
+
+    const membersIds = await this.service.getChatParticipantIds(chatId, request.user.userId);
+    this.socketPublisher.chatListChatChanged(chatId, membersIds);
 
     response.json(chat);
   }

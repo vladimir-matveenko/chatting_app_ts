@@ -232,4 +232,33 @@ export class SocketEventPublisher {
       chatId,
     );
   }
+
+  // chat list events
+  chatListChatChanged(chatId: string, userIds: string[]): void {
+    const dto: ChatChangedEventDto = {
+      chatId,
+    };
+
+    for (const userId of userIds) {
+      this.emitToUser(userId, SocketEvents.ChatListChatChanged, dto);
+    }
+
+    logger.info(
+      `Chat ${chatId} updated`,
+
+      chatId,
+    );
+  }
+
+  chatListMessageCreated(message: Message, userIds: string[]): void {
+    logger.info(
+      "Publishing message.created",
+
+      message.chatId,
+    );
+
+    for (const userId of userIds) {
+      this.emitToUser(userId, SocketEvents.ChatListMessageCreated, message);
+    }
+  }
 }

@@ -486,4 +486,14 @@ export class ChatsService {
 
     return chat;
   }
+
+  async getChatParticipantIds(chatId: string, userId: string): Promise<string[]> {
+    const chat = await this.chatsRepository.findById(chatId, userId);
+
+    if (!chat) {
+      throw new NotFoundError("Chat not found.");
+    }
+
+    return this.chatMembersRepository.findMembersIdsByChat(chatId);
+  }
 }

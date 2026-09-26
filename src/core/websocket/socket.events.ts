@@ -37,6 +37,10 @@ export const SocketEvents = {
 
   ChatChanged: "chat:changed",
 
+  ChatListChatChanged: "chat-list-chat:changed",
+
+  ChatListMessageCreated: "chat-list-message:created",
+
   Exception: "exception",
 
   NotificationCreated: "notification:created",
