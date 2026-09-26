@@ -1123,6 +1123,7 @@ describe("MessagesService", () => {
 
       mockMessagesRepository.getByIdOrThrow.mockResolvedValue(message);
       mockChatMembersRepository.findByChatAndUser.mockResolvedValue(member);
+      mockChatsRepository.findById.mockResolvedValue(createChat());
       mockMessagesRepository.pin.mockResolvedValue(pinnedMessage);
 
       const result = await messagesService.pinMessage(messageId, userId);
@@ -1152,6 +1153,7 @@ describe("MessagesService", () => {
 
       mockMessagesRepository.getByIdOrThrow.mockResolvedValue(message);
       mockChatMembersRepository.findByChatAndUser.mockResolvedValue(member);
+      mockChatsRepository.findById.mockResolvedValue(createChat());
 
       await expect(messagesService.pinMessage(messageId, userId)).rejects.toThrow(ForbiddenError);
 
@@ -1188,6 +1190,7 @@ describe("MessagesService", () => {
       mockMessagesRepository.getByIdOrThrow.mockResolvedValue(message);
       mockChatMembersRepository.findByChatAndUser.mockResolvedValue(member);
       mockMessagesRepository.unpin.mockResolvedValue(unpinnedMessage);
+      mockChatsRepository.findById.mockResolvedValue(createChat());
 
       const result = await messagesService.unpinMessage(messageId, userId);
 
@@ -1216,6 +1219,7 @@ describe("MessagesService", () => {
 
       mockMessagesRepository.getByIdOrThrow.mockResolvedValue(message);
       mockChatMembersRepository.findByChatAndUser.mockResolvedValue(member);
+      mockChatsRepository.findById.mockResolvedValue(createChat());
 
       await expect(messagesService.unpinMessage(messageId, userId)).rejects.toThrow(ForbiddenError);
 
