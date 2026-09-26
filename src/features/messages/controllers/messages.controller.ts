@@ -68,6 +68,9 @@ export class MessagesController {
 
     this.socketPublisher.messageCreated(message);
 
+    const membersIds = await this.service.getChatParticipantIds(id, request.user.userId);
+    this.socketPublisher.chatListMessageCreated(message, membersIds);
+
     response
 
       .status(201)

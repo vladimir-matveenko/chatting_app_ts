@@ -430,4 +430,10 @@ export class MessagesService {
 
     return this.messagesSearchRepository.search(chatId, query, limit);
   }
+
+  async getChatParticipantIds(chatId: string, userId: string): Promise<string[]> {
+    await this.ensureChatExists(chatId, userId);
+
+    return this.chatMembersRepository.findMembersIdsByChat(chatId);
+  }
 }
