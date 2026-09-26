@@ -36,6 +36,8 @@ const mockSocketPublisher: jest.Mocked<SocketEventPublisher> = {
   userOffline: jest.fn(),
   reactionUpdated: jest.fn(),
   chatChanged: jest.fn(),
+  chatListChatChanged: jest.fn(),
+  chatListMessageCreated: jest.fn(),
 };
 
 let notificationsService: NotificationsService;
