@@ -906,6 +906,36 @@ describe("MessagesService", () => {
       expect(mockMessagesRepository.hasMessagesBefore).not.toHaveBeenCalled();
       expect(mockMessagesRepository.hasMessagesAfter).not.toHaveBeenCalled();
     });
+
+    describe("getChatParticipantIds", () => {
+      it("should return participant IDs when user is a member", async () => {
+        const chatId = "chat123";
+        const userId = "user123";
+
+        const expectedIds = ["member123", "user456", "user789"];
+
+        mockChatsRepository.findById.mockResolvedValue(createChat());
+        mockChatMembersRepository.findMembersIdsByChat.mockResolvedValue(expectedIds);
+
+        const result = await messagesService.getChatParticipantIds(chatId, userId);
+
+        expect(result).toEqual(expectedIds);
+        expect(mockChatMembersRepository.findMembersIdsByChat).toHaveBeenCalledWith(chatId);
+      });
+
+      it("should throw NotFoundError when chat does not exist", async () => {
+        const chatId = "nonexistent";
+        const userId = "user123";
+
+        mockChatsRepository.findById.mockResolvedValue(null);
+
+        await expect(messagesService.getChatParticipantIds(chatId, userId)).rejects.toThrow(
+          NotFoundError,
+        );
+
+        expect(mockChatsRepository.findById).toHaveBeenCalledWith(chatId, userId);
+      });
+    });
   });
 
   describe("update", () => {
