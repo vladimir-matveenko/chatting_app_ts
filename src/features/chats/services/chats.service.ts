@@ -391,6 +391,16 @@ export class ChatsService {
 
     dto: ChangeMemberRoleDto,
   ): Promise<void> {
+    const chat = await this.chatsRepository.findById(chatId, actorId);
+
+    if (!chat) {
+      throw new NotFoundError("Chat not found.");
+    }
+
+    if (chat.type !== ChatType.GROUP) {
+      throw new ValidationError("Roles can only be changed in group chats.");
+    }
+
     await this.chatPermissionsService.ensureCanManageMembers(
       chatId,
 

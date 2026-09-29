@@ -26,6 +26,7 @@ import type { MuteChatDto } from "../dto/mute-chat.dto.js";
 import type { AddChatMembersDto } from "../dto/add-chat-members.dto.js";
 import type { TransferOwnershipDto } from "../dto/transfer-ownership.dto.js";
 import type { UpdateChatDto } from "../dto/update-chat.dto.js";
+import type { ChangeMemberRoleDto } from "../dto/request/change-member-role.dto.js";
 
 import type { Chat } from "../models/chat.model.js";
 import type { ChatMember } from "../models/chat-member.model.js";
@@ -70,6 +71,7 @@ describe("ChatsService", () => {
       | "removeMember"
       | "updateRole"
       | "updateRoleTx"
+      | "findMembersIdsByChat"
     >
   >;
 
@@ -175,6 +177,7 @@ describe("ChatsService", () => {
       removeMember: jest.fn(),
       updateRole: jest.fn(),
       updateRoleTx: jest.fn(),
+      findMembersIdsByChat: jest.fn(),
     };
 
     mockFingerprintService = {
@@ -952,6 +955,117 @@ describe("ChatsService", () => {
       expect(mockChatsRepository.update).toHaveBeenCalledWith(chatId, dto);
 
       expect(mockChatNotificationsService.notifyChatUpdated).toHaveBeenCalledWith(chatId, userId);
+    });
+  });
+
+  describe("changeMemberRole", () => {
+    it("should change member role successfully", async () => {
+      const chatId = "chat123";
+      const actorId = "user123";
+      const memberId = "user456";
+
+      const dto: ChangeMemberRoleDto = {
+        role: ChatMemberRole.ADMIN,
+      };
+
+      mockChatsRepository.findById.mockResolvedValue(
+        createChat({
+          type: ChatType.GROUP,
+        }),
+      );
+
+      await chatsService.changeMemberRole(chatId, actorId, memberId, dto);
+
+      expect(mockChatsRepository.findById).toHaveBeenCalledWith(chatId, actorId);
+
+      expect(mockChatPermissionsService.ensureCanManageMembers).toHaveBeenCalledWith(
+        chatId,
+        actorId,
+        memberId,
+      );
+
+      expect(mockChatMembersRepository.updateRole).toHaveBeenCalledWith(chatId, memberId, dto.role);
+
+      expect(mockChatNotificationsService.notifyMemberRoleChanged).toHaveBeenCalledWith(
+        chatId,
+        actorId,
+        memberId,
+        dto.role,
+      );
+    });
+
+    it("should throw NotFoundError when chat is not found", async () => {
+      const chatId = "nonexistent";
+      const actorId = "user123";
+      const memberId = "user456";
+
+      const dto: ChangeMemberRoleDto = {
+        role: ChatMemberRole.ADMIN,
+      };
+
+      mockChatsRepository.findById.mockResolvedValue(null);
+
+      await expect(chatsService.changeMemberRole(chatId, actorId, memberId, dto)).rejects.toThrow(
+        NotFoundError,
+      );
+
+      expect(mockChatPermissionsService.ensureCanManageMembers).not.toHaveBeenCalled();
+      expect(mockChatMembersRepository.updateRole).not.toHaveBeenCalled();
+    });
+
+    it("should throw ValidationError when changing role in private chat", async () => {
+      const chatId = "chat123";
+      const actorId = "user123";
+      const memberId = "user456";
+
+      const dto: ChangeMemberRoleDto = {
+        role: ChatMemberRole.ADMIN,
+      };
+
+      mockChatsRepository.findById.mockResolvedValue(
+        createChat({
+          type: ChatType.PRIVATE,
+        }),
+      );
+
+      await expect(chatsService.changeMemberRole(chatId, actorId, memberId, dto)).rejects.toThrow(
+        ValidationError,
+      );
+
+      expect(mockChatPermissionsService.ensureCanManageMembers).not.toHaveBeenCalled();
+      expect(mockChatMembersRepository.updateRole).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("getChatParticipantIds", () => {
+    it("should return participant IDs successfully", async () => {
+      const chatId = "chat123";
+      const userId = "user123";
+
+      const expectedParticipantIds = ["user123", "user456", "user789"];
+
+      mockChatsRepository.findById.mockResolvedValue(createChat());
+      mockChatMembersRepository.findMembersIdsByChat.mockResolvedValue(expectedParticipantIds);
+
+      const result = await chatsService.getChatParticipantIds(chatId, userId);
+
+      expect(result).toEqual(expectedParticipantIds);
+
+      expect(mockChatsRepository.findById).toHaveBeenCalledWith(chatId, userId);
+      expect(mockChatMembersRepository.findMembersIdsByChat).toHaveBeenCalledWith(chatId);
+    });
+
+    it("should throw NotFoundError when chat is not found", async () => {
+      const chatId = "nonexistent";
+      const userId = "user123";
+
+      mockChatsRepository.findById.mockResolvedValue(null);
+
+      await expect(chatsService.getChatParticipantIds(chatId, userId)).rejects.toThrow(
+        NotFoundError,
+      );
+
+      expect(mockChatMembersRepository.findMembersIdsByChat).not.toHaveBeenCalled();
     });
   });
 });
